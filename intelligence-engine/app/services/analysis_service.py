@@ -14,7 +14,31 @@ class AnalysisService:
         self.risk_scorer = RiskScorer(self.adapter.get_entity_info)
 
     def analyze_wallet(self, request: AnalyzeWalletRequest) -> AnalysisResult:
-        raw_txs = self.adapter.get_all_transactions()
+        # Crawl relevant transactions up to 3 hops from the requested wallet
+        visited_addresses = set([request.wallet_address])
+        addresses_to_explore = [request.wallet_address]
+        raw_txs = []
+        raw_tx_hashes = set()
+        
+        for hop in range(3):
+            next_addresses = []
+            for addr in addresses_to_explore:
+                txs = self.adapter.get_transactions(addr)
+                for tx in txs:
+                    if tx["hash"] not in raw_tx_hashes:
+                        raw_txs.append(tx)
+                        raw_tx_hashes.add(tx["hash"])
+                    
+                    if tx["to"] not in visited_addresses:
+                        visited_addresses.add(tx["to"])
+                        next_addresses.append(tx["to"])
+                    if tx["from"] not in visited_addresses:
+                        visited_addresses.add(tx["from"])
+                        next_addresses.append(tx["from"])
+            addresses_to_explore = next_addresses
+            if not addresses_to_explore:
+                break
+
         normalized_txs = [self.normalizer.normalize_mock(tx) for tx in raw_txs]
         
         self.graph_provider.build_graph(normalized_txs)
@@ -23,7 +47,6 @@ class AnalysisService:
         
         distance = attribution.distance if attribution else 0
         
-        # In a real scenario, we pass transactions specifically related to the wallet/path.
         risk_result = self.risk_scorer.calculate_risk(path, distance, raw_txs)
         
         return AnalysisResult(

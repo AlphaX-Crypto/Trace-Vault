@@ -1,4 +1,9 @@
 def calculate_confidence(distance: int, entity_type: str, path: list) -> int:
+    """
+    Prototype heuristic confidence score.
+    This is a deterministic calculation and should not be interpreted as
+    statistical accuracy or probability.
+    """
     base_confidence = 90
     
     # Decrease confidence based on distance

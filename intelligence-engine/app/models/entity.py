@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from enum import Enum
 from typing import Optional, List
 
@@ -17,5 +17,5 @@ class Entity(BaseModel):
     name: str
     entity_type: EntityType
     blockchain: str
-    addresses: Optional[List[str]] = []
+    addresses: Optional[List[str]] = Field(default_factory=list)
     source: str

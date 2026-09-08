@@ -3,6 +3,12 @@ from typing import List, Optional, Tuple
 from collections import deque
 
 class MockGraphProvider(IGraphProvider):
+    """
+    TEMPORARY SPRINT 1 IMPLEMENTATION.
+    This mock provider avoids overlapping with the NetworkX graph engine
+    that will be implemented in app/graph/.
+    Its interface remains compatible with the expected future NetworkX implementation.
+    """
     def __init__(self):
         self.adj_list = {}
 

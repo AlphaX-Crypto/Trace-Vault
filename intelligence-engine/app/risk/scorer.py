@@ -2,6 +2,14 @@ from app.risk.rules import evaluate_mixer_interaction, evaluate_hop_count, evalu
 from app.models.analysis import RiskResult
 
 class RiskScorer:
+    """
+    Sprint 1 Prototype Risk Engine.
+    Enabled Rules:
+    - Mixer interaction: +30
+    - Multiple intermediary hops: +10
+    - Rapid movement: +10
+    - Baseline investigative risk: +10
+    """
     def __init__(self, get_entity_info):
         self.get_entity_info = get_entity_info
 
