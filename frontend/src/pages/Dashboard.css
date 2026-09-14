@@ -1,0 +1,103 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-5);
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5);
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-5);
+}
+
+.recent-cases h3, .activity-feed h3 {
+  margin-bottom: var(--spacing-4);
+  font-size: 1.125rem;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.activity-item {
+  position: relative;
+  padding-left: var(--spacing-4);
+  border-left: 1px solid var(--border-highlight);
+}
+
+.activity-dot {
+  position: absolute;
+  left: -4px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--border-highlight);
+}
+
+.activity-dot.new {
+  background-color: var(--accent-primary);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.activity-dot.alert {
+  background-color: var(--risk-high);
+}
+
+.activity-item p {
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-1);
+}
+
+.activity-item .time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

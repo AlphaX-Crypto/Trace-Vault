@@ -1,0 +1,109 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 50%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+}
+
+.icon-wrapper {
+  display: inline-flex;
+  margin-bottom: var(--spacing-4);
+  position: relative;
+}
+
+.icon-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: var(--accent-glow);
+  filter: blur(20px);
+  border-radius: 50%;
+}
+
+.brand-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-1);
+}
+
+.brand-header .subtitle {
+  font-size: 0.75rem;
+  color: var(--accent-secondary);
+  letter-spacing: 0.1em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: var(--spacing-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.input-with-icon .input-field {
+  padding-left: 2.5rem;
+}
+
+.login-btn {
+  width: 100%;
+  justify-content: center;
+  padding: var(--spacing-3);
+  margin-top: var(--spacing-4);
+  letter-spacing: 0.05em;
+}
+
+.system-notice {
+  margin-top: var(--spacing-8);
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.system-notice p {
+  margin-bottom: var(--spacing-1);
+}

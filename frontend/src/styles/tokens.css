@@ -1,0 +1,50 @@
+:root {
+  /* Colors */
+  --bg-primary: #0a0e17;
+  --bg-secondary: #121826;
+  --bg-card: #151c2c;
+  --bg-hover: #1e293b;
+  
+  --accent-primary: #00e5ff;
+  --accent-secondary: #00b4d8;
+  --accent-glow: rgba(0, 229, 255, 0.2);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --border-color: #1e293b;
+  --border-highlight: #334155;
+
+  /* Risk Colors */
+  --risk-low: #10b981;
+  --risk-medium: #f59e0b;
+  --risk-high: #ef4444;
+  --risk-critical: #991b1b;
+  
+  --risk-low-bg: rgba(16, 185, 129, 0.1);
+  --risk-medium-bg: rgba(245, 158, 11, 0.1);
+  --risk-high-bg: rgba(239, 68, 68, 0.1);
+  
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  
+  /* Layout */
+  --sidebar-width: 260px;
+  --topbar-height: 64px;
+}
