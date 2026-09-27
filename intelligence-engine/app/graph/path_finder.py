@@ -88,5 +88,8 @@ class PathFinder:
                         )
                     )
 
+        trace_path.hop_count = max(0, len(node_list) - 1)
+        trace_path.source = start
+        trace_path.destination = target
         return trace_path
 

@@ -99,11 +99,14 @@ class BFSTraverser:
                 name = node_data.get("entity_name")
                 etype = node_data.get("entity_type", "UNKNOWN")
 
-                if vasp_names:
+                # Mixers are privacy services, not Virtual Asset Service Providers (VASPs)
+                if str(etype).upper() == "MIXER":
+                    pass
+                elif vasp_names:
                     if name and any(v.lower() in name.lower() for v in vasp_names):
                         return current_node, distance, node_data
                 else:
-                    if etype in ("VASP", "EXCHANGE") or name:
+                    if etype in ("VASP", "EXCHANGE", "DEPOSIT_WALLET") or (name and "mixer" not in name.lower()):
                         return current_node, distance, node_data
 
             if distance < max_depth:

@@ -71,3 +71,34 @@ class TransactionGraphBuilder:
         """Check if a directed edge exists between two addresses."""
         return self.graph.has_edge(from_address.lower(), to_address.lower())
 
+    def tag_node(
+        self,
+        address: str,
+        entity_type: str,
+        entity_name: Optional[str] = None,
+        risk_score: float = 0.0,
+        metadata: Optional[dict] = None,
+    ) -> None:
+        """Attach entity intelligence metadata and tags to a node in the graph."""
+        addr = address.strip().lower()
+        if not self.graph.has_node(addr):
+            node = GraphNode(
+                address=addr,
+                entity_type=entity_type,
+                entity_name=entity_name,
+                risk_score=risk_score,
+                metadata=metadata or {},
+            )
+            self.graph.add_node(addr, **node.to_dict())
+        else:
+            self.graph.nodes[addr]["entity_type"] = entity_type
+            if entity_name:
+                self.graph.nodes[addr]["entity_name"] = entity_name
+            if risk_score > 0.0:
+                self.graph.nodes[addr]["risk_score"] = risk_score
+            if metadata:
+                if "metadata" not in self.graph.nodes[addr]:
+                    self.graph.nodes[addr]["metadata"] = {}
+                self.graph.nodes[addr]["metadata"].update(metadata)
+
+
