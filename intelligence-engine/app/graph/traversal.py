@@ -84,12 +84,24 @@ class BFSTraverser:
         """
         Executes BFS to find nearest VASP entity by matching entity_name or entity_type.
         """
+        all_vasps = self.find_all_vasps(start_address=start_address, max_depth=max_depth, vasp_names=vasp_names)
+        return all_vasps[0] if all_vasps else None
+
+    def find_all_vasps(
+        self, start_address: str, max_depth: int = 5, vasp_names: Optional[List[str]] = None
+    ) -> List[Tuple[str, int, Dict]]:
+        """
+        Executes BFS to find all reachable VASP entities within max_depth.
+        Returns a list of (target_address, distance, node_data) sorted by distance.
+        """
         start = start_address.lower()
         if not self.graph.has_node(start):
-            return None
+            return []
 
         visited: Set[str] = {start}
         queue = deque([(start, 0)])
+        results: List[Tuple[str, int, Dict]] = []
+        found_addresses: Set[str] = set()
 
         while queue:
             current_node, distance = queue.popleft()
@@ -99,21 +111,29 @@ class BFSTraverser:
                 name = node_data.get("entity_name")
                 etype = node_data.get("entity_type", "UNKNOWN")
 
+                is_vasp = False
                 # Mixers are privacy services, not Virtual Asset Service Providers (VASPs)
                 if str(etype).upper() == "MIXER":
-                    pass
+                    is_vasp = False
                 elif vasp_names:
                     if name and any(v.lower() in name.lower() for v in vasp_names):
-                        return current_node, distance, node_data
+                        is_vasp = True
                 else:
                     if etype in ("VASP", "EXCHANGE", "DEPOSIT_WALLET") or (name and "mixer" not in name.lower()):
-                        return current_node, distance, node_data
+                        is_vasp = True
+
+                if is_vasp and current_node not in found_addresses:
+                    results.append((current_node, distance, node_data))
+                    found_addresses.add(current_node)
 
             if distance < max_depth:
-                for neighbor in self.graph.successors(current_node):
-                    if neighbor not in visited:
-                        visited.add(neighbor)
-                        queue.append((neighbor, distance + 1))
+                # Do not traverse past terminal VASP deposit sinks
+                if distance == 0 or current_node not in found_addresses:
+                    for neighbor in self.graph.successors(current_node):
+                        if neighbor not in visited:
+                            visited.add(neighbor)
+                            queue.append((neighbor, distance + 1))
 
-        return None
+        results.sort(key=lambda item: (item[1], item[0]))
+        return results
 

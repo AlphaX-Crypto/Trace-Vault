@@ -59,14 +59,23 @@ MOCK_ENTITIES: Dict[str, Dict[str, Any]] = {
 }
 
 
+from app.attribution.registry import VaspRegistry
+
+
 class MockBlockchainAdapter:
     """
     Controlled Mock Blockchain Adapter providing test cryptocurrency transactions
     and tagged entity registries for the NetworkX Intelligence Engine.
     """
-    def __init__(self, transactions: Optional[List[Dict[str, Any]]] = None, entities: Optional[Dict[str, Dict[str, Any]]] = None):
+    def __init__(
+        self,
+        transactions: Optional[List[Dict[str, Any]]] = None,
+        entities: Optional[Dict[str, Dict[str, Any]]] = None,
+        registry: Optional[VaspRegistry] = None,
+    ):
         self.transactions = transactions if transactions is not None else list(MOCK_TRANSACTIONS)
-        self.entities = entities if entities is not None else dict(MOCK_ENTITIES)
+        self.registry = registry if registry is not None else VaspRegistry()
+        self.entities = dict(entities) if entities is not None else dict(MOCK_ENTITIES)
 
     def get_transactions(self, address: str) -> List[Dict[str, Any]]:
         """Return all transactions where address is sender or receiver (case-insensitive)."""
@@ -86,4 +95,19 @@ class MockBlockchainAdapter:
         for key, val in self.entities.items():
             if key.strip().lower() == addr_clean:
                 return val
+
+        # Fallback to registry lookup
+        if self.registry:
+            reg_entry = self.registry.lookup(addr_clean)
+            if reg_entry:
+                return {
+                    "name": reg_entry.vasp_name,
+                    "entity_name": reg_entry.entity_name,
+                    "type": reg_entry.entity_type,
+                    "source": reg_entry.source,
+                    "updated_at": reg_entry.updated_at,
+                    "risk_score": reg_entry.risk_score,
+                    "tags": reg_entry.tags,
+                    "metadata": reg_entry.metadata,
+                }
         return None

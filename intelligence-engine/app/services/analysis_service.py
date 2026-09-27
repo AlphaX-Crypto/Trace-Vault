@@ -17,7 +17,9 @@ from app.blockchain.mock import MockBlockchainAdapter
 from app.graph.builder import TransactionGraphBuilder
 from app.graph.traversal import BFSTraverser
 from app.graph.path_finder import PathFinder
-from app.attribution.confidence import calculate_confidence
+from app.attribution.confidence import calculate_confidence, evaluate_confidence
+from app.attribution.registry import VaspRegistry
+from app.attribution.vasp_identifier import VaspIdentifier
 from app.risk.scorer import RiskScorer
 
 logger = logging.getLogger(__name__)
@@ -27,12 +29,20 @@ class AnalysisService:
     """
     Authoritative Intelligence Analysis Service for TRACEVAULT V2.
     Integrates the real NetworkX graph engine, deterministic BFS discovery,
-    heuristic path finding, VASP attribution, and multi-factor risk scoring.
+    heuristic path finding, explainable VASP attribution, and multi-factor risk scoring.
     """
 
-    def __init__(self, adapter: Optional[MockBlockchainAdapter] = None):
-        self.adapter = adapter if adapter is not None else MockBlockchainAdapter()
+    def __init__(
+        self,
+        adapter: Optional[MockBlockchainAdapter] = None,
+        registry: Optional[VaspRegistry] = None,
+    ):
+        self.registry = registry if registry is not None else (
+            adapter.registry if adapter is not None and hasattr(adapter, "registry") else VaspRegistry()
+        )
+        self.adapter = adapter if adapter is not None else MockBlockchainAdapter(registry=self.registry)
         self.normalizer = TransactionNormalizer()
+        self.vasp_identifier = VaspIdentifier(registry=self.registry)
         self.risk_scorer = RiskScorer(self.adapter.get_entity_info)
 
     def analyze_wallet(self, request: AnalyzeWalletRequest) -> AnalysisResult:
@@ -71,78 +81,73 @@ class AnalysisService:
                     metadata=entity_info,
                 )
 
-        # 4. Execute bounded BFS traversal on the NetworkX graph
+        # 4. Traversal and VASP identification using single BFS exploration
         traverser = BFSTraverser(graph)
-        vasp_result = traverser.find_nearest_vasp(start_address, max_depth=max_hops)
-
-        # 5. Extract deterministic path using PathFinder
         path_finder = PathFinder(graph)
-        attribution: Optional[VaspAttribution] = None
-        trace_path = TracePath()
+
+        candidates = self.vasp_identifier.identify_candidates(
+            source_wallet=start_address,
+            graph=graph,
+            max_hops=max_hops,
+            traverser=traverser,
+            path_finder=path_finder,
+        )
+
+        nearest_vasp: Optional[VaspAttribution] = None
+        attributions: List[VaspAttribution] = []
+        trace_paths: List[TracePath] = []
         path_addresses: List[str] = [start_address]
         distance = 0
 
-        if vasp_result is not None:
-            target_address, distance, node_data = vasp_result
-            trace_path = path_finder.get_path(start_address, target_address)
-            path_addresses = [n.address for n in trace_path.nodes if n.address]
-
-            # 6. Calculate attribution confidence
-            entity_name = node_data.get("entity_name") or "Unknown VASP"
-            entity_type = node_data.get("entity_type", "VASP")
-            conf_score = calculate_confidence(distance, entity_type, path_addresses)
-
-            supporting_evidence = [
-                f"Transaction path reached a tagged {entity_type} address.",
-                f"Entity '{entity_name}' was reached after {distance} hops from subject.",
-            ]
-
-            attribution = VaspAttribution(
-                entity=entity_name,
-                name=entity_name,
-                entity_type=entity_type,
-                distance=distance,
-                hops=distance,
-                path=path_addresses,
-                confidence=conf_score,
-                supporting_evidence=supporting_evidence,
-                source="Tagged entity dataset / Path proximity",
-                explanation=f"Observed transaction path reaches address associated with {entity_name} after {distance} hops.",
-            )
+        if candidates:
+            attributions = [cand[0] for cand in candidates]
+            trace_paths = [cand[1] for cand in candidates]
+            nearest_vasp = attributions[0]
+            distance = nearest_vasp.distance
+            primary_path_addresses = [n.address for n in trace_paths[0].nodes if n.address]
+            if primary_path_addresses:
+                path_addresses = primary_path_addresses
         else:
-            trace_path.nodes.append(
-                PathNode(
-                    address=start_address,
-                    hop=0,
-                    role="Subject Wallet",
-                    label="Subject Wallet",
-                    entity_type="WALLET",
-                )
+            fallback_path = TracePath(
+                nodes=[
+                    PathNode(
+                        address=start_address,
+                        hop=0,
+                        role="Subject Wallet",
+                        label="Subject Wallet",
+                        entity_type="WALLET",
+                    )
+                ],
+                hop_count=0,
+                source=start_address,
+                destination=start_address,
             )
-            trace_path.hop_count = 0
-            trace_path.source = start_address
-            trace_path.destination = start_address
+            trace_paths = [fallback_path]
 
-        # 7. Calculate multi-factor risk
+        # 5. Calculate multi-factor risk
         risk_result = self.risk_scorer.calculate_risk(path_addresses, distance, raw_txs)
 
-        # 8. Generate structured evidence items
+        # 6. Generate structured evidence items
         evidence_items = self._compile_evidence(
-            trace_path=trace_path,
-            attribution=attribution,
+            trace_paths=trace_paths,
+            attributions=attributions,
             risk_result=risk_result,
             subject=start_address,
         )
 
-        # 9. Format visual graph representation
+        # 7. Format visual graph representation
         graph_data = self._format_graph_data(builder)
 
-        # 10. Assemble and return canonical AnalysisResult
-        confidence_meta = {
+        # 8. Assemble confidence metadata
+        confidence_meta: Dict[str, Any] = {
             "base_score": 90.0,
             "hop_penalty": float(distance * 10.0),
-            "final_confidence": attribution.confidence if attribution else 0.0,
+            "final_confidence": nearest_vasp.confidence if nearest_vasp else 0.0,
+            "confidence_label": nearest_vasp.confidence_label if nearest_vasp else "None",
+            "explanation": nearest_vasp.explanation if nearest_vasp else "No tagged VASP entity identified within traversal depth.",
         }
+        if nearest_vasp and "confidence_breakdown" in nearest_vasp.metadata:
+            confidence_meta["breakdown"] = nearest_vasp.metadata["confidence_breakdown"]
 
         return AnalysisResult(
             case_id=request.case_id,
@@ -152,9 +157,9 @@ class AnalysisService:
             status="Analysis complete",
             transactions=normalized_txs,
             graph=graph_data,
-            nearest_vasp=attribution,
-            attribution=[attribution] if attribution else [],
-            trace_paths=[trace_path] if trace_path.nodes else [],
+            nearest_vasp=nearest_vasp,
+            attribution=attributions,
+            trace_paths=trace_paths,
             path=path_addresses,
             risk=risk_result,
             confidence=confidence_meta,
@@ -162,6 +167,7 @@ class AnalysisService:
             metadata={
                 "engine": "TRACEVAULT NetworkX Intelligence Engine v2.0",
                 "traversal_hops": distance,
+                "candidate_count": len(attributions),
                 "node_count": builder.node_count(),
                 "edge_count": builder.edge_count(),
             },
@@ -203,57 +209,73 @@ class AnalysisService:
 
     def _compile_evidence(
         self,
-        trace_path: TracePath,
-        attribution: Optional[VaspAttribution],
+        trace_paths: List[TracePath],
+        attributions: List[VaspAttribution],
         risk_result: Any,
         subject: str,
     ) -> List[EvidenceItem]:
         """Synthesize verified, traceable EvidenceItem objects for court dossiers."""
         evidence_items: List[EvidenceItem] = []
         idx = 1
+        seen_tx_hashes: Set[str] = set()
 
-        # Evidence for transactions along trace path
-        for edge in trace_path.edges:
-            evidence_items.append(
-                EvidenceItem(
-                    id=f"EV-{idx:03d}",
-                    type="TRANSACTION",
-                    description=f"Observed fund transfer of {edge.amount} {edge.asset} along investigation path",
-                    source="Blockchain Transaction Record",
-                    timestamp=edge.timestamp or "2026-09-08T10:00:00Z",
-                    status="Verified",
-                    relevance="HIGH",
-                    transaction_hash=edge.transaction_hash,
-                    from_address=edge.from_address or edge.from_node,
-                    to_address=edge.to_address or edge.to_node,
-                    amount=edge.amount,
-                    asset=edge.asset,
-                    entity=f"{edge.from_node} -> {edge.to_node}",
-                )
-            )
-            idx += 1
+        # 1. Evidence for transactions along trace paths
+        for tp in trace_paths:
+            for edge in tp.edges:
+                tx_hash = edge.transaction_hash or f"{edge.from_node}->{edge.to_node}"
+                if tx_hash not in seen_tx_hashes:
+                    seen_tx_hashes.add(tx_hash)
+                    evidence_items.append(
+                        EvidenceItem(
+                            id=f"EV-{idx:03d}",
+                            type="TRANSACTION",
+                            description=f"Observed fund transfer of {edge.amount} {edge.asset} along investigation path",
+                            source="Blockchain Transaction Record",
+                            timestamp=edge.timestamp or "2026-09-08T10:00:00Z",
+                            status="Verified",
+                            relevance="HIGH",
+                            transaction_hash=edge.transaction_hash,
+                            from_address=edge.from_address or edge.from_node,
+                            to_address=edge.to_address or edge.to_node,
+                            amount=edge.amount,
+                            asset=edge.asset,
+                            entity=f"{edge.from_node} -> {edge.to_node}",
+                        )
+                    )
+                    idx += 1
 
-        # Evidence for destination attribution
-        if attribution:
+        # 2. Structured attribution evidence items
+        for attr, tp in zip(attributions, trace_paths):
+            # Backward-compatibility primary ATTRIBUTION item
             evidence_items.append(
                 EvidenceItem(
                     id=f"EV-{idx:03d}",
                     type="ATTRIBUTION",
-                    description=f"Transaction path terminates at address associated with {attribution.entity} ({attribution.confidence_label})",
+                    description=f"Transaction path terminates at address associated with {attr.entity} ({attr.confidence_label})",
                     source="Tagged VASP Intelligence Registry",
                     timestamp="2026-09-08T10:30:00Z",
                     status="Supporting",
                     relevance="CRITICAL",
-                    entity=attribution.entity,
+                    entity=attr.entity,
                     metadata={
-                        "confidence": attribution.confidence,
-                        "distance": attribution.distance,
+                        "confidence": attr.confidence,
+                        "distance": attr.distance,
                     },
                 )
             )
             idx += 1
 
-        # Evidence for detected risk signals
+            # Granular attribution evidence items (GRAPH_PATH, ENTITY_TAG, VASP_REGISTRY, HOP_DISTANCE)
+            granular_items = self.vasp_identifier.create_attribution_evidence(
+                attribution=attr,
+                trace_path=tp,
+                subject=subject,
+                start_index=idx,
+            )
+            evidence_items.extend(granular_items)
+            idx += len(granular_items)
+
+        # 3. Evidence for detected risk signals
         for sig in getattr(risk_result, "signals", []):
             evidence_items.append(
                 EvidenceItem(
