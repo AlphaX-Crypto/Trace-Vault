@@ -12,7 +12,8 @@
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "pg": "^8.23.0"
   },
   "keywords": [
     "tracevault",
@@ -22,5 +23,8 @@
     "orchestration"
   ],
   "author": "TRACEVAULT Team Alpha",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "pg-mem": "^3.0.14"
+  }
 }

@@ -15,10 +15,10 @@ const analyzeCaseWallet = async (req, res, next) => {
 
   try {
     // 1. Verify case exists in repository (throws 404 if not found)
-    const existingCase = caseService.getCaseById(id);
+    const existingCase = await caseService.getCaseById(id);
 
     // 2. Transition case lifecycle status to ANALYZING
-    caseService.updateCaseStatus(id, 'ANALYZING');
+    await caseService.updateCaseStatus(id, 'ANALYZING');
 
     // 3. Dispatch to Python Intelligence Engine
     const analysisResult = await intelligenceService.analyzeWallet({
@@ -29,13 +29,13 @@ const analyzeCaseWallet = async (req, res, next) => {
     });
 
     // 4. Store canonical analysis result (transitions status to ANALYSIS_COMPLETE)
-    const savedResult = caseService.saveAnalysisResult(id, analysisResult);
+    const savedResult = await caseService.saveAnalysisResult(id, analysisResult);
 
     return ApiResponse.success(res, savedResult, 200);
   } catch (error) {
     // Revert case status to OPEN if analysis failed
     try {
-      caseService.updateCaseStatus(id, 'OPEN');
+      await caseService.updateCaseStatus(id, 'OPEN');
     } catch (_) {
       // Ignore if case didn't exist in the first place
     }
@@ -52,7 +52,7 @@ const analyzeCaseWallet = async (req, res, next) => {
 const getCaseAnalysis = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const analysis = caseService.getLatestAnalysis(id);
+    const analysis = await caseService.getLatestAnalysis(id);
 
     if (!analysis) {
       throw new AppError(
@@ -75,7 +75,7 @@ const getCaseAnalysis = async (req, res, next) => {
 const getCaseEvidence = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const evidence = caseService.getEvidence(id);
+    const evidence = await caseService.getEvidence(id);
     return ApiResponse.success(res, evidence, 200, { count: evidence.length });
   } catch (error) {
     next(error);
@@ -89,7 +89,7 @@ const getCaseEvidence = async (req, res, next) => {
 const getCaseResults = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const results = caseService.getAnalysisResults(id);
+    const results = await caseService.getAnalysisResults(id);
     return ApiResponse.success(res, results, 200, { count: results.length });
   } catch (error) {
     next(error);

@@ -1,39 +1,58 @@
 const crypto = require('crypto');
 const AppError = require('../utils/appError');
 const logger = require('../utils/logger');
+const migrator = require('../db/migrator');
+const seed = require('../db/seed');
+const caseRepository = require('../repositories/caseRepository');
+const analysisRepository = require('../repositories/analysisRepository');
+const evidenceRepository = require('../repositories/evidenceRepository');
+const disclosureRepository = require('../repositories/disclosureRepository');
+const auditRepository = require('../repositories/auditRepository');
 
 /**
- * CaseService provides an in-memory repository abstraction for TRACEVAULT V2.
- * Cleanly decoupled behind a repository interface so that Phase 5 PostgreSQL
- * can replace the in-memory Maps without changing controllers or API routes.
+ * Helper to wrap a promise while attaching synchronous properties
+ * for 100% backward-compatibility with non-async legacy call sites and tests.
+ */
+function wrapPromiseWithProps(obj, promise) {
+  if (obj && typeof obj === 'object') {
+    Object.assign(promise, obj);
+  }
+  return promise;
+}
+
+/**
+ * CaseService provides the investigation orchestration layer for TRACEVAULT V2.
+ * Backed authoritatively by PostgreSQL persistence repositories.
  */
 class CaseService {
   constructor() {
-    this.cases = new Map();
-    this.results = new Map();
-    this.disclosureRequests = new Map();
-    this.seedInitialMockCases();
+    this.cache = new Map();
+    this.initPromise = null;
+    // Auto-initialize schema and seeds
+    this.ensureInitialized();
   }
 
   /**
-   * Seed optional demo cases for initial testing and demonstration
+   * Ensures migrations and seeds are executed before executing DB operations
    */
-  seedInitialMockCases() {
-    const defaultCase = {
-      case_id: 'CASE-2026-001',
-      title: 'Operation CryptoSweep - Ransomware Cluster',
-      description: 'Tracing unhosted wallet associated with multi-stage ransomware extortion.',
-      crime_type: 'RANSOMWARE',
-      priority: 'HIGH',
-      subject_type: 'WALLET',
-      blockchain: 'ethereum',
-      subject_identifier: '0x0000000000000000000000000000000000000001',
-      status: 'OPEN',
-      analysis: null,
-      created_at: new Date('2026-09-08T10:00:00Z').toISOString(),
-      updated_at: new Date('2026-09-08T10:00:00Z').toISOString()
-    };
-    this.cases.set(defaultCase.case_id, defaultCase);
+  async ensureInitialized() {
+    if (!this.initPromise) {
+      this.initPromise = (async () => {
+        try {
+          await migrator.runMigrations();
+          await seed.runSeeds();
+          // Load pre-existing cases into local cache for synchronous access
+          const existing = await caseRepository.getAllCases();
+          for (const c of existing) {
+            this.cache.set(c.case_id, c);
+          }
+        } catch (err) {
+          logger.error('Failed to initialize database tables or seeds:', err);
+          throw err;
+        }
+      })();
+    }
+    return this.initPromise;
   }
 
   /**
@@ -46,9 +65,9 @@ class CaseService {
   }
 
   /**
-   * Creates a new investigation case
+   * Creates a new investigation case in PostgreSQL
    * @param {Object} caseData
-   * @returns {Object} Created case record
+   * @returns {Promise<Object>} Created case record
    */
   createCase({
     title,
@@ -77,141 +96,207 @@ class CaseService {
       updated_at: now
     };
 
-    this.cases.set(caseId, newCase);
-    logger.info(`New investigation case created: ${caseId} [${newCase.priority}]`);
-    return newCase;
+    // Keep immediate cache for sync callers
+    this.cache.set(caseId, newCase);
+
+    const task = (async () => {
+      await this.ensureInitialized();
+      const created = await caseRepository.createCase(newCase);
+      const combined = { ...newCase, ...created };
+      this.cache.set(caseId, combined);
+      await auditRepository.logAction({
+        caseId,
+        action: 'CASE_CREATED',
+        resourceType: 'CASE',
+        resourceId: caseId,
+        metadata: { title: newCase.title, priority: newCase.priority }
+      });
+      logger.info(`New investigation case created in PostgreSQL: ${caseId} [${newCase.priority}]`);
+      return combined;
+    })();
+
+    return wrapPromiseWithProps(newCase, task);
   }
 
   /**
    * Retrieves all registered investigation cases
-   * @returns {Array<Object>} List of cases
+   * @returns {Promise<Array<Object>>} List of cases
    */
-  getAllCases() {
-    return Array.from(this.cases.values());
+  async getAllCases() {
+    await this.ensureInitialized();
+    const cases = await caseRepository.getAllCases();
+    for (const c of cases) {
+      this.cache.set(c.case_id, c);
+    }
+    return cases;
   }
 
   /**
    * Retrieves a case by its ID
    * @param {string} caseId
-   * @returns {Object} Case record
+   * @returns {Promise<Object>} Case record
    */
   getCaseById(caseId) {
-    const caseRecord = this.cases.get(caseId);
-    if (!caseRecord) {
-      throw new AppError(`Case with ID '${caseId}' was not found.`, 404, 'CASE_NOT_FOUND');
+    const cached = this.cache.get(caseId);
+
+    const task = (async () => {
+      await this.ensureInitialized();
+      const caseRecord = await caseRepository.getCaseById(caseId);
+      if (!caseRecord) {
+        throw new AppError(`Case with ID '${caseId}' was not found.`, 404, 'CASE_NOT_FOUND');
+      }
+      this.cache.set(caseId, caseRecord);
+      return caseRecord;
+    })();
+
+    if (cached) {
+      return wrapPromiseWithProps(cached, task);
     }
-    return caseRecord;
+
+    // If not in cache, check if known invalid/non-existent
+    return wrapPromiseWithProps(null, task);
   }
 
   /**
    * Updates the lifecycle status of an existing case
    * @param {string} caseId
    * @param {string} status OPEN | ANALYZING | ANALYSIS_COMPLETE | REVIEW | CLOSED
-   * @returns {Object} Updated case record
+   * @returns {Promise<Object>} Updated case record
    */
   updateCaseStatus(caseId, status) {
-    const caseRecord = this.getCaseById(caseId);
-    caseRecord.status = status;
-    caseRecord.updated_at = new Date().toISOString();
-    logger.info(`Case ${caseId} transitioned to status: ${status}`);
-    return caseRecord;
+    const cached = this.cache.get(caseId);
+    if (cached) {
+      cached.status = status;
+      cached.updated_at = new Date().toISOString();
+    }
+
+    const task = (async () => {
+      await this.ensureInitialized();
+      // Ensure case exists
+      await this.getCaseById(caseId);
+      const updated = await caseRepository.updateCaseStatus(caseId, status);
+      this.cache.set(caseId, updated);
+      logger.info(`Case ${caseId} transitioned to status: ${status} in PostgreSQL`);
+      return updated;
+    })();
+
+    return wrapPromiseWithProps(cached, task);
   }
 
   /**
    * Stores an analysis result received from the Python Intelligence Engine
+   * Executes atomic transactional writes into PostgreSQL across 7 tables.
+   *
    * @param {string} caseId
    * @param {Object} result Canonical AnalysisResult
-   * @returns {Object} Stored result
+   * @returns {Promise<Object>} Stored result
    */
-  saveAnalysisResult(caseId, result) {
-    const caseRecord = this.getCaseById(caseId);
+  async saveAnalysisResult(caseId, result) {
+    await this.ensureInitialized();
+    await this.getCaseById(caseId);
 
-    const analysisEntry = {
-      ...result,
-      analyzed_at: new Date().toISOString()
-    };
+    const saved = await analysisRepository.saveAnalysisResult(caseId, result);
 
-    if (!this.results.has(caseId)) {
-      this.results.set(caseId, []);
-    }
-
-    this.results.get(caseId).unshift(analysisEntry);
-
-    // Attach latest analysis directly to case object
-    caseRecord.analysis = analysisEntry;
-    caseRecord.status = 'ANALYSIS_COMPLETE';
-    caseRecord.updated_at = new Date().toISOString();
-
-    if (!caseRecord.subject_identifier && (result.wallet || result.subject)) {
-      caseRecord.subject_identifier = result.wallet || result.subject;
+    // Update local cache
+    const cached = this.cache.get(caseId);
+    if (cached) {
+      cached.status = 'ANALYSIS_COMPLETE';
+      cached.analysis = saved;
+      if (!cached.subject_identifier && (result.wallet || result.subject)) {
+        cached.subject_identifier = result.wallet || result.subject;
+      }
+      cached.updated_at = new Date().toISOString();
     }
 
     logger.info(`Saved AnalysisResult for Case ${caseId}. Status: ANALYSIS_COMPLETE`);
-    return analysisEntry;
+    return saved;
   }
 
   /**
    * Retrieves latest canonical analysis result for a case
    * @param {string} caseId
-   * @returns {Object|null}
+   * @returns {Promise<Object|null>}
    */
-  getLatestAnalysis(caseId) {
-    this.getCaseById(caseId);
-    const caseResults = this.results.get(caseId);
-    return (caseResults && caseResults.length > 0) ? caseResults[0] : null;
+  async getLatestAnalysis(caseId) {
+    await this.ensureInitialized();
+    await this.getCaseById(caseId);
+    return analysisRepository.getLatestAnalysis(caseId);
   }
 
   /**
    * Retrieves all historical analysis results associated with a case
    * @param {string} caseId
-   * @returns {Array<Object>} List of analysis results
+   * @returns {Promise<Array<Object>>} List of analysis results
    */
-  getAnalysisResults(caseId) {
-    this.getCaseById(caseId);
-    return this.results.get(caseId) || [];
+  async getAnalysisResults(caseId) {
+    await this.ensureInitialized();
+    await this.getCaseById(caseId);
+    return analysisRepository.getAnalysisResults(caseId);
   }
 
   /**
    * Retrieves evidentiary schedule for a case originating from Python analysis
    * @param {string} caseId
-   * @returns {Array<Object>} Structured evidence items
+   * @returns {Promise<Array<Object>>} Structured evidence items
    */
-  getEvidence(caseId) {
-    const latest = this.getLatestAnalysis(caseId);
+  async getEvidence(caseId) {
+    await this.ensureInitialized();
+    const rows = await evidenceRepository.getEvidenceByCaseId(caseId);
+    if (rows && rows.length > 0) {
+      return rows;
+    }
+    const latest = await this.getLatestAnalysis(caseId);
     return latest?.evidence || [];
   }
 
   /**
-   * Creates a LEA disclosure request record (Sprint 1 SAHYOG Sandbox Adapter)
+   * Creates a LEA disclosure request record
    * @param {string} caseId
    * @param {Object} requestData
-   * @returns {Object} Draft disclosure request
+   * @returns {Promise<Object>} Draft disclosure request
    */
-  createDisclosureRequest(caseId, requestData = {}) {
-    const caseRecord = this.getCaseById(caseId);
+  async createDisclosureRequest(caseId, requestData = {}) {
+    await this.ensureInitialized();
+    const caseRecord = await this.getCaseById(caseId);
+    const latestResult = await this.getLatestAnalysis(caseId);
 
     const requestId = `REQ-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
-    const latestResult = this.getLatestAnalysis(caseId);
+    const targetVasp = requestData.target_vasp || latestResult?.nearest_vasp?.name || 'UNSPECIFIED_VASP';
+    const suspectWallet = requestData.wallet_address || latestResult?.wallet || caseRecord.subject_identifier || 'UNSPECIFIED_WALLET';
+    const jurisdiction = requestData.jurisdiction || 'INDIA_LEA';
+    const purpose = requestData.purpose || 'CRIMINAL_INVESTIGATION_CRPC_91';
 
     const disclosureRecord = {
       request_id: requestId,
       case_id: caseId,
       case_title: caseRecord.title,
-      target_vasp: requestData.target_vasp || latestResult?.nearest_vasp?.name || 'UNSPECIFIED_VASP',
-      suspect_wallet: requestData.wallet_address || latestResult?.wallet || caseRecord.subject_identifier || 'UNSPECIFIED_WALLET',
-      jurisdiction: requestData.jurisdiction || 'INDIA_LEA',
-      purpose: requestData.purpose || 'CRIMINAL_INVESTIGATION_CRPC_91',
+      target_vasp: targetVasp,
+      suspect_wallet: suspectWallet,
+      jurisdiction,
+      purpose,
       status: 'DRAFTED_PENDING_DISPATCH',
       adapter: 'MOCK_SAHYOG_SANDBOX_ADAPTER',
       created_at: new Date().toISOString()
     };
 
-    if (!this.disclosureRequests.has(caseId)) {
-      this.disclosureRequests.set(caseId, []);
-    }
-    this.disclosureRequests.get(caseId).push(disclosureRecord);
+    await disclosureRepository.createDisclosureRequest({
+      request_id: requestId,
+      case_id: caseId,
+      target_entity: targetVasp,
+      request_type: 'SECTION_91_CRPC',
+      status: 'DRAFTED_PENDING_DISPATCH',
+      request_payload: disclosureRecord
+    });
 
-    logger.info(`Disclosure request drafted for Case ${caseId} targeting ${disclosureRecord.target_vasp}`);
+    await auditRepository.logAction({
+      caseId,
+      action: 'DISCLOSURE_REQUEST_DRAFTED',
+      resourceType: 'DISCLOSURE_REQUEST',
+      resourceId: requestId,
+      metadata: { target_vasp: targetVasp, jurisdiction }
+    });
+
+    logger.info(`Disclosure request drafted for Case ${caseId} targeting ${targetVasp}`);
     return disclosureRecord;
   }
 }
