@@ -40,6 +40,25 @@ class CommonTransaction(BaseModel):
             "metadata": self.metadata,
         }
 
+    def to_financial_event(self):
+        """Convert to canonical unified FinancialEvent representation."""
+        from decimal import Decimal
+        from app.models.financial_event import FinancialEvent, FinancialRail
+        ts_str = self.timestamp.isoformat() if hasattr(self.timestamp, "isoformat") else str(self.timestamp)
+        return FinancialEvent(
+            event_id=self.transaction_hash,
+            source=self.source,
+            rail=FinancialRail.CRYPTO,
+            timestamp=ts_str,
+            amount=Decimal(str(self.amount)),
+            currency=self.asset,
+            sender_entity=self.from_address.lower(),
+            receiver_entity=self.to_address.lower(),
+            transaction_type=self.transaction_type.upper(),
+            status="SUCCESS",
+            metadata=dict(self.metadata),
+        )
+
 
 # Backward compatibility alias for existing code
 Transaction = CommonTransaction
