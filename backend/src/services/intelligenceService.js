@@ -28,16 +28,14 @@ class IntelligenceService {
         reachable: true,
         status: response.data?.status || 'ok',
         service: response.data?.service || 'tracevault-intelligence',
-        engine: response.data?.engine,
-        url: this.baseUrl
+        engine: response.data?.engine
       };
     } catch (error) {
-      logger.warn(`Python Intelligence Engine health check failed at ${this.baseUrl}: ${error.message}`);
+      logger.warn(`Python Intelligence Engine health check failed: ${error.message}`);
       return {
         reachable: false,
         status: 'unreachable',
-        error: error.message,
-        url: this.baseUrl
+        error: 'Service unreachable'
       };
     }
   }
@@ -85,9 +83,10 @@ class IntelligenceService {
    * @param {string} params.blockchain
    * @param {string} params.walletAddress
    * @param {number} [params.maxHops=3]
+   * @param {string} [params.requestId]
    * @returns {Promise<Object>} Canonical AnalysisResult from Python
    */
-  async analyzeWallet({ caseId, blockchain, walletAddress, maxHops = 3 }) {
+  async analyzeWallet({ caseId, blockchain, walletAddress, maxHops = 3, requestId = null }) {
     const payload = {
       case_id: caseId,
       blockchain: blockchain.toLowerCase(),
@@ -95,10 +94,15 @@ class IntelligenceService {
       max_hops: maxHops
     };
 
+    const headers = {};
+    if (requestId) {
+      headers['X-Request-ID'] = requestId;
+    }
+
     logger.info(`Dispatching analysis to Python Intelligence Engine: Case ${caseId}, Chain: ${blockchain}, Wallet: ${walletAddress}, Hops: ${maxHops}`);
 
     try {
-      const response = await this.client.post('/api/v1/analyze-wallet', payload);
+      const response = await this.client.post('/api/v1/analyze-wallet', payload, { headers });
       const result = response.data;
 
       // Validate canonical response schema

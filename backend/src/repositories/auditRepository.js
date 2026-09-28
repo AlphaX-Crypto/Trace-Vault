@@ -1,8 +1,33 @@
 const db = require('../db/connection');
 
+const SENSITIVE_KEY_REGEX = /password|secret|token|private[_-]?key|seed[_-]?phrase|mnemonic|auth_header/i;
+const HEX_KEY_REGEX = /^(0x)?[0-9a-fA-F]{64}$/;
+
+/**
+ * Recursively redacts sensitive keys and values from audit metadata
+ */
+function sanitizeMetadata(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(sanitizeMetadata);
+
+  const clean = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (SENSITIVE_KEY_REGEX.test(key)) {
+      clean[key] = '[REDACTED]';
+    } else if (typeof value === 'string' && HEX_KEY_REGEX.test(value.trim())) {
+      clean[key] = '[REDACTED_SENSITIVE_VALUE]';
+    } else if (typeof value === 'object' && value !== null) {
+      clean[key] = sanitizeMetadata(value);
+    } else {
+      clean[key] = value;
+    }
+  }
+  return clean;
+}
+
 class AuditRepository {
   /**
-   * Logs an audit trail event
+   * Logs an append-only audit trail event
    */
   async logAction({
     userId = null,
@@ -13,7 +38,7 @@ class AuditRepository {
     metadata = {}
   }) {
     let targetCaseId = caseId;
-    let safeMetadata = { ...metadata };
+    let safeMetadata = sanitizeMetadata({ ...metadata });
 
     if (caseId) {
       try {
@@ -26,6 +51,7 @@ class AuditRepository {
         targetCaseId = null;
       }
     }
+
 
     const sql = `
       INSERT INTO audit_logs (

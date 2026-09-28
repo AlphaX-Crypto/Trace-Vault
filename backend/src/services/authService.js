@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config/env');
@@ -10,7 +11,58 @@ const BCRYPT_ROUNDS = 10;
 const JWT_ISSUER = 'tracevault-engine';
 const JWT_AUDIENCE = 'tracevault-client';
 
+// In-memory token revocation registry: identifier (jti or token) -> expiryTimestampMs
+const revokedTokens = new Map();
+
+/**
+ * Prunes expired tokens from the revocation blocklist
+ */
+function pruneRevokedTokens() {
+  const now = Date.now();
+  for (const [id, expTime] of revokedTokens.entries()) {
+    if (expTime <= now) {
+      revokedTokens.delete(id);
+    }
+  }
+}
+
 class AuthService {
+  /**
+   * Registers a token as revoked upon logout
+   * @param {string} token
+   */
+  revokeToken(token) {
+    if (!token || typeof token !== 'string') return;
+    try {
+      const decoded = jwt.decode(token);
+      const expTime = decoded?.exp ? decoded.exp * 1000 : Date.now() + (2 * 60 * 60 * 1000);
+      if (decoded?.jti) {
+        revokedTokens.set(decoded.jti, expTime);
+      }
+      revokedTokens.set(token, expTime);
+      pruneRevokedTokens();
+    } catch (_) {
+      revokedTokens.set(token, Date.now() + (2 * 60 * 60 * 1000));
+    }
+  }
+
+  /**
+   * Checks whether a token or jti has been revoked
+   * @param {string} id Token string or jti
+   * @returns {boolean}
+   */
+  isTokenRevoked(id) {
+    if (!id) return false;
+    return revokedTokens.has(id);
+  }
+
+  /**
+   * Clears the revocation list (test helper)
+   */
+  clearRevokedTokens() {
+    revokedTokens.clear();
+  }
+
   /**
    * Hashes a plaintext password with bcrypt
    * @param {string} plaintext
@@ -35,12 +87,13 @@ class AuthService {
   }
 
   /**
-   * Generates a signed, verifiable JSON Web Token
+   * Generates a signed, verifiable JSON Web Token with unique jti claim
    * @param {Object} user
    * @returns {string} Signed JWT
    */
   generateToken(user) {
     const payload = {
+      jti: crypto.randomUUID(),
       userId: user.id,
       username: user.username,
       email: user.email,
@@ -55,13 +108,18 @@ class AuthService {
   }
 
   /**
-   * Verifies and decodes a signed JWT
+   * Verifies and decodes a signed JWT, validating signature, expiry, and revocation status
    * @param {string} token
    * @returns {Object} Decoded payload
    */
   verifyToken(token) {
+    if (this.isTokenRevoked(token)) {
+      throw new AppError('Token has been revoked. Please log in again.', 401, 'TOKEN_REVOKED');
+    }
+
+    let decoded;
     try {
-      return jwt.verify(token, config.jwtSecret, {
+      decoded = jwt.verify(token, config.jwtSecret, {
         issuer: JWT_ISSUER,
         audience: JWT_AUDIENCE
       });
@@ -71,6 +129,12 @@ class AuthService {
       }
       throw new AppError('Invalid authentication token.', 401, 'INVALID_TOKEN');
     }
+
+    if (decoded.jti && this.isTokenRevoked(decoded.jti)) {
+      throw new AppError('Token has been revoked. Please log in again.', 401, 'TOKEN_REVOKED');
+    }
+
+    return decoded;
   }
 
   /**
@@ -89,7 +153,7 @@ class AuthService {
 
     if (!user) {
       await auditRepository.logAction({
-        action: 'LOGIN_FAILURE',
+        action: 'LOGIN_FAILED',
         resourceType: 'AUTH',
         resourceId: identifier,
         metadata: { reason: 'USER_NOT_FOUND', ip: meta.ip }
@@ -102,7 +166,7 @@ class AuthService {
     if (!isMatch) {
       await auditRepository.logAction({
         userId: user.id,
-        action: 'LOGIN_FAILURE',
+        action: 'LOGIN_FAILED',
         resourceType: 'AUTH',
         resourceId: String(user.id),
         metadata: { reason: 'BAD_PASSWORD', ip: meta.ip }

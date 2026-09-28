@@ -3,20 +3,34 @@ const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/env');
 const logger = require('./utils/logger');
+const healthRoutes = require('./routes/health');
 const authRoutes = require('./routes/auth');
 const caseRoutes = require('./routes/cases');
-const intelligenceService = require('./services/intelligenceService');
 const errorHandler = require('./middleware/errorHandler');
 const notFoundHandler = require('./middleware/notFoundHandler');
 const { securityScanMiddleware } = require('./middleware/validation');
 const { generalApiLimiter } = require('./middleware/rateLimiter');
+const requestCorrelationMiddleware = require('./middleware/requestCorrelation');
 
 const app = express();
 
+// Trust proxy if configured (e.g. behind Nginx or Cloudflare in production)
+if (config.trustProxy) {
+  app.set('trust proxy', 1);
+}
+
 // Security Headers via Helmet
 app.use(helmet({
-  contentSecurityPolicy: false, // Avoid blocking Vite React dev bundles
-  crossOriginEmbedderPolicy: false
+  contentSecurityPolicy: false, // Vite React dev friendly; production CSP documented for reverse proxy
+  crossOriginEmbedderPolicy: false,
+  hsts: config.nodeEnv === 'production' ? {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  } : false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  xContentTypeOptions: true,
+  xFrameOptions: { action: 'sameorigin' }
 }));
 
 // Enable CORS for frontend integration
@@ -24,39 +38,22 @@ app.use(cors({
   origin: config.corsOrigin === '*' ? true : config.corsOrigin,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Request-ID']
 }));
 
-// Body parsing middleware
+// Body parsing middleware with bounded payload size limits
 app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// Attach correlation ID (X-Request-ID) and structured request duration logging
+app.use(requestCorrelationMiddleware);
 
 // Global security scanner for forbidden credentials/keys
 app.use(securityScanMiddleware);
 
-// Request logging
-app.use((req, res, next) => {
-  logger.debug(`${req.method} ${req.url}`);
-  next();
-});
+// Health check endpoints (Public) - Liveness, Readiness, Database, Intelligence
+app.use('/health', healthRoutes);
 
-// Health check endpoints (Public)
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    service: 'tracevault-backend'
-  });
-});
-
-app.get('/health/intelligence', async (req, res) => {
-  const intelligenceStatus = await intelligenceService.checkHealth();
-  const statusCode = intelligenceStatus.reachable ? 200 : 503;
-  res.status(statusCode).json({
-    status: intelligenceStatus.reachable ? 'ok' : 'degraded',
-    service: 'tracevault-backend',
-    intelligence_service: intelligenceStatus
-  });
-});
 
 // General API Rate Limiting for all /api endpoints
 app.use('/api', generalApiLimiter);

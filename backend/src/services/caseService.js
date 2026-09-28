@@ -334,10 +334,10 @@ class CaseService {
     await auditRepository.logAction({
       userId: user ? user.id : null,
       caseId,
-      action: 'DISCLOSURE_REQUEST_DRAFTED',
+      action: 'DISCLOSURE_REQUESTED',
       resourceType: 'DISCLOSURE_REQUEST',
       resourceId: requestId,
-      metadata: { target_vasp: targetVasp, jurisdiction, drafted_by: user?.username }
+      metadata: { target_vasp: targetVasp, jurisdiction, drafted_by: user?.username, status: 'DRAFT' }
     });
 
     logger.info(`Disclosure request drafted for Case ${caseId} targeting ${targetVasp} by ${user?.username || 'system'}`);

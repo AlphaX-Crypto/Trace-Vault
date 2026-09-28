@@ -16,6 +16,12 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      authService.revokeToken(token);
+    }
+
     if (req.user) {
       await auditRepository.logAction({
         userId: req.user.id,

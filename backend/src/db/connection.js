@@ -118,6 +118,31 @@ function resetMemoryDb() {
   }
 }
 
+/**
+ * Checks database connectivity and returns safe status metrics without leaking credentials
+ * @returns {Promise<Object>} Safe health check summary
+ */
+async function checkHealth() {
+  try {
+    const start = Date.now();
+    await query('SELECT 1;');
+    const latencyMs = Date.now() - start;
+    return {
+      healthy: true,
+      status: 'connected',
+      engine: isMem ? 'in-memory (pg-mem)' : 'postgresql',
+      latency_ms: latencyMs
+    };
+  } catch (err) {
+    logger.warn(`Database health check failed: ${err.message}`);
+    return {
+      healthy: false,
+      status: 'disconnected',
+      error: 'Database connectivity check failed'
+    };
+  }
+}
+
 module.exports = {
   getPool,
   query,
@@ -125,5 +150,7 @@ module.exports = {
   transaction,
   close,
   resetMemoryDb,
+  checkHealth,
   isMemoryDb: () => isMem
 };
+
