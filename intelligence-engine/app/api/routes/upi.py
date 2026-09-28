@@ -13,11 +13,18 @@ from app.upi.intelligence import (
     UPIFraudIntelligenceEngine,
     UPIRuleConfig,
 )
+from app.geospatial import (
+    GeoRuleConfig,
+    GeospatialIntelligenceEngine,
+    LocationNormalizer,
+    get_geo_scenario,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/upi", tags=["UPI Data Foundation & Fraud Intelligence"])
 adapter = get_upi_adapter("mock")
 engine = UPIFraudIntelligenceEngine()
+geo_engine = GeospatialIntelligenceEngine()
 
 
 class UPIAnalyzeRequest(BaseModel):
@@ -91,6 +98,70 @@ def analyze_upi_transactions(request: UPIAnalyzeRequest):
     except Exception as e:
         logger.error(f"UPI analysis error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Internal UPI analysis error: {str(e)}")
+
+
+class GeospatialAnalyzeRequest(BaseModel):
+    subject: Optional[str] = Field(default=None, description="Investigated subject identifier or VPA")
+    scenario: Optional[str] = Field(default=None, description="Optional synthetic scenario ID (e.g. GEO-DEMO-001)")
+    locations: Optional[List[Dict[str, Any]]] = Field(default=None, description="Transaction-associated location signals")
+    baseline_locations: Optional[List[Dict[str, Any]]] = Field(default=None, description="Baseline historical location signals")
+    config: Optional[Dict[str, Any]] = Field(default=None, description="Optional geo rule configuration overrides")
+
+
+@router.post("/geospatial/analyze", response_model=Dict[str, Any])
+def analyze_geospatial_signals(request: GeospatialAnalyzeRequest):
+    """
+    Executes explainable geospatial anomaly and location consistency analysis.
+    Supports on-demand location signals or preconfigured synthetic demonstration scenarios.
+    Strictly deterministic and safe: no live GPS, no IP geolocation, no tracking of individuals.
+    """
+    try:
+        subject = request.subject or ""
+        raw_locs: List[Dict[str, Any]] = []
+        raw_baseline: List[Dict[str, Any]] = []
+
+        if request.scenario:
+            scenario_data = get_geo_scenario(request.scenario)
+            if not subject:
+                subject = scenario_data.get("subject", "")
+            if not request.locations:
+                raw_locs = scenario_data.get("locations", [])
+            if not request.baseline_locations:
+                raw_baseline = scenario_data.get("baseline_locations", [])
+
+        if request.locations:
+            raw_locs = request.locations
+        if request.baseline_locations:
+            raw_baseline = request.baseline_locations
+
+        if not raw_locs:
+            raise HTTPException(
+                status_code=400,
+                detail="No location signals provided or resolved for analysis.",
+            )
+
+        if not subject:
+            subject = "anonymous_subject"
+
+        rule_config = GeoRuleConfig(**request.config) if request.config else None
+
+        result = geo_engine.analyze(
+            subject=subject,
+            locations=raw_locs,
+            baseline_locations=raw_baseline,
+            config=rule_config,
+        )
+
+        return result.to_dict()
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Geospatial analysis error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal geospatial analysis error: {str(e)}")
+
 
 
 @router.get("/transactions/{transaction_id}", response_model=Dict[str, Any])
