@@ -350,6 +350,7 @@ class AnalysisResult(BaseModel):
     trace_paths: List[TracePath] = Field(default_factory=list, description="Extracted paths of interest")
     path: List[Any] = Field(default_factory=list, description="Backward compatibility primary path sequence")
     risk: RiskResult = Field(..., description="Risk scoring results and indicators")
+    behavioral: Optional[Dict[str, Any]] = Field(default=None, description="Behavioral graph intelligence analysis")
     confidence: Dict[str, Any] = Field(default_factory=dict, description="Attribution confidence metrics")
     evidence: List[Union[EvidenceItem, str]] = Field(default_factory=list, description="Evidentiary schedule")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Audit and execution metadata")
@@ -384,6 +385,7 @@ class AnalysisResult(BaseModel):
             "trace_paths": [tp.to_dict() for tp in self.trace_paths],
             "path": self.path,
             "risk": self.risk.to_dict(),
+            "behavioral": self.behavioral,
             "confidence": self.confidence,
             "evidence": [e.to_dict() if hasattr(e, "to_dict") else str(e) for e in self.evidence],
             "metadata": self.metadata,

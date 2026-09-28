@@ -1,22 +1,30 @@
 from typing import Any, Callable, Dict, List, Optional
 from app.models.analysis import RiskResult, RiskSignal
 from app.risk.rules import evaluate_mixer_interaction, evaluate_hop_count, evaluate_rapid_movement
+from app.behavioral.models import BehavioralFinding, BehavioralPatternType
 
 
 class RiskScorer:
     """
-    Multi-Factor Rule-Based Risk Engine for TRACEVAULT.
+    Multi-Factor Rule-Based & Behavioral Graph Risk Engine for TRACEVAULT.
     Evaluates:
     - Mixer interaction (+30)
     - Multiple intermediary hops (+10)
     - Rapid movement / high volume (+10)
     - Baseline investigative risk (+10)
+    - Behavioral Graph Intelligence (Circular flows, Peel chains, Fan-in/out, Consolidation, etc.)
     """
 
     def __init__(self, get_entity_info: Callable[[str], Optional[Dict[str, Any]]]):
         self.get_entity_info = get_entity_info
 
-    def calculate_risk(self, path: List[Any], distance: int, transactions: List[Any]) -> RiskResult:
+    def calculate_risk(
+        self,
+        path: List[Any],
+        distance: int,
+        transactions: List[Any],
+        behavioral_findings: Optional[List[BehavioralFinding]] = None,
+    ) -> RiskResult:
         score = 0.0
         indicators: List[str] = []
         signals: List[RiskSignal] = []
@@ -80,6 +88,35 @@ class RiskScorer:
                 )
             )
 
+        # Behavioral Graph Intelligence Signals
+        if behavioral_findings:
+            sig_idx = 5
+            for finding in behavioral_findings:
+                # Avoid duplicate mixer exposure if already flagged by RS-01
+                if finding.pattern_type == BehavioralPatternType.MIXER_INTERACTION and mixer_risk > 0:
+                    continue
+
+                pts = finding.risk_contribution
+                # High-impact topological anomalies contribute to overall aggregate risk
+                if finding.pattern_type == BehavioralPatternType.CIRCULAR_FLOW:
+                    score += 25.0
+                elif finding.pattern_type in (BehavioralPatternType.FAN_IN, BehavioralPatternType.FAN_OUT) and finding.severity == "HIGH":
+                    score += 10.0
+
+                indicators.append(f"{finding.title} (+{int(pts)})")
+                signals.append(
+                    RiskSignal(
+                        id=f"RS-{sig_idx:02d}",
+                        signal_type=finding.pattern_type,
+                        score=pts,
+                        severity=finding.severity,
+                        description=finding.title,
+                        reason=finding.reason,
+                        metadata=finding.metrics,
+                    )
+                )
+                sig_idx += 1
+
         score = min(100.0, score)
 
         if score <= 30.0:
@@ -96,10 +133,17 @@ class RiskScorer:
             f"Key risk drivers: {', '.join(indicators) if indicators else 'No critical risk flags'}."
         )
 
+        risk_meta = {}
+        if behavioral_findings:
+            risk_meta["behavioral_patterns"] = [f.pattern_type for f in behavioral_findings]
+            risk_meta["behavioral_findings_count"] = len(behavioral_findings)
+
         return RiskResult(
             score=score,
             level=level,
             signals=signals,
             indicators=indicators,
             explanation=explanation,
+            metadata=risk_meta,
         )
+

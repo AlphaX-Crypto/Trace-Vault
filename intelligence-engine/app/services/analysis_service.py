@@ -23,6 +23,8 @@ from app.graph.path_finder import PathFinder
 from app.attribution.confidence import calculate_confidence, evaluate_confidence
 from app.attribution.registry import VaspRegistry
 from app.attribution.vasp_identifier import VaspIdentifier
+from app.behavioral.engine import BehavioralIntelligenceEngine
+from app.behavioral.models import BehavioralFinding, BehavioralAnalysisResult
 from app.risk.scorer import RiskScorer
 
 logger = logging.getLogger(__name__)
@@ -34,7 +36,8 @@ class AnalysisService:
     """
     Authoritative Intelligence Analysis Service for TRACEVAULT V2.
     Integrates the real NetworkX graph engine, deterministic BFS discovery,
-    heuristic path finding, explainable VASP attribution, and multi-factor risk scoring.
+    heuristic path finding, explainable VASP attribution, behavioral intelligence,
+    and multi-factor risk scoring.
     Supports both offline/mock ledgers and live Ethereum indexers.
     """
 
@@ -53,6 +56,7 @@ class AnalysisService:
         )
         self.normalizer = TransactionNormalizer()
         self.vasp_identifier = VaspIdentifier(registry=self.registry)
+        self.behavioral_engine = BehavioralIntelligenceEngine()
         self.risk_scorer = RiskScorer(self._get_entity_info)
 
     def _get_entity_info(self, address: str) -> Optional[Dict[str, Any]]:
@@ -168,21 +172,35 @@ class AnalysisService:
             )
             trace_paths = [fallback_path]
 
-        # 5. Calculate multi-factor risk
-        risk_result = self.risk_scorer.calculate_risk(path_addresses, distance, raw_txs)
+        # 5. Execute Behavioral Graph Intelligence
+        behavioral_result = self.behavioral_engine.analyze(
+            graph=graph,
+            transactions=normalized_txs,
+            subject=start_address,
+            get_entity_info=self._get_entity_info,
+        )
 
-        # 6. Generate structured evidence items
+        # 6. Calculate multi-factor risk
+        risk_result = self.risk_scorer.calculate_risk(
+            path=path_addresses,
+            distance=distance,
+            transactions=raw_txs,
+            behavioral_findings=behavioral_result.findings,
+        )
+
+        # 7. Generate structured evidence items
         evidence_items = self._compile_evidence(
             trace_paths=trace_paths,
             attributions=attributions,
             risk_result=risk_result,
             subject=start_address,
+            behavioral_findings=behavioral_result.findings,
         )
 
-        # 7. Format visual graph representation
+        # 8. Format visual graph representation
         graph_data = self._format_graph_data(builder)
 
-        # 8. Assemble confidence metadata
+        # 9. Assemble confidence metadata
         confidence_meta: Dict[str, Any] = {
             "base_score": 90.0,
             "hop_penalty": float(distance * 10.0),
@@ -206,6 +224,7 @@ class AnalysisService:
             trace_paths=trace_paths,
             path=path_addresses,
             risk=risk_result,
+            behavioral=behavioral_result.to_dict(),
             confidence=confidence_meta,
             evidence=evidence_items,
             metadata={
@@ -214,6 +233,9 @@ class AnalysisService:
                 "candidate_count": len(attributions),
                 "node_count": builder.node_count(),
                 "edge_count": builder.edge_count(),
+                "behavioral_patterns": behavioral_result.patterns_detected,
+                "behavioral_findings_count": len(behavioral_result.findings),
+                "behavioral_summary": behavioral_result.summary,
             },
         )
 
@@ -257,6 +279,7 @@ class AnalysisService:
         attributions: List[VaspAttribution],
         risk_result: Any,
         subject: str,
+        behavioral_findings: Optional[List[BehavioralFinding]] = None,
     ) -> List[EvidenceItem]:
         """Synthesize verified, traceable EvidenceItem objects for court dossiers."""
         evidence_items: List[EvidenceItem] = []
@@ -335,6 +358,30 @@ class AnalysisService:
                 )
             )
             idx += 1
+
+        # 4. Evidentiary records for behavioral graph patterns
+        if behavioral_findings:
+            for bf in behavioral_findings:
+                evidence_items.append(
+                    EvidenceItem(
+                        id=f"EV-{idx:03d}",
+                        type="BEHAVIORAL",
+                        description=f"Behavioral pattern: {bf.title}. {bf.description}",
+                        source="Graph Behavioral Intelligence Engine",
+                        timestamp="2026-09-28T10:50:00Z",
+                        status="Detected",
+                        relevance=bf.severity,
+                        entity=bf.subject or subject,
+                        metadata={
+                            "pattern_type": bf.pattern_type,
+                            "confidence": bf.confidence,
+                            "risk_contribution": bf.risk_contribution,
+                            "metrics": bf.metrics,
+                            "involved_addresses": bf.involved_addresses,
+                        },
+                    )
+                )
+                idx += 1
 
         return evidence_items
 
