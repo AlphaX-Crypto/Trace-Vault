@@ -1,384 +1,295 @@
 import React, { useState } from 'react';
-import {
+import { 
+  FileText, 
+  ShieldCheck, 
+  Check, 
+  Copy, 
+  Download, 
+  CheckCircle2, 
   Lock,
-  Fingerprint,
-  Link as LinkIcon,
-  Gavel,
   Search,
-  Plus,
-  FileDown,
-  ShieldCheck,
-  CheckCircle2,
-  Copy,
-  ExternalLink,
-  GitBranch
+  Filter
 } from 'lucide-react';
-import './evidenceLocker.css';
-
-const EXHIBITS = [
-  {
-    id: 'EX-01',
-    title: 'Ledger Hop-Level Transaction Trail 84.70 ETH',
-    meta: 'Ethereum Mainnet Blocks 19842100-19842188 · Corridor: BTC/ETH Bridge · Contract: Wasabi Mixer',
-    format: '.JSON-LD',
-    size: '4.2 MB',
-    hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-    category: 'Blockchain Trails',
-    leafIndex: '#04 of 14',
-    hardwareSeal: 'YubiHSM2 #0x48FA99',
-    timestamp: '2026-02-14 08:39:04 UTC'
-  },
-  {
-    id: 'EX-02',
-    title: 'Frankfurt Node PCAP Telemetry Dump (185.220.101.5)',
-    meta: 'Capture Window: 48h Full Wire Packets · Layer-4 TCP Payloads & Wasabi CoinJoin Traffic',
-    format: '.PCAPNG',
-    size: '142.8 MB',
-    hash: 'a89f33b1e7c913506bf87b99c099307ef117d91cb3229b46e382ff207b5a8e22',
-    category: 'PCAP Dumps',
-    leafIndex: '#05 of 14',
-    hardwareSeal: 'YubiHSM2 #0x48FA99',
-    timestamp: '2026-02-14 09:12:18 UTC'
-  },
-  {
-    id: 'EX-03',
-    title: 'KYC Dossier - Bharti Airtel Broadband CDR/IPDR',
-    meta: 'Subscriber Leased Line CAF · S.91 CrPC Production Ref: CR-AIR-2026/884',
-    format: '.PDF (Signed)',
-    size: '18.4 MB',
-    hash: '5d41402abc4b2a76b9719d911017ef8429abcc8042fa790b4d1c1a92fe12999f',
-    category: 'KYC Extracts',
-    leafIndex: '#06 of 14',
-    hardwareSeal: 'YubiHSM2 #0x48FA99',
-    timestamp: '2026-02-14 14:02:44 UTC'
-  },
-  {
-    id: 'EX-04',
-    title: 'Exchanged Deposit Wallet Cold Storage Signature',
-    meta: 'Derivation Path m/44\'/60\'/0\'/0/1 ECDSA Secp256k1 Curve',
-    format: '.BIN Raw',
-    size: '1.1 MB',
-    hash: '7f83b1657ff1fc53a80289128fef8231bc7891209ccbb01824efac028129bc88',
-    category: 'Blockchain Trails',
-    leafIndex: '#07 of 14',
-    hardwareSeal: 'YubiHSM2 #0x48FA99',
-    timestamp: '2026-02-14 19:44:01 UTC'
-  },
-  {
-    id: 'EX-05',
-    title: 'Smart Contract Decompiled Bytecode & Wasabi Pool',
-    meta: 'Mixer Whirlpool Coordinator State Tree · EVM Storage Slot Audit',
-    format: '.ZIP ARCHIVE',
-    size: '36.9 MB',
-    hash: 'bc425394f30e6ccdf328901467abfe1209bca3480182cfab8240ef11823ab81f',
-    category: 'Blockchain Trails',
-    leafIndex: '#08 of 14',
-    hardwareSeal: 'YubiHSM2 #0x48FA99',
-    timestamp: '2026-02-15 01:10:33 UTC'
-  }
-];
+import '../components/investigation/workspace/workspaceTab.css';
 
 export default function Evidence() {
-  const [selectedExhibit, setSelectedExhibit] = useState(EXHIBITS[0]);
-  const [filterCategory, setFilterCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [typeFilter, setTypeFilter] = useState('ALL');
 
-  const filteredExhibits = EXHIBITS.filter((item) => {
-    const matchesCat = filterCategory === 'All' || item.category === filterCategory;
-    const matchesQuery = !searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.hash.includes(searchQuery);
-    return matchesCat && matchesQuery;
-  });
+  const MASTER_EXHIBITS = [
+    {
+      id: 'EX-01',
+      title: 'Ledger Hop-Level Transaction Trail 84.70 ETH',
+      description: 'Hop-level analytical trace capturing 3-tier layering flow across Ethereum blocks 19842100-19842145.',
+      type: 'Blockchain Ledger Extract',
+      source: 'Ethereum Archive Node RPC',
+      caseId: 'CASE-2026-001',
+      timestamp: '2026-02-14 08:39:04 UTC',
+      verification: 'SHA-256 Verified',
+      hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+      relatedTx: '0x9a8f3b...1a012',
+      relatedNode: '0x71c8...1350 (Suspect)',
+      auditRef: 'AUD-LOG-2026-8812'
+    },
+    {
+      id: 'EX-02',
+      title: 'Frankfurt Proxy Node Network Telemetry Dump (185.220.101.5)',
+      description: 'Captured layer-4 network session telemetry recording relay routing and timing attributes.',
+      type: 'Network Telemetry Capture',
+      source: 'Border Gateway NetFlow Telemetry',
+      caseId: 'CASE-2026-001',
+      timestamp: '2026-02-14 09:12:18 UTC',
+      verification: 'SHA-256 Verified',
+      hash: 'a89f33b1e7c913506bf87b99c099307ef117d91cb3229b46e382ff207b5a8e22',
+      relatedTx: '0x7b2c91...1b345',
+      relatedNode: '185.220.101.5 (Tor Exit)',
+      auditRef: 'AUD-LOG-2026-8819'
+    },
+    {
+      id: 'EX-03',
+      title: 'Bharti Airtel Broadband IPDR Record & Cellular Sector Log',
+      description: 'Subscriber IPDR production corroborating concurrent session endpoint in Bengaluru.',
+      type: 'Telecom Regulatory Record',
+      source: 'Telecom Provider Requisition',
+      caseId: 'CASE-2026-001',
+      timestamp: '2026-02-14 14:02:44 UTC',
+      verification: 'SHA-256 Verified',
+      hash: '5d41402abc4b2a76b9719d911017ef8429abcc8042fa790b4d1c1a92fe12999f',
+      relatedTx: 'UPI-REF-20260214-998412',
+      relatedNode: '122.166.42.18 (Bengaluru)',
+      auditRef: 'AUD-LOG-2026-8834'
+    },
+    {
+      id: 'EX-04',
+      title: 'VASP Hot Wallet Deposit Clustering Signature',
+      description: 'Algorithmic attribution dossier linking deposit address 0x88fa...10b2 to Binance Custody Hub.',
+      type: 'VASP Attribution Schedule',
+      source: 'TRACEVAULT VASP Cluster Registry',
+      caseId: 'CASE-2026-001',
+      timestamp: '2026-02-14 19:44:01 UTC',
+      verification: 'SHA-256 Verified',
+      hash: '7f83b1657ff1fc53a80289128fef8231bc7891209ccbb01824efac028129bc88',
+      relatedTx: '0x4d5e6f...4b5c',
+      relatedNode: '0x88fa...10b2 (Deposit)',
+      auditRef: 'AUD-LOG-2026-8848'
+    },
+    {
+      id: 'EX-05',
+      title: 'UPI P2P Cash-Out Settlement Ledger Extract',
+      description: 'Correlated off-ramp settlement trail showing fiat transfer across Axis Bank and ICICI corridors.',
+      type: 'Banking Switch Extract',
+      source: 'NPCI Master Ledger Production',
+      caseId: 'CASE-2026-004',
+      timestamp: '2026-02-15 10:14:22 UTC',
+      verification: 'SHA-256 Verified',
+      hash: '2c5b8819024fba9902184ac991048bc8819047b1928475610293847561029384',
+      relatedTx: 'UPI-REF-20260214-998488',
+      relatedNode: 'fastmule@okaxis',
+      auditRef: 'AUD-LOG-2026-8890'
+    }
+  ];
+
+  const [selectedExhibit, setSelectedExhibit] = useState(MASTER_EXHIBITS[0]);
+  const [copiedHash, setCopiedHash] = useState(false);
 
   function handleCopy(text) {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedHash(true);
+    setTimeout(() => setCopiedHash(false), 2000);
   }
 
+  const filteredExhibits = MASTER_EXHIBITS.filter((ex) => {
+    const q = searchTerm.toLowerCase();
+    const matchesSearch = !q || ex.id.toLowerCase().includes(q) || ex.title.toLowerCase().includes(q) || ex.caseId.toLowerCase().includes(q);
+    const matchesType = typeFilter === 'ALL' || ex.type === typeFilter;
+    return matchesSearch && matchesType;
+  });
+
   return (
-    <div className="evidence-locker-page">
-      {/* Top Banner matching screenshot */}
-      <div className="evidence-header-banner">
-        <div>
-          <div className="evidence-header-badges">
-            <span className="statutory-badge vault">
-              <Lock size={11} /> SECTION 65B IMMUTABLE VAULT
-            </span>
-            <span className="statutory-badge admissible">
-              <ShieldCheck size={11} /> COURTROOM ADMISSIBLE
-            </span>
+    <div className="tv-dashboard-container anim-workspace">
+      {/* HEADER: Evidence Summary */}
+      <div className="tv-card" style={{ marginBottom: '16px' }}>
+        <div className="tv-card-header">
+          <div>
+            <span className="tv-card-title">Evidence Locker</span>
+            <p className="tv-section-subtitle">
+              Structured Investigative Evidence Register and Custodial Chain of Custody
+            </p>
           </div>
-          <div className="evidence-docket-line">
-            DOCKET: <strong>TV-2026-041 // CR-RANSOM-09B</strong>
-          </div>
-          <h1 className="evidence-header-title">
-            Chain of Custody & Statutory Evidence Locker
-          </h1>
-          <p className="evidence-header-subtitle">
-            FIPS 180-4 cryptographic container adhering to BSA 2023 / Indian Evidence Act statutory provisions. Handoffs write directly to write-once hardware enclaves with RFC 3161 tamper-resistant time-stamping.
-          </p>
-        </div>
-
-        <div className="evidence-header-actions">
-          <button className="btn-deposit-exhibit" title="Deposit new artifact">
-            <Plus size={13} />
-            <span>Deposit Exhibit</span>
-          </button>
-          <button className="btn-court-bundle" title="Export complete court bundle">
-            <FileDown size={13} />
-            <span>Export Court Bundle (ZIP/PDF)</span>
-          </button>
-          <button className="btn-verify-merkle" title="Verify Merkle Root against ledger state">
-            <CheckCircle2 size={13} />
-            <span>Verify Merkle Root</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 4 Stat Metric Cards matching screenshot */}
-      <div className="evidence-metrics-grid">
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>TOTAL SEALED EXHIBITS</span>
-            <Lock size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">14 Exhibits</span>
-            <div className="metric-sub green">100% Hash Matched & Certified</div>
-          </div>
-          <div className="metric-bar-indicator cyan" />
-        </div>
-
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>CRYPTOGRAPHIC INTEGRITY</span>
-            <Fingerprint size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">FIPS 180-4 SHA-256</span>
-            <div className="metric-sub">Root: 0x7a8f...9b2c (Valid)</div>
-          </div>
-          <div className="metric-bar-indicator green" />
-        </div>
-
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>CUSTODY CONTINUITY</span>
-            <LinkIcon size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">Unbroken (7 Handoffs)</span>
-            <div className="metric-sub green">● Zero Tampering Detected</div>
-          </div>
-          <div className="metric-bar-indicator green" />
-        </div>
-
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>JUDICIAL SUBPOENA STATUS</span>
-            <Gavel size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">4 Orders Executed</span>
-            <div className="metric-sub">CrPC S.91 / 1 MLAT Pending</div>
-          </div>
-          <div className="metric-bar-indicator cyan" />
-        </div>
-      </div>
-
-      {/* Filter Row matching screenshot */}
-      <div className="evidence-filter-bar">
-        <div className="filter-left-group">
-          <div className="filter-search-box">
-            <Search size={12} />
-            <input
-              type="text"
-              placeholder="Filter Exhibit ID, SHA Hash..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="filter-pills-group">
-            {['All', 'Blockchain Trails', 'PCAP Dumps', 'KYC Extracts', 'Device Images'].map((cat) => (
-              <button
-                key={cat}
-                className={`filter-pill-btn ${filterCategory === cat ? 'active' : ''}`}
-                onClick={() => setFilterCategory(cat)}
-              >
-                {cat === 'All' ? 'All (14)' : cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="filter-status-text">
-          <span>1 selected · Cryptographic Verification Engine: <strong>ACTIVE (Online HSM)</strong> | Density: Forensic Compact</span>
-        </div>
-      </div>
-
-      {/* Split Workspace: Master Register Table + Inspection Focus Drawer */}
-      <div className="evidence-split-workspace">
-        {/* Left Master Register Table */}
-        <div className="evidence-table-container">
-          <table className="evidence-table">
-            <thead>
-              <tr>
-                <th style={{ width: '32px' }}><input type="checkbox" defaultChecked /></th>
-                <th style={{ width: '70px' }}>EXHIBIT #</th>
-                <th>ARTIFACT / EVIDENCE NAME</th>
-                <th style={{ width: '90px' }}>FORMAT / SIZE</th>
-                <th style={{ width: '190px' }}>SHA-256 CRYPTOGRAPHIC CHECKSUM</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredExhibits.map((item) => {
-                const isSelected = selectedExhibit.id === item.id;
-                return (
-                  <tr
-                    key={item.id}
-                    className={isSelected ? 'selected' : ''}
-                    onClick={() => setSelectedExhibit(item)}
-                  >
-                    <td><input type="checkbox" checked={isSelected} readOnly /></td>
-                    <td>
-                      <span className="exhibit-id-badge">{item.id}</span>
-                    </td>
-                    <td>
-                      <div className="exhibit-name">{item.title}</div>
-                      <div className="exhibit-meta">{item.meta}</div>
-                    </td>
-                    <td>
-                      <span className="format-pill">{item.format}</span>
-                      <span className="size-text">{item.size}</span>
-                    </td>
-                    <td>
-                      <div className="hash-cell">
-                        <span>{item.hash.slice(0, 14)}...{item.hash.slice(-4)}</span>
-                        <Copy
-                          size={11}
-                          style={{ cursor: 'pointer', color: '#64748b' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopy(item.hash);
-                          }}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          <div className="table-footer-status">
-            <span>Showing {filteredExhibits.length} of 14 sealed exhibits · Hardware WORM Lock Enforced</span>
-            <div className="table-pagination-btns">
-              <button className="table-page-btn">PREV</button>
-              <button className="table-page-btn active">1</button>
-              <button className="table-page-btn">2</button>
-              <button className="table-page-btn">3</button>
-              <button className="table-page-btn">NEXT</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Inspection Focus Panel matching screenshot */}
-        <div className="inspection-focus-panel">
-          <div className="focus-top-header">
-            <div>
-              <span className="focus-eyebrow">INSPECTION FOCUS</span>
-              <h3 className="focus-title">{selectedExhibit.id}: Hop 1.0 - 3.0 Corroborated Transaction Stream</h3>
-              <p className="focus-subtitle">
-                Format: {selectedExhibit.format} · Payload Size: {selectedExhibit.size} · Ingested via RPC Corroborator
-              </p>
-            </div>
-            <span className="focus-badge">SEAL VALID</span>
-          </div>
-
-          {/* Cryptographic Fingerprint Box */}
-          <div className="fingerprint-box">
-            <div className="fingerprint-header">
-              <span>FIPS CRYPTOGRAPHIC FINGERPRINT</span>
-              <span className="time-locked-badge">RFC 3161 TIME-LOCKED</span>
-            </div>
-            <div className="sha-digest-full">
-              SHA-256 Digest: {selectedExhibit.hash}
-            </div>
-            <div className="fingerprint-sub-row">
-              <span>Merkle Leaf Index: <strong>{selectedExhibit.leafIndex}</strong></span>
-              <span>Hardware Seal: <strong>{selectedExhibit.hardwareSeal}</strong></span>
-            </div>
-            <div className="fingerprint-sub-row">
-              <span>Hardware RFC 3161 Timestamp: <strong>{selectedExhibit.timestamp}</strong></span>
-            </div>
-          </div>
-
-          {/* Custody Chain Timeline */}
-          <div className="custody-timeline-box">
-            <div className="custody-header">
-              <span>CUSTODY CHAIN TIMELINE</span>
-              <span className="sealed-tag">5 STEPS SEALED</span>
-            </div>
-
-            <div className="custody-step">
-              <div className="custody-step-title">
-                <span>1. Acquisition & Memory Freeze</span>
-                <span>08:21:12 UTC</span>
-              </div>
-              <div className="custody-step-desc">
-                Automated RPC node snapshot captured by TRACEVAULT Core Engine v4.8. High-entropy mempool transactions frozen without host disruption.
-              </div>
-              <div className="custody-step-agent">
-                AGENT: DAEMON_BLR_CORRIDOR_01
-              </div>
-            </div>
-
-            <div className="custody-step">
-              <div className="custody-step-title">
-                <span>2. Cryptographic Hashing & HSM Sign</span>
-                <span>08:23:44 UTC</span>
-              </div>
-              <div className="custody-step-desc">
-                Dual hash calculated (SHA-256 + BLAKE3). Ingested into cryptographic HSM with Examiner Certificate token #8327A.
-              </div>
-              <div className="custody-step-agent">
-                SIG: 0x93fe...ca01 (VALID)
-              </div>
-            </div>
-
-            <div className="custody-step">
-              <div className="custody-step-title">
-                <span>3. Transfer to Evidence Locker</span>
-                <span>08:39:04 UTC</span>
-              </div>
-              <div className="custody-step-desc">
-                Sealed into hardware WORM enclave with Merkle verification leaf.
-              </div>
-              <div className="custody-step-agent">
-                STATUS: TAMPER-PROOF ARCHIVE
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Dynamic Merkle Tree Footer Box */}
-      <div className="merkle-footer-box">
-        <div className="merkle-info">
-          <span className="merkle-title">DYNAMIC MERKLE VERIFICATION TREE</span>
-          <span className="merkle-hash-text">
-            Root Hash: 0x7a8f114c009bb3de4860b24fa93bc821098e98341209ac4
-          </span>
-          <span className="merkle-sub-text">
-            All 14 exhibits cryptographic leaves are verified continuously against state consensus every 300 seconds.
+          <span className="tv-badge tv-risk-low">
+            <ShieldCheck size={12} style={{ marginRight: '4px' }} />
+            Chain of Custody Active
           </span>
         </div>
-        <button className="button button-secondary" title="Audit all tree leaves">
-          <GitBranch size={13} />
-          <span>Audit Tree Leaves</span>
-        </button>
+
+        <div className="tv-overview-triplet-grid" style={{ marginTop: '12px' }}>
+          <div className="tv-attr-item">
+            <span className="tv-attr-label">CATALOGED EXHIBITS</span>
+            <span className="tv-attr-value mono font-semibold">{MASTER_EXHIBITS.length} Sealed Exhibits</span>
+          </div>
+          <div className="tv-attr-item">
+            <span className="tv-attr-label">HASH INTEGRITY</span>
+            <span className="tv-attr-value font-medium" style={{ color: 'var(--risk-low)' }}>
+              100% SHA-256 Verified
+            </span>
+          </div>
+          <div className="tv-attr-item">
+            <span className="tv-attr-label">REGISTER SECURITY</span>
+            <span className="tv-attr-value mono">Tamper-Evident Digest</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main 2-Column: REGISTER + INSPECTOR */}
+      <div className="tv-transactions-workspace">
+        {/* MASTER EVIDENCE REGISTER */}
+        <div className="tv-tx-table-container">
+          <div className="tv-tx-table-header">
+            <span className="tv-section-title">Master Evidence Register</span>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                placeholder="Search exhibits or case ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="tv-cases-search-input"
+                style={{ width: '200px', padding: '5px 10px', fontSize: '11.5px' }}
+              />
+            </div>
+          </div>
+
+          <div className="tv-table-wrapper">
+            <table className="tv-table">
+              <thead>
+                <tr>
+                  <th>EXHIBIT ID</th>
+                  <th>DESCRIPTION</th>
+                  <th>TYPE</th>
+                  <th>SOURCE</th>
+                  <th>CASE</th>
+                  <th>TIMESTAMP</th>
+                  <th>VERIFICATION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredExhibits.map((ex) => {
+                  const isSelected = selectedExhibit.id === ex.id;
+                  return (
+                    <tr
+                      key={ex.id}
+                      onClick={() => setSelectedExhibit(ex)}
+                      className={`tv-tx-row ${isSelected ? 'selected' : ''}`}
+                    >
+                      <td className="mono font-semibold" style={{ color: 'var(--text-primary)' }}>
+                        {ex.id}
+                      </td>
+                      <td style={{ maxWidth: '280px', color: 'var(--text-primary)' }}>
+                        <div className="font-medium" style={{ fontSize: '12px' }}>{ex.title}</div>
+                        <div className="text-muted" style={{ fontSize: '11px', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {ex.description}
+                        </div>
+                      </td>
+                      <td>
+                        <span className="tv-badge tv-badge-mono">{ex.type}</span>
+                      </td>
+                      <td className="text-secondary" style={{ fontSize: '11px' }}>{ex.source}</td>
+                      <td className="mono text-muted">{ex.caseId}</td>
+                      <td className="mono tv-tx-time">{ex.timestamp}</td>
+                      <td>
+                        <span className="tv-badge tv-risk-low">
+                          <CheckCircle2 size={11} style={{ marginRight: '3px' }} />
+                          {ex.verification}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* RIGHT-SIDE INSPECTOR */}
+        {selectedExhibit && (
+          <div className="tv-tx-inspector anim-panel-slide">
+            <div className="tv-inspector-header">
+              <span className="tv-inspector-title">Exhibit Inspector</span>
+              <span className="tv-badge tv-badge-mono font-semibold">{selectedExhibit.id}</span>
+            </div>
+
+            <div className="tv-inspector-scroll">
+              <div className="tv-inspector-section">
+                <div className="tv-inspector-section-label">EXHIBIT TITLE</div>
+                <div className="font-semibold" style={{ fontSize: '13px', color: 'var(--text-primary)' }}>
+                  {selectedExhibit.title}
+                </div>
+                <p className="tv-inspector-narrative" style={{ marginTop: '4px' }}>
+                  {selectedExhibit.description}
+                </p>
+              </div>
+
+              <div className="tv-inspector-section">
+                <div className="tv-inspector-section-label">PROVENANCE & SOURCE</div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Primary Source</span>
+                  <span className="font-medium">{selectedExhibit.source}</span>
+                </div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Exhibit Type</span>
+                  <span className="tv-badge tv-badge-mono">{selectedExhibit.type}</span>
+                </div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Case Reference</span>
+                  <span className="mono">{selectedExhibit.caseId}</span>
+                </div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Sealed Timestamp</span>
+                  <span className="mono">{selectedExhibit.timestamp}</span>
+                </div>
+              </div>
+
+              <div className="tv-inspector-section">
+                <div className="tv-inspector-section-label">FORENSIC CORRELATIONS</div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Related Transaction</span>
+                  <span className="mono tv-inspector-mono-val">{selectedExhibit.relatedTx}</span>
+                </div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Related Node</span>
+                  <span className="mono tv-inspector-mono-val">{selectedExhibit.relatedNode}</span>
+                </div>
+              </div>
+
+              <div className="tv-inspector-section">
+                <div className="tv-inspector-section-label">CRYPTOGRAPHIC VERIFICATION</div>
+                <div className="tv-inspector-kv">
+                  <span className="tv-inspector-k">Verification Status</span>
+                  <span className="tv-badge tv-risk-low">{selectedExhibit.verification}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+                  <span className="tv-inspector-k">SHA-256 Digest</span>
+                  <div className="tv-inspector-v-row">
+                    <span className="mono tv-inspector-mono-val font-semibold">{selectedExhibit.hash}</span>
+                    <button onClick={() => handleCopy(selectedExhibit.hash)} className="tv-icon-copy-btn">
+                      {copiedHash ? <Check size={12} color="var(--risk-low)" /> : <Copy size={12} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="tv-inspector-section">
+                <div className="tv-inspector-section-label">AUDIT REFERENCES</div>
+                <div className="tv-evidence-ref-card">
+                  <Lock size={13} className="text-secondary" />
+                  <div className="tv-evidence-ref-info">
+                    <span className="mono font-semibold">{selectedExhibit.auditRef}</span>
+                    <span className="text-muted" style={{ fontSize: '10.5px' }}>Immutable ledger sequence index</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,55 @@
+/**
+ * TRACEVAULT OFFICIAL MOTION SYSTEM
+ * Precise, controlled, purposeful transitions. No fluff or decorative clutter.
+ */
+
+:root {
+  --duration-micro: 140ms;
+  --duration-panel: 240ms;
+  --duration-workspace: 360ms;
+  --duration-hero: 800ms;
+
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* REDUCED MOTION SAFEGUARD */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* STANDARD FADES & SPATIAL ENTRANCES */
+@keyframes spatialFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes technicalExpand {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.anim-enter {
+  animation: spatialFadeIn var(--duration-panel) var(--ease-standard) forwards;
+}
+
+.anim-enter-workspace {
+  animation: spatialFadeIn var(--duration-workspace) var(--ease-standard) forwards;
+}

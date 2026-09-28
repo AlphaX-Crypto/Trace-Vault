@@ -1,136 +1,187 @@
 /**
- * TRACEVAULT — Official Institutional Login Portal
- * Minimal, formal, government website styling.
- * Responsive to true light and true dark themes.
+ * TRACEVAULT — OFFICIAL LOGIN STYLES
+ * Matches Section 19 specifications.
  */
 
-.gov-login-container {
+.tv-login-page {
   min-height: 100vh;
+  width: 100vw;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 24px 16px;
-  background-color: var(--bg-app);
-  color: var(--text-primary);
-  font-family: var(--font-ui);
+  justify-content: center;
+  padding: 32px 16px;
+  background-color: var(--bg-base);
+  overflow-y: auto;
 }
 
-.gov-login-card {
+.tv-login-container {
   width: 100%;
   max-width: 440px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-}
-
-.gov-login-header {
-  padding: 24px 24px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  text-align: center;
-}
-
-.gov-login-emblem {
-  width: 44px;
-  height: 44px;
-  margin: 0 auto 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--primary-light);
-  color: var(--primary-color);
-  border: 1px solid var(--primary-border);
-  border-radius: 50%;
-}
-
-.gov-login-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.gov-login-subtitle {
-  margin: 4px 0 0;
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-.gov-login-body {
-  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.gov-form-group {
+.tv-login-brand-header {
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 6px;
 }
 
-.gov-form-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.gov-form-input, .gov-form-select {
-  height: 36px;
-  padding: 0 10px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font-size: 12px;
-  transition: border-color 0.15s ease;
-}
-
-.gov-form-input:focus, .gov-form-select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
-.gov-login-btn {
-  height: 38px;
-  background: var(--text-primary);
-  color: var(--text-inverse);
-  border: 1px solid var(--text-primary);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
+.tv-login-logo-box {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--text-primary);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: opacity 0.15s ease;
+  margin-bottom: 4px;
+}
+
+.tv-login-brand-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.tv-login-brand-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--accent-primary);
+}
+
+.tv-login-tagline {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
-.gov-login-btn:hover {
-  opacity: 0.9;
-}
-
-.gov-login-notice {
-  padding: 12px 14px;
-  background: var(--bg-surface-raised);
+.tv-login-status-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  font-size: 10px;
-  color: var(--text-secondary);
-  line-height: 1.45;
+  font-size: 10.5px;
 }
 
-.gov-login-footer {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 11px;
+.tv-login-status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tv-login-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--risk-low);
+}
+
+.tv-login-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.tv-login-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tv-login-card-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tv-login-card-sub {
+  font-size: 10px;
   color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.tv-login-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tv-login-error {
+  padding: 8px 12px;
+  background-color: var(--status-critical-bg);
+  border: 1px solid var(--status-critical-border);
+  color: var(--status-critical-text);
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tv-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tv-login-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.tv-btn-login-submit {
+  width: 100%;
+  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: none;
+  margin-top: 6px;
+  transition: opacity var(--motion-fast);
+}
+
+.tv-btn-login-submit:hover {
+  opacity: 0.92;
+}
+
+.tv-login-legal-notice {
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  padding: 10px;
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.tv-login-technical-footer {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
 }

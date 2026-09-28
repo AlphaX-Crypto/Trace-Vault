@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, LockKeyhole, AlertCircle, ArrowRight } from 'lucide-react';
+import { ShieldCheck, LockKeyhole, AlertCircle } from 'lucide-react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './login.css';
@@ -10,6 +10,7 @@ export default function Login() {
   const { login, isAuthenticated } = useAuth();
 
   const [division, setDivision] = useState('Central Cyber Forensic Cell');
+  const [credentialMode, setCredentialMode] = useState('OFFICER_CREDENTIALS');
   const [identifier, setIdentifier] = useState('investigator@tracevault.local');
   const [password, setPassword] = useState('Investigator@123');
   const [remember, setRemember] = useState(true);
@@ -40,93 +41,141 @@ export default function Login() {
   }
 
   return (
-    <div className="gov-login-container">
-      <div className="gov-login-card">
-        <div className="gov-login-header">
-          <div className="gov-login-emblem">
-            <ShieldCheck size={24} />
+    <div className="tv-login-page anim-workspace">
+      <div className="tv-login-container">
+        {/* Brand & Mission Tagline */}
+        <div className="tv-login-brand-header">
+          <div className="tv-login-logo-box">
+            <div className="tv-logo-square" />
           </div>
-          <h1 className="gov-login-title">National Cyber Forensic Gateway</h1>
-          <p className="gov-login-subtitle">Law Enforcement & Financial Intelligence Unit Access</p>
+          <h1 className="tv-login-brand-title">TRACEVAULT</h1>
+          <div className="tv-login-brand-subtitle mono">FORENSIC INTELLIGENCE PLATFORM</div>
+          <div className="tv-login-tagline">
+            FOLLOW THE MOVEMENT.<br />
+            PRESERVE THE EVIDENCE.
+          </div>
         </div>
 
-        <div className="gov-login-body">
-          {errorMessage && (
-            <div style={{ padding: '8px 12px', background: 'var(--status-critical-bg)', color: 'var(--status-critical-text)', border: '1px solid var(--status-critical-border)', borderRadius: 'var(--radius-sm)', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <AlertCircle size={14} />
-              <span>{errorMessage}</span>
-            </div>
-          )}
+        {/* Telemetry Status Ribbon */}
+        <div className="tv-login-status-ribbon">
+          <div className="tv-login-status-item">
+            <span className="tv-login-status-dot" />
+            <span className="mono">Gateway status: <strong>Online</strong></span>
+          </div>
+          <div className="tv-login-status-item">
+            <span className="mono text-muted">Docket status: <strong>Active</strong></span>
+          </div>
+        </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <div className="gov-form-group">
-              <label className="gov-form-label">Investigation Division / Unit</label>
-              <select 
-                className="gov-form-select"
-                value={division}
-                onChange={(e) => setDivision(e.target.value)}
-              >
-                <option value="Central Cyber Forensic Cell">Central Cyber Forensic Cell</option>
-                <option value="Financial Intelligence Unit (FIU-IND)">Financial Intelligence Unit (FIU-IND)</option>
-                <option value="Economic Offences Wing (EOW)">Economic Offences Wing (EOW)</option>
-                <option value="State Police Cyber Crime Division">State Police Cyber Crime Division</option>
-              </select>
-            </div>
+        {/* Form Card */}
+        <div className="tv-login-card">
+          <div className="tv-login-card-header">
+            <h2 className="tv-login-card-title">Investigator Sign In</h2>
+            <span className="tv-login-card-sub mono">Authorized Personnel Access Only</span>
+          </div>
 
-            <div className="gov-form-group">
-              <label className="gov-form-label">Authorized Officer ID / Email</label>
-              <input
-                className="gov-form-input mono"
-                type="text"
-                required
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="officer@agency.gov.in"
-              />
-            </div>
+          <div className="tv-login-card-body">
+            {errorMessage && (
+              <div className="tv-login-error">
+                <AlertCircle size={14} />
+                <span>{errorMessage}</span>
+              </div>
+            )}
 
-            <div className="gov-form-group">
-              <label className="gov-form-label">Passcode / PKI Token</label>
-              <input
-                className="gov-form-input mono"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="tv-login-form">
+              {/* Credential Mode */}
+              <div className="tv-form-group">
+                <label className="tv-form-label">CREDENTIAL MODE</label>
+                <select
+                  className="tv-form-select"
+                  value={credentialMode}
+                  onChange={(e) => setCredentialMode(e.target.value)}
+                >
+                  <option value="OFFICER_CREDENTIALS">Officer ID &amp; Password</option>
+                  <option value="AGENCY_PKI">Agency PKI Token Session</option>
+                </select>
+              </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+              {/* Division */}
+              <div className="tv-form-group">
+                <label className="tv-form-label">DIVISION</label>
+                <select
+                  className="tv-form-select"
+                  value={division}
+                  onChange={(e) => setDivision(e.target.value)}
+                >
+                  <option value="Central Cyber Forensic Cell">Central Cyber Forensic Cell</option>
+                  <option value="Financial Intelligence Unit (FIU-IND)">Financial Intelligence Unit (FIU-IND)</option>
+                  <option value="Economic Offences Wing (EOW)">Economic Offences Wing (EOW)</option>
+                  <option value="State Police Cyber Crime Division">State Police Cyber Crime Division</option>
+                </select>
+              </div>
+
+              {/* Authorized Officer ID */}
+              <div className="tv-form-group">
+                <label className="tv-form-label">AUTHORIZED OFFICER ID / EMAIL</label>
                 <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
+                  className="tv-form-input mono"
+                  type="text"
+                  required
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder="officer@agency.gov.in"
                 />
-                Maintain Secure Session (8h)
-              </label>
-              <span className="mono" style={{ color: 'var(--primary-color)', fontSize: '10px' }}>FIPS 140-3 HSM</span>
+              </div>
+
+              {/* Passcode */}
+              <div className="tv-form-group">
+                <label className="tv-form-label">PASSCODE / ACCESS KEY</label>
+                <input
+                  className="tv-form-input mono"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                />
+              </div>
+
+              {/* Remember Session */}
+              <div className="tv-login-options-row">
+                <label className="tv-checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={remember}
+                    onChange={(e) => setRemember(e.target.checked)}
+                  />
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                    Maintain session (8h)
+                  </span>
+                </label>
+                <span className="mono text-muted" style={{ fontSize: '10px' }}>
+                  SHA-256 Digest
+                </span>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="tv-btn-login-submit"
+                disabled={isSubmitting}
+              >
+                <LockKeyhole size={13} />
+                <span>{isSubmitting ? 'Authenticating Officer...' : 'Authenticate & Access Terminal'}</span>
+              </button>
+            </form>
+
+            {/* Legal Notice */}
+            <div className="tv-login-legal-notice">
+              <strong>STATUTORY LEGAL NOTICE:</strong> This terminal is restricted to authorized law enforcement and regulatory personnel. Unauthorized access, monitoring, or copying is strictly prohibited and subject to legal prosecution under the Information Technology Act. All access requests are cryptographically audited in tamper-evident logs.
             </div>
-
-            <button 
-              type="submit" 
-              className="gov-login-btn"
-              disabled={isSubmitting}
-            >
-              <LockKeyhole size={14} />
-              <span>{isSubmitting ? 'Authenticating Officer...' : 'Authenticate & Access Terminal'}</span>
-            </button>
-          </form>
-
-          <div className="gov-login-notice">
-            <strong>STATUTORY WARNING:</strong> This terminal is restricted to authorized law enforcement and regulatory personnel. Unauthorized access, monitoring, or copying is strictly prohibited and subject to legal prosecution under Section 43/66 of the Information Technology Act. All activities are cryptographically recorded in tamper-evident audit logs.
           </div>
         </div>
-      </div>
 
-      <div className="gov-login-footer">
-        TRACEVAULT Forensic Intelligence Platform · Version 3.8 LE (FIPS 180-4 Compliant)
+        {/* Technical Footer */}
+        <div className="tv-login-technical-footer mono">
+          TRACEVAULT Forensic Intelligence Platform · Version 3.8 LE (FIPS 180-4 Compliant)
+        </div>
       </div>
     </div>
   );

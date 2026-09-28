@@ -1,0 +1,37 @@
+/**
+ * TRACEVAULT APPLICATION SHELL STYLES
+ */
+
+.tv-app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-foundation);
+  color: var(--text-primary);
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: top center;
+}
+
+.tv-main-workspace {
+  margin-top: var(--header-height);
+  margin-left: var(--sidebar-width);
+  margin-bottom: var(--status-bar-height);
+  min-height: calc(100vh - var(--header-height) - var(--status-bar-height));
+  padding: 24px 32px 48px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - var(--sidebar-width));
+}
+
+@media (max-width: 900px) {
+  .tv-main-workspace {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px 16px 36px;
+  }
+}

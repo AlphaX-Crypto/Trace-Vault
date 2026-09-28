@@ -1,370 +1,335 @@
+@import './tokens.css';
 @import './animations.css';
 
 /**
- * TRACEVAULT — Architectural Luxury & Forensic Intelligence Design System
- * Reference: Modern crypto/blockchain bento design (ZQL / Vercel / Linear inspired).
+ * TRACEVAULT — GLOBAL STYLESHEET
+ * Clean, restrained, professional investigation tool aesthetic.
+ * Primary font: Inter. Technical font: JetBrains Mono.
+ * Dark / Light theme support.
  */
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
   min-width: 320px;
-  background-color: var(--bg-app);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  height: 100%;
 }
 
 body {
   margin: 0;
-  min-width: 320px;
+  padding: 0;
   min-height: 100vh;
+  height: 100%;
   font-family: var(--font-ui);
   font-size: 13px;
   line-height: 1.5;
   color: var(--text-primary);
-  background-color: var(--bg-app);
-  /* Architectural subtle grid pattern matching reference video */
-  background-image: 
-    linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
-  background-size: 72px 72px;
-  background-position: top center;
+  background-color: var(--bg-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
-/* Standard thin scrollbar */
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-app);
+  background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
+  background: var(--border-strong);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-strong);
+  background: var(--text-muted);
 }
 
-button, input, select, textarea {
-  font: inherit;
-}
-
-button, a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
+/* Typography Helpers */
 .mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono) !important;
+  font-feature-settings: 'tnum' on, 'zero' on;
 }
 
-.muted {
+.text-muted {
   color: var(--text-muted);
 }
 
-/* =========================================================================
-   Application Layout Shell
-   ========================================================================= */
-
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-app);
-}
-
-.app-main-workspace {
-  margin-top: var(--topbar-height);
-  margin-left: 0;
-  min-height: calc(100vh - var(--topbar-height) - var(--footer-height));
-  padding: 36px 32px 64px;
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-@media (max-width: 900px) {
-  .app-main-workspace {
-    padding: 20px 16px 48px;
-  }
-}
-
-.gov-page {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-/* =========================================================================
-   Bento Grid & Architectural Cards
-   ========================================================================= */
-
-.bento-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 20px 24px;
-  position: relative;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.bento-card:hover {
-  border-color: var(--border-medium);
-}
-
-.bento-card.highlight {
-  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 60%), var(--bg-surface);
-}
-
-.bento-card.amber-glow {
-  background: radial-gradient(circle at top right, rgba(217, 119, 6, 0.08), transparent 60%), var(--bg-surface);
-}
-
-.bento-tag {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.bento-title {
-  margin: 8px 0 4px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
-.bento-desc {
-  margin: 0;
-  font-size: 12px;
+.text-secondary {
   color: var(--text-secondary);
-  line-height: 1.5;
 }
 
-/* Legacy Card compatibility */
-.gov-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  padding: 20px;
+.text-primary {
+  color: var(--text-primary);
 }
 
-.gov-card-header {
+/* Buttons */
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all var(--motion-fast);
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 1px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+/* App Shell Structure */
+.tv-app-shell {
   display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-base);
+}
+
+.tv-sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+  user-select: none;
+}
+
+.tv-main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-base);
+}
+
+.tv-header {
+  height: var(--header-height);
+  min-height: var(--header-height);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 24px;
+  z-index: 30;
 }
 
-.gov-card-title {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-primary);
-  margin: 0;
+.tv-workspace-content {
+  flex: 1;
+  overflow-y: auto;
+  min-width: 0;
+  background-color: var(--bg-base);
+  display: flex;
+  flex-direction: column;
 }
 
-/* =========================================================================
-   Pill Buttons & Micro-Actions
-   ========================================================================= */
-
-.btn-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 36px;
-  padding: 0 18px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-}
-
-.btn-pill-primary {
-  background: var(--text-primary);
-  color: var(--text-inverse);
-  border: 1px solid var(--text-primary);
-}
-
-.btn-pill-primary:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
-.btn-pill-secondary {
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-}
-
-.btn-pill-secondary:hover {
-  background: var(--primary-light);
-  border-color: var(--text-secondary);
-}
-
-/* Standard Buttons */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 14px;
-  background: var(--text-primary);
-  color: var(--text-inverse);
-  border: 1px solid var(--text-primary);
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 14px;
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--bg-surface-raised);
-}
-
-/* =========================================================================
-   Data Tables with Hairline Dividers
-   ========================================================================= */
-
-.gov-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  text-align: left;
-}
-
-.gov-table th {
-  padding: 10px 14px;
-  background: var(--bg-surface-raised);
-  color: var(--text-muted);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--border-subtle);
-  font-family: var(--font-mono);
-}
-
-.gov-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-subtle);
-  vertical-align: middle;
-}
-
-.gov-table tr:hover {
-  background: var(--primary-light);
-}
-
-/* =========================================================================
-   Status Badges & Rail Indicators
-   ========================================================================= */
-
-.tag {
+/* Standard Technical Badges */
+.tv-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 2px 7px;
-  border-radius: var(--radius-xs);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  line-height: 1.3;
+  border: 1px solid transparent;
+}
+
+.tv-badge-mono {
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
-.tag-critical {
-  background: var(--status-critical-bg);
+/* Risk Badges */
+.tv-risk-critical {
   color: var(--status-critical-text);
-  border: 1px solid var(--status-critical-border);
+  background-color: var(--status-critical-bg);
+  border-color: var(--status-critical-border);
 }
-
-.tag-high {
-  background: var(--status-high-bg);
+.tv-risk-high {
   color: var(--status-high-text);
-  border: 1px solid var(--status-high-border);
+  background-color: var(--status-high-bg);
+  border-color: var(--status-high-border);
 }
-
-.tag-medium {
-  background: var(--status-medium-bg);
+.tv-risk-medium {
   color: var(--status-medium-text);
-  border: 1px solid var(--status-medium-border);
+  background-color: var(--status-medium-bg);
+  border-color: var(--status-medium-border);
 }
-
-.tag-low {
-  background: var(--status-low-bg);
+.tv-risk-low {
   color: var(--status-low-text);
-  border: 1px solid var(--status-low-border);
+  background-color: var(--status-low-bg);
+  border-color: var(--status-low-border);
 }
 
-.rail-badge {
+/* Rail Badges */
+.tv-rail-crypto {
+  color: var(--rail-crypto);
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+.tv-rail-upi {
+  color: var(--rail-upi);
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+.tv-rail-cross {
+  color: var(--rail-cross);
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.25);
+}
+
+/* Card / Panel Base */
+.tv-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.tv-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.tv-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Table Base */
+.tv-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+}
+
+.tv-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.tv-table th {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.tv-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.tv-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tv-table tr:hover td {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+/* Buttons */
+.tv-btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
+  gap: 6px;
+  padding: 7px 14px;
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+.tv-btn-primary:hover {
+  opacity: 0.92;
 }
 
-.rail-badge.crypto {
-  background: rgba(2, 132, 199, 0.1);
-  color: var(--rail-crypto);
-  border: 1px solid rgba(2, 132, 199, 0.25);
+.tv-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+}
+.tv-btn-secondary:hover {
+  background-color: var(--bg-elevated);
 }
 
-.rail-badge.upi {
-  background: rgba(124, 58, 237, 0.1);
-  color: var(--rail-upi);
-  border: 1px solid rgba(124, 58, 237, 0.25);
+/* Inputs */
+.tv-input {
+  width: 100%;
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  font-size: 12px;
+  transition: border-color var(--motion-fast);
+}
+
+.tv-input:focus {
+  border-color: var(--accent-primary);
+  outline: none;
+}
+
+.tv-select {
+  width: 100%;
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.tv-select:focus {
+  border-color: var(--accent-primary);
+  outline: none;
 }

@@ -1,104 +1,99 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  ShieldCheck, 
-  Plus, 
+  Search, 
+  Bell, 
   Sun, 
   Moon, 
   Menu,
-  X,
-  LogOut
+  ShieldCheck,
+  Plus
 } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import './layout.css';
 
 export default function Topbar({ onToggleSidebar, sidebarOpen }) {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const NAV_ITEMS = [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/graph', label: 'Graph Matrix' },
-    { to: '/risk', label: 'Risk Intel' },
-    { to: '/geospatial', label: 'Geospatial Radar' },
-    { to: '/evidence', label: 'Evidence Locker' },
-    { to: '/cases', label: 'Case Registry' }
-  ];
+  // Determine page title based on path
+  const path = location.pathname;
+  let pageTitle = 'Dashboard';
+  if (path.startsWith('/cases/new')) pageTitle = 'New Case';
+  else if (path.startsWith('/cases') || path === '/ledger') pageTitle = 'Cases Ledger';
+  else if (path.startsWith('/investigations') || path.includes('/overview')) pageTitle = 'Investigation Workspace';
+  else if (path.startsWith('/graph')) pageTitle = 'Transaction Graph';
+  else if (path.startsWith('/risk')) pageTitle = 'Risk Analysis';
+  else if (path.startsWith('/attribution') || path.startsWith('/vasp')) pageTitle = 'Attribution';
+  else if (path.startsWith('/geospatial')) pageTitle = 'Geospatial Radar';
+  else if (path.startsWith('/evidence')) pageTitle = 'Evidence Locker';
+  else if (path.startsWith('/reports') || path.startsWith('/report')) pageTitle = 'Forensic Reports';
+  else if (path.startsWith('/disclosure')) pageTitle = 'Disclosure / SAHYOG';
+  else if (path.startsWith('/audit')) pageTitle = 'Audit Ledger';
+  else if (path.startsWith('/entity')) pageTitle = 'Entity Dossier';
+  else if (path.startsWith('/settings')) pageTitle = 'Settings & Administration';
+
+  function handleSearch(e) {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/cases?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  }
+
+  const userName = user?.name || 'T-JD';
+  const shortBadge = user?.badge_id?.replace(/[^a-zA-Z0-9]/g, '') || 'T-JD';
 
   return (
-    <header className="gov-topbar">
-      {/* Brand & Emblem */}
-      <div className="topbar-left">
+    <header className="tv-header">
+      <div className="tv-header-left">
         <button 
-          className="sidebar-toggle-btn"
+          className="tv-mobile-menu-btn" 
           onClick={onToggleSidebar}
-          title={sidebarOpen ? "Close Tools Menu" : "All Tools & Records"}
-          aria-label="Toggle forensic menu"
+          aria-label="Toggle navigation"
         >
-          {sidebarOpen ? <X size={15} /> : <Menu size={15} />}
-          <span className="toggle-label">SUITE</span>
+          <Menu size={18} />
         </button>
-
-        <div className="portal-brand" onClick={() => navigate('/dashboard')} role="button" tabIndex={0}>
-          <div className="brand-emblem">
-            <ShieldCheck size={18} />
-          </div>
-          <div className="brand-info">
-            <span className="brand-name">TRACEVAULT</span>
-            <span className="brand-tagline">V3.4 FORENSIC</span>
-          </div>
-        </div>
+        <h1 className="tv-page-title">{pageTitle}</h1>
       </div>
 
-      {/* Center HUD Navigation Bracket (Matching Reference Video!) */}
-      <nav className="topbar-hud-nav" aria-label="HUD Core Navigation">
-        <div className="hud-nav-bracket">
-          {NAV_ITEMS.map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) => `hud-nav-link ${isActive ? 'active' : ''}`}
-            >
-              <span>{label}</span>
-            </NavLink>
-          ))}
-        </div>
-      </nav>
+      <div className="tv-header-right">
+        {/* Search input from screenshot */}
+        <form onSubmit={handleSearch} className="tv-search-form">
+          <Search size={14} className="tv-search-icon" />
+          <input
+            type="text"
+            className="tv-header-search-input"
+            placeholder="Search system..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </form>
 
-      {/* Right Controls */}
-      <div className="topbar-right">
-        {/* Real Theme Switcher with explicit label */}
-        <button
-          className="theme-toggle-btn"
-          onClick={toggleTheme}
+        {/* Notifications */}
+        <button className="tv-header-icon-btn" title="System Notifications" aria-label="Notifications">
+          <Bell size={15} />
+        </button>
+
+        {/* Theme Toggle */}
+        <button 
+          className="tv-header-icon-btn tv-theme-toggle" 
+          onClick={toggleTheme} 
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          aria-label="Toggle theme"
         >
-          {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
-          <span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
+          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
         </button>
 
-        <button
-          className="btn-hud-action"
-          onClick={() => navigate('/cases/new')}
-          title="Open New Investigation Case"
-        >
-          <span>NEW CASE</span>
-          <Plus size={13} />
-        </button>
-
-        <div 
-          className="user-badge" 
-          onClick={() => { logout(); navigate('/login'); }} 
-          title="Lead Investigator (Click to Sign Out)"
-          role="button"
-          tabIndex={0}
-        >
-          <div className="user-avatar-initials">TJ</div>
-          <div className="user-meta">
-            <span className="user-title">{user?.name || 'T. JD (Lead Inv.)'}</span>
-            <span className="user-dept">FIU / CYBER CELL</span>
+        {/* User Pill Badge matching reference screenshot: Circle T, T-JD Investigator */}
+        <div className="tv-user-pill-badge" title={`Signed in as ${userName} (${user?.role || 'Lead Investigator'})`}>
+          <div className="tv-avatar-circle">T</div>
+          <div className="tv-user-pill-text">
+            <span className="tv-user-pill-name">{shortBadge.slice(0, 5) || 'T-JD'}</span>
+            <span className="tv-user-pill-role">Investigator</span>
           </div>
         </div>
       </div>

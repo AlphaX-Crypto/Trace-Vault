@@ -1,8 +1,6 @@
 import React from 'react';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import Sidebar from './components/layout/Sidebar';
-import Topbar from './components/layout/Topbar';
-import TelemetryBar from './components/layout/TelemetryBar';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import AppShell from './components/shell/AppShell';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Cases from './pages/Cases';
@@ -19,24 +17,10 @@ import Report from './pages/Report';
 import Reports from './pages/Reports';
 import Investigations from './pages/Investigations';
 import InvestigationWorkspace from './pages/InvestigationWorkspace';
+import Disclosure from './pages/Disclosure';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-
-function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
-
-  return (
-    <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : ''}`}>
-      <Topbar onToggleSidebar={() => setSidebarOpen(prev => !prev)} sidebarOpen={sidebarOpen} />
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="app-main-workspace">
-        <Outlet />
-      </div>
-      <TelemetryBar />
-    </div>
-  );
-}
 
 export default function App() {
   return (
@@ -45,55 +29,49 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<Login />} />
+          
           <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
-              {/* Command Modules */}
+            <Route element={<AppShell />}>
+              {/* Core Command & Cases Hub */}
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/cases" element={<Cases />} />
               <Route path="/cases/new" element={<NewCase />} />
+
+              {/* Dedicated Investigation Workspace (1 tab = 1 workspace) */}
               <Route path="/investigations" element={<Investigations />} />
+              <Route path="/investigations/active" element={<Navigate to="/investigations/INV-001/overview" replace />} />
               <Route path="/investigations/:id" element={<InvestigationWorkspace />} />
               <Route path="/investigations/:id/:tab" element={<InvestigationWorkspace />} />
+              <Route path="/cases/:id" element={<InvestigationWorkspace />} />
+              <Route path="/cases/:id/:tab" element={<InvestigationWorkspace />} />
 
-              {/* 5 Core Forensic Modules from Screenshots */}
+              {/* Direct Tool Workspaces */}
+              <Route path="/transactions" element={<Navigate to="/investigations/INV-001/transactions" replace />} />
               <Route path="/graph" element={<TransactionGraphPage />} />
-              <Route path="/ledger" element={<AuditLedger />} />
+              <Route path="/timeline" element={<Navigate to="/investigations/INV-001/timeline" replace />} />
+              <Route path="/risk" element={<AttributionRisk />} />
+              <Route path="/attribution" element={<AttributionRisk />} />
+              <Route path="/vasp" element={<AttributionRisk />} />
               <Route path="/geospatial" element={<GeospatialRadar />} />
               <Route path="/evidence" element={<Evidence />} />
               <Route path="/entity" element={<EntityDossier />} />
-
-              {/* Intelligence & Governance Consoles */}
-              <Route path="/risk" element={<AttributionRisk />} />
-              <Route path="/vasp" element={<AttributionRisk />} />
               <Route path="/reports" element={<Reports />} />
-              <Route path="/disclosure" element={<Report />} />
+              <Route path="/report" element={<Report />} />
+
+              {/* System & Audit */}
+              <Route path="/disclosure" element={<Disclosure />} />
               <Route path="/audit" element={<AuditLedger />} />
+              <Route path="/ledger" element={<AuditLedger />} />
               <Route path="/chain-of-custody" element={<Evidence />} />
-              <Route path="/network" element={<TransactionGraphPage />} />
               <Route path="/admin" element={<Dashboard />} />
 
-              {/* Analysis & Case routes */}
+              {/* Analysis pipelines */}
               <Route path="/cases/analysis" element={<AnalysisProgress />} />
               <Route path="/analysis-progress" element={<AnalysisProgress />} />
               <Route path="/cases/:id/analysis" element={<AnalysisProgress />} />
-              <Route path="/cases/:id" element={<InvestigationOverview />} />
-              <Route path="/cases/:id/overview" element={<InvestigationOverview />} />
-              <Route path="/cases/:id/graph" element={<TransactionGraphPage />} />
-              <Route path="/cases/:id/attribution" element={<AttributionRisk />} />
-              <Route path="/cases/:id/risk" element={<AttributionRisk />} />
-              <Route path="/cases/:id/evidence" element={<Evidence />} />
-              <Route path="/cases/:id/report" element={<Report />} />
-              <Route path="/cases/:id/disclosure" element={<Report />} />
-              <Route path="/case/:id" element={<InvestigationOverview />} />
-              <Route path="/case/:id/overview" element={<InvestigationOverview />} />
-              <Route path="/case/:id/graph" element={<TransactionGraphPage />} />
-              <Route path="/case/:id/attribution" element={<AttributionRisk />} />
-              <Route path="/case/:id/risk" element={<AttributionRisk />} />
-              <Route path="/case/:id/evidence" element={<Evidence />} />
-              <Route path="/case/:id/report" element={<Report />} />
-              <Route path="/case/:id/disclosure" element={<Report />} />
             </Route>
           </Route>
+
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>

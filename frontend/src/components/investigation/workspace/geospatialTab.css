@@ -1,0 +1,202 @@
+/**
+ * TRACEVAULT — GEOSPATIAL RADAR TAB STYLES
+ * Tactical radar visualization without neon or cyberpunk bloom.
+ */
+
+.tv-geospatial-workspace {
+  display: grid;
+  grid-template-columns: 240px 1fr 320px;
+  gap: 16px;
+  height: calc(100vh - 220px);
+  min-height: 540px;
+}
+
+.tv-geo-controls-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.tv-geo-nodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tv-geo-node-card {
+  padding: 10px 12px;
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: all var(--motion-fast);
+}
+
+.tv-geo-node-card:hover {
+  background-color: var(--bg-elevated);
+}
+
+.tv-geo-node-card.active {
+  border-color: var(--text-primary);
+  background-color: var(--bg-elevated);
+}
+
+.tv-geo-disclaimer-note {
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  padding: 10px;
+  background-color: var(--bg-base);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  margin-top: auto;
+}
+
+/* Center Radar */
+.tv-geo-radar-container {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tv-radar-canvas-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-base);
+  overflow: hidden;
+  min-height: 380px;
+}
+
+.tv-radar-ring {
+  position: absolute;
+  border: 1px dashed var(--border-strong);
+  border-radius: 50%;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ring-1 {
+  width: 140px;
+  height: 140px;
+}
+.ring-2 {
+  width: 280px;
+  height: 280px;
+}
+.ring-3 {
+  width: 440px;
+  height: 440px;
+}
+
+.tv-ring-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  background-color: var(--bg-base);
+  padding: 0 4px;
+  margin-top: -7px;
+}
+
+.tv-radar-crosshair-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-subtle);
+  pointer-events: none;
+}
+
+.tv-radar-crosshair-v {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border-subtle);
+  pointer-events: none;
+}
+
+/* Radar Blip */
+.tv-radar-blip {
+  position: absolute;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+}
+
+.tv-blip-core {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--text-primary);
+  border: 2px solid var(--accent-primary);
+  transition: transform var(--motion-fast);
+}
+
+.tv-radar-blip:hover .tv-blip-core,
+.tv-radar-blip.active .tv-blip-core {
+  transform: scale(1.35);
+  background-color: var(--accent-primary);
+}
+
+.tv-blip-label {
+  font-size: 10.5px;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+/* Bottom Signal Summary */
+.tv-geo-bottom-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+}
+
+.tv-geo-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Right Inspector */
+.tv-geo-inspector-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+@media (max-width: 1100px) {
+  .tv-geospatial-workspace {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}

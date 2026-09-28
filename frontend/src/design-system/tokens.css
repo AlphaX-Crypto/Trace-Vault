@@ -1,0 +1,92 @@
+/**
+ * TRACEVAULT OFFICIAL DESIGN TOKENS
+ * Strict institutional color palette, spacing, and elevation.
+ */
+
+:root {
+  /* DARK THEME (DEFAULT INSTITUTIONAL FOUNDATION) */
+  --bg-foundation: #071018;
+  --bg-surface: #0b141c;
+  --bg-surface-raised: #111e2a;
+  --bg-surface-elevated: #16222f;
+  --border-subtle: #16222f;
+  --border-medium: #213547;
+  --border-highlight: #24c7c9;
+
+  /* TECHNICAL CYAN ACCENTS */
+  --cyan-primary: #24c7c9;
+  --cyan-vivid: #00f0ff;
+  --cyan-subtle: rgba(36, 199, 201, 0.12);
+  --cyan-border: rgba(36, 199, 201, 0.28);
+
+  /* RISK INDICATORS */
+  --risk-critical: #ef4444;
+  --risk-critical-bg: rgba(239, 68, 68, 0.12);
+  --risk-critical-border: rgba(239, 68, 68, 0.28);
+
+  --risk-high: #f97316;
+  --risk-high-bg: rgba(249, 115, 22, 0.12);
+  --risk-high-border: rgba(249, 115, 22, 0.28);
+
+  --risk-medium: #eab308;
+  --risk-medium-bg: rgba(234, 179, 8, 0.12);
+  --risk-medium-border: rgba(234, 179, 8, 0.28);
+
+  --risk-low: #10b981;
+  --risk-low-bg: rgba(16, 185, 129, 0.12);
+  --risk-low-border: rgba(16, 185, 129, 0.28);
+
+  /* TEXT & FOREGROUNDS */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #071018;
+
+  /* SPATIAL SIZING */
+  --header-height: 52px;
+  --sidebar-width: 220px;
+  --status-bar-height: 28px;
+  --workspace-max-width: 1360px;
+
+  /* RADIUS */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 9999px;
+
+  /* SHADOWS & HAIRLINE ELEVATIONS */
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.36);
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.48);
+
+  /* GRID TEXTURE */
+  --grid-line: rgba(33, 53, 71, 0.35);
+}
+
+/* LIGHT THEME SEMANTICS */
+[data-theme='light'] {
+  --bg-foundation: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #f1f5f9;
+  --bg-surface-elevated: #e2e8f0;
+  --border-subtle: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --border-highlight: #0d9488;
+
+  --cyan-primary: #0d9488;
+  --cyan-vivid: #0f766e;
+  --cyan-subtle: rgba(13, 148, 136, 0.1);
+  --cyan-border: rgba(13, 148, 136, 0.24);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  --grid-line: rgba(226, 232, 240, 0.8);
+}

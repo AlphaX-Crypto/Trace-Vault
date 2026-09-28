@@ -3,54 +3,19 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   FolderOpen,
-  PlusCircle,
-  GitFork,
-  ShieldAlert,
-  Building2,
-  MapPin,
-  Briefcase,
-  FileLock2,
-  FileSpreadsheet,
   FileText,
+  FileSpreadsheet,
   Scale,
+  Settings,
   LogOut,
-  X
+  X,
+  Plus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './layout.css';
 
-const SECTIONS = [
-  {
-    title: 'Casework & Registry',
-    links: [
-      { to: '/dashboard', label: 'Executive Dashboard', icon: LayoutDashboard },
-      { to: '/cases', label: 'Case Registry', icon: FolderOpen },
-      { to: '/cases/new', label: 'Open New Case', icon: PlusCircle }
-    ]
-  },
-  {
-    title: 'Forensic Intelligence Modules',
-    links: [
-      { to: '/graph', label: 'Hop Matrix & Peel-Chain', icon: GitFork },
-      { to: '/risk', label: 'Risk Intelligence Engine', icon: ShieldAlert },
-      { to: '/vasp', label: 'VASP Attribution & KYC', icon: Building2 },
-      { to: '/geospatial', label: 'Geospatial Radar & IPDR', icon: MapPin },
-      { to: '/investigations', label: 'Investigation Workspace', icon: Briefcase }
-    ]
-  },
-  {
-    title: 'Statutory Evidentiary Vault',
-    links: [
-      { to: '/evidence', label: 'Evidence Locker (Sec 65B)', icon: FileLock2 },
-      { to: '/ledger', label: 'Cryptographic Audit Ledger', icon: FileSpreadsheet },
-      { to: '/reports', label: 'Forensic Briefings & Reports', icon: FileText },
-      { to: '/disclosure', label: 'Disclosure & SAHYOG', icon: Scale }
-    ]
-  }
-];
-
 export default function Sidebar({ isOpen, onClose }) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   function handleSignOut() {
@@ -58,56 +23,112 @@ export default function Sidebar({ isOpen, onClose }) {
     navigate('/login', { replace: true });
   }
 
+  const userName = user?.name || 'Jimmy Dane';
+  const userRole = user?.badge_id || 'LE ID #8327A';
+  const userInitials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'JD';
+
   return (
     <>
-      {/* Backdrop overlay when drawer is open */}
+      {/* Mobile backdrop */}
       <div 
-        className={`gov-sidebar-backdrop ${isOpen ? 'active' : ''}`} 
-        onClick={onClose} 
-        aria-hidden="true" 
+        className={`tv-sidebar-backdrop ${isOpen ? 'active' : ''}`}
+        onClick={onClose}
+        aria-hidden="true"
       />
 
-      <aside className={`gov-sidebar ${isOpen ? 'open' : ''}`} aria-label="Forensic Navigation Drawer">
-        <div className="sidebar-drawer-header">
-          <div className="drawer-title-group">
-            <span className="drawer-title">FORENSIC SUITE</span>
-            <span className="drawer-subtitle">ALL REPOSITORIES & TOOLS</span>
+      <aside className={`tv-sidebar ${isOpen ? 'open' : ''}`}>
+        {/* Logo and Brand */}
+        <div className="tv-sidebar-brand" onClick={() => { navigate('/dashboard'); onClose?.(); }}>
+          <div className="tv-logo-box">
+            <div className="tv-logo-square" />
           </div>
-          <button className="drawer-close-btn" onClick={onClose} title="Close drawer">
-            <X size={15} />
-          </button>
+          <div className="tv-brand-text">
+            <span className="tv-brand-title">TRACEVAULT</span>
+            <span className="tv-brand-subtitle">SECURE LOGISTICS LAYER</span>
+          </div>
+          {onClose && (
+            <button className="tv-sidebar-close-btn" onClick={onClose} aria-label="Close navigation">
+              <X size={14} />
+            </button>
+          )}
         </div>
 
-        <div className="sidebar-nav-group">
-          {SECTIONS.map((sec) => (
-            <div key={sec.title}>
-              <div className="sidebar-group-title">{sec.title}</div>
-              <div className="sidebar-links-list">
-                {sec.links.map(({ to, label, icon: Icon }) => (
-                  <NavLink
-                    key={to}
-                    to={to}
-                    onClick={onClose}
-                    className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-                  >
-                    <Icon size={14} />
-                    <span>{label}</span>
-                  </NavLink>
-                ))}
-              </div>
+        {/* Primary Navigation */}
+        <nav className="tv-sidebar-nav" aria-label="Primary Platform Navigation">
+          <div className="tv-nav-section-title">PLATFORM</div>
+          <NavLink
+            to="/dashboard"
+            onClick={onClose}
+            className={({ isActive }) => `tv-nav-item ${isActive ? 'active' : ''}`}
+          >
+            <LayoutDashboard size={15} />
+            <span>Dashboard</span>
+          </NavLink>
+
+          <NavLink
+            to="/cases"
+            onClick={onClose}
+            className={({ isActive }) => `tv-nav-item ${isActive ? 'active' : ''}`}
+          >
+            <FolderOpen size={15} />
+            <span>Cases</span>
+          </NavLink>
+
+          <NavLink
+            to="/reports"
+            onClick={onClose}
+            className={({ isActive }) => `tv-nav-item ${isActive ? 'active' : ''}`}
+          >
+            <FileText size={15} />
+            <span>Reports</span>
+          </NavLink>
+
+          <div className="tv-nav-section-title" style={{ marginTop: '20px' }}>SYSTEM & LEGAL</div>
+          <NavLink
+            to="/disclosure"
+            onClick={onClose}
+            className={({ isActive }) => `tv-nav-item ${isActive ? 'active' : ''}`}
+          >
+            <Scale size={15} />
+            <span>Disclosure / SAHYOG</span>
+          </NavLink>
+
+          <NavLink
+            to="/audit"
+            onClick={onClose}
+            className={({ isActive }) => `tv-nav-item ${isActive ? 'active' : ''}`}
+          >
+            <FileSpreadsheet size={15} />
+            <span>Audit Ledger</span>
+          </NavLink>
+        </nav>
+
+        {/* Bottom Panel */}
+        <div className="tv-sidebar-bottom">
+          <NavLink
+            to="/settings"
+            onClick={onClose}
+            className={({ isActive }) => `tv-nav-item tv-nav-settings ${isActive ? 'active' : ''}`}
+          >
+            <Settings size={15} />
+            <span>Settings</span>
+          </NavLink>
+
+          <div className="tv-user-card">
+            <div className="tv-user-avatar">{userInitials}</div>
+            <div className="tv-user-info">
+              <div className="tv-user-name" title={userName}>{userName}</div>
+              <div className="tv-user-role mono">{userRole}</div>
             </div>
-          ))}
-        </div>
-
-        <div className="sidebar-bottom-panel">
-          <div className="system-status-indicator">
-            <span className="status-dot" />
-            <span>FIPS 140-3 HSM // ONLINE</span>
+            <button 
+              className="tv-btn-signout" 
+              onClick={handleSignOut} 
+              title="Sign Out"
+              aria-label="Sign out"
+            >
+              <LogOut size={13} />
+            </button>
           </div>
-          <button className="btn-signout" onClick={handleSignOut} title="Sign out of system">
-            <LogOut size={12} />
-            <span>Sign Out</span>
-          </button>
         </div>
       </aside>
     </>

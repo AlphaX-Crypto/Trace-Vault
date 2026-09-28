@@ -1,17 +1,37 @@
 /**
- * TRACEVAULT — Architectural Motion & Cyber Kinetic Animations
- * Reference: High-end Dribbble blockchain showcase (ZQL inspired).
- * Hardware-accelerated, 60fps silky smooth transitions.
+ * TRACEVAULT — Motion Design & Transitions
+ * Restrained, subtle, intentional, calm.
+ * Timing:
+ * 120-180ms for micro-interactions
+ * 180-300ms for panels / inspectors
+ * 300-400ms for workspace transitions
+ * Zero gimmicks, zero ambient loops, zero floating 3D.
  */
 
-/* =========================================================================
-   1. Entrance & Stagger Keyframes
-   ========================================================================= */
-
-@keyframes fadeInUp {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes workspaceReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -19,196 +39,23 @@
   }
 }
 
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .anim-fade-in {
-  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.anim-stagger-1 { animation-delay: 0.05s; }
-.anim-stagger-2 { animation-delay: 0.12s; }
-.anim-stagger-3 { animation-delay: 0.18s; }
-.anim-stagger-4 { animation-delay: 0.25s; }
-.anim-stagger-5 { animation-delay: 0.32s; }
-
-/* =========================================================================
-   2. Floating 3D Enclave / Core Hologram (Hero Visual from Video)
-   ========================================================================= */
-
-@keyframes floatCore {
-  0% {
-    transform: translateY(0px) rotateX(12deg) rotateY(-8deg);
-  }
-  50% {
-    transform: translateY(-12px) rotateX(16deg) rotateY(-4deg);
-  }
-  100% {
-    transform: translateY(0px) rotateX(12deg) rotateY(-8deg);
-  }
+.anim-workspace {
+  animation: workspaceReveal 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes rotateIsometric {
-  0% {
-    transform: rotateX(55deg) rotateZ(45deg);
-  }
-  50% {
-    transform: rotateX(55deg) rotateZ(52deg);
-  }
-  100% {
-    transform: rotateX(55deg) rotateZ(45deg);
-  }
+.anim-panel-slide {
+  animation: slideInFromRight 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.anim-float-core {
-  animation: floatCore 6s ease-in-out infinite;
-  transform-style: preserve-3d;
+/* Micro-interaction transition defaults */
+.trans-fast {
+  transition: all 140ms ease-out;
 }
 
-.anim-isometric {
-  animation: rotateIsometric 8s ease-in-out infinite;
-  transform-style: preserve-3d;
-}
-
-/* =========================================================================
-   3. Ambient Fluid Mesh Gradient (Warm Golden / Violet from Video)
-   ========================================================================= */
-
-@keyframes ambientMesh {
-  0% {
-    transform: translate(-10%, -10%) scale(1);
-    opacity: 0.35;
-  }
-  50% {
-    transform: translate(10%, 15%) scale(1.15);
-    opacity: 0.55;
-  }
-  100% {
-    transform: translate(-10%, -10%) scale(1);
-    opacity: 0.35;
-  }
-}
-
-.ambient-aura {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(100px);
-  z-index: 0;
-  opacity: 0.45;
-  animation: ambientMesh 14s ease-in-out infinite alternate;
-}
-
-.ambient-aura.golden {
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.4) 0%, rgba(180, 83, 9, 0.1) 70%, transparent 100%);
-}
-
-.ambient-aura.purple {
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.35) 0%, rgba(109, 40, 217, 0.08) 70%, transparent 100%);
-}
-
-.ambient-aura.cyan {
-  background: radial-gradient(circle, rgba(2, 132, 199, 0.3) 0%, rgba(3, 105, 161, 0.08) 70%, transparent 100%);
-}
-
-/* =========================================================================
-   4. Laser Scanning Beam across Architectural Grid
-   ========================================================================= */
-
-@keyframes beamScan {
-  0% {
-    top: 0%;
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.8;
-  }
-  85% {
-    opacity: 0.8;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
-.grid-beam-scanner {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
-  pointer-events: none;
-  animation: beamScan 8s ease-in-out infinite;
-}
-
-[data-theme='light'] .grid-beam-scanner {
-  background: linear-gradient(90deg, transparent 0%, rgba(15, 23, 42, 0.4) 50%, transparent 100%);
-}
-
-/* =========================================================================
-   5. Interactive Accordion & Interactive Card Hover Physics
-   ========================================================================= */
-
-.accordion-trigger-icon {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.accordion-open .accordion-trigger-icon {
-  transform: rotate(45deg);
-}
-
-.accordion-body-collapse {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-  opacity: 0;
-}
-
-.accordion-body-collapse.open {
-  max-height: 300px;
-  opacity: 1;
-}
-
-/* Card Hover Spotlight & Elevation */
-.bento-card-interactive {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.bento-card-interactive:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-strong);
-  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='dark'] .bento-card-interactive:hover {
-  box-shadow: 0 14px 40px -6px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 255, 255, 0.05);
-}
-
-/* =========================================================================
-   6. Data Stream Pulse on Flow Connectors
-   ========================================================================= */
-
-@keyframes pulsePacket {
-  0% {
-    stroke-dashoffset: 24;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-.anim-stream-line {
-  stroke-dasharray: 6 6;
-  animation: pulsePacket 1s linear infinite;
+.trans-base {
+  transition: all 200ms ease-out;
 }

@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { 
-  UserCheck2, 
+  Building2, 
   ShieldAlert, 
   Network, 
-  Building2, 
-  Radar, 
-  FileLock2, 
+  MapPin, 
+  FileText, 
   Clock, 
-  AlertTriangle,
-  Copy,
-  ExternalLink
+  Copy, 
+  Check, 
+  ExternalLink 
 } from 'lucide-react';
-import './evidenceLocker.css';
+import '../components/investigation/workspace/workspaceTab.css';
 
 export default function EntityDossier() {
   const [copied, setCopied] = useState(false);
@@ -23,203 +22,195 @@ export default function EntityDossier() {
   }
 
   return (
-    <div className="evidence-locker-page">
-      {/* Header Banner */}
-      <div className="evidence-header-banner">
-        <div>
-          <div className="evidence-header-badges">
-            <span className="statutory-badge vault">
-              <UserCheck2 size={11} /> ENTITY DOSSIER
-            </span>
-            <span className="statutory-badge admissible" style={{ color: '#c084fc', borderColor: 'rgba(192, 132, 252, 0.4)' }}>
-              SYNTHETIC DEMONSTRATION SUBJECT
-            </span>
+    <div className="tv-dashboard-container anim-workspace">
+      {/* 1. ENTITY HEADER */}
+      <div className="tv-card" style={{ marginBottom: '16px' }}>
+        <div className="tv-card-header">
+          <div>
+            <span className="tv-card-title">Entity Intelligence Dossier</span>
+            <div className="text-muted" style={{ fontSize: '11px', marginTop: '2px' }}>
+              DOSSIER ID: DOS-2026-081 · SUBJECT: UNHOSTED CRYPTO CLUSTER &amp; CORRELATED UPI VPA
+            </div>
           </div>
-          <div className="evidence-docket-line">
-            DOSSIER REF: <strong>DOS-2026-8327 // TARGET: VIKTOR "CIPHER" VANCE</strong>
-          </div>
-          <h1 className="evidence-header-title">
-            Forensic Entity Intelligence Dossier
-          </h1>
-          <p className="evidence-header-subtitle">
-            Consolidated multi-rail subject intelligence profiling unhosted crypto clusters, correlated banking VPAs, VASP associations, and geospatial anomalies.
-          </p>
+          <span className="tv-badge tv-synthetic-badge font-semibold">
+            SYNTHETIC DEMONSTRATION DATA
+          </span>
         </div>
+
+        <p style={{ margin: '8px 0 0', fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+          This dossier aggregates multi-rail intelligence across unhosted Ethereum seed wallets, intermediate peeling relays, VASP exchange deposit clusters, and domestic UPI VPA endpoints. All identifiers are synthetic demonstration instances for forensic evaluation.
+        </p>
       </div>
 
-      {/* 4 Stat Cards */}
-      <div className="evidence-metrics-grid">
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>COMPOSITE RISK LEVEL</span>
-            <ShieldAlert size={13} />
+      <div className="tv-tab-workspace">
+        {/* 2. RELATIONSHIPS & NETWORK */}
+        <div className="tv-card">
+          <div className="tv-card-header">
+            <span className="tv-card-title">Relationships &amp; Network Clusters</span>
+            <span className="tv-badge tv-badge-mono">4 Intermediary Hops</span>
           </div>
-          <div className="metric-body">
-            <span className="metric-val" style={{ color: '#ef4444' }}>88 / 100</span>
-            <div className="metric-sub" style={{ color: '#ef4444' }}>CRITICAL ELEVATED</div>
+
+          <div className="tv-table-wrapper">
+            <table className="tv-table">
+              <thead>
+                <tr>
+                  <th>CLUSTER / NODE</th>
+                  <th>RELATIONSHIP ROLE</th>
+                  <th>RAIL</th>
+                  <th>IDENTIFIER</th>
+                  <th>HOP DISTANCE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="font-medium">Primary Seed</td>
+                  <td>Target Suspect Origin</td>
+                  <td><span className="tv-badge tv-rail-crypto">CRYPTO</span></td>
+                  <td className="mono font-semibold">0x71c8...1350</td>
+                  <td className="mono">0 (Origin)</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Peel Split Node</td>
+                  <td>Layering Intermediary</td>
+                  <td><span className="tv-badge tv-rail-crypto">CRYPTO</span></td>
+                  <td className="mono">0x1a2b...9012</td>
+                  <td className="mono">Hop 1</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Deposit Sweep Node</td>
+                  <td>Consolidation Relay</td>
+                  <td><span className="tv-badge tv-rail-crypto">CRYPTO</span></td>
+                  <td className="mono">0x88fa...10b2</td>
+                  <td className="mono">Hop 2</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Exchange Custody</td>
+                  <td>VASP Hot Wallet</td>
+                  <td><span className="tv-badge tv-rail-crypto">CRYPTO</span></td>
+                  <td className="mono">Binance Custody Hub</td>
+                  <td className="mono">Hop 3</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">P2P Settler</td>
+                  <td>Correlated Off-Ramp VPA</td>
+                  <td><span className="tv-badge tv-rail-upi">UPI</span></td>
+                  <td className="mono">p2p_desk_blr@axis</td>
+                  <td className="mono">Hop 4</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div className="metric-bar-indicator" style={{ background: '#ef4444' }} />
         </div>
 
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>NETWORK CLUSTERS</span>
-            <Network size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">12 Wallets · 3 VPAs</span>
-            <div className="metric-sub">Across 4 Financial Rails</div>
-          </div>
-          <div className="metric-bar-indicator cyan" />
-        </div>
-
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>TOTAL EXPOSURE FLOW</span>
-            <Building2 size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">$1,420,000 USD</span>
-            <div className="metric-sub">₹11.82 Cr Equivalent</div>
-          </div>
-          <div className="metric-bar-indicator green" />
-        </div>
-
-        <div className="evidence-metric-card">
-          <div className="metric-header">
-            <span>GEO FINDINGS</span>
-            <Radar size={13} />
-          </div>
-          <div className="metric-body">
-            <span className="metric-val">3 Anomalies Flagged</span>
-            <div className="metric-sub" style={{ color: '#f97316' }}>Impossible Travel Detected</div>
-          </div>
-          <div className="metric-bar-indicator" style={{ background: '#f97316' }} />
-        </div>
-      </div>
-
-      {/* Dossier Detail Grid */}
-      <div className="evidence-split-workspace">
-        {/* Left Column: Network & Activity */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* Identity & Technical Targets */}
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">Subject Identifiers & Analytical Associations</span>
-              <span className="badge badge-synthetic">SYNTHETIC SUBJECT</span>
+        {/* 3. TRANSACTIONS & VASP ASSOCIATIONS 2-Column Grid */}
+        <div className="tv-overview-top-grid">
+          {/* Transactions */}
+          <div className="tv-card">
+            <div className="tv-card-header">
+              <span className="tv-card-title">Transactions</span>
+              <span className="tv-badge tv-badge-mono">5 Operations</span>
             </div>
-            <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="muted" style={{ fontSize: '11px' }}>Subject Codename</span>
-                <strong className="mono" style={{ fontSize: '12px' }}>Viktor "Cipher" Vance (DEMO SUBJECT)</strong>
+            <div className="tv-details-list">
+              <div className="tv-detail-row">
+                <span className="mono tv-detail-label">0x9a8f...1a012</span>
+                <span className="mono font-semibold">45.20 ETH (Hop 1)</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="muted" style={{ fontSize: '11px' }}>Primary EVM Wallet</span>
-                <span className="mono" style={{ fontSize: '11px', color: '#24c7c9' }}>
-                  0x71F92830d8c019284756102938475610293E84C2
+              <div className="tv-detail-row">
+                <span className="mono tv-detail-label">0x7b2c...1b345</span>
+                <span className="mono font-semibold">42.00 ETH (Hop 2)</span>
+              </div>
+              <div className="tv-detail-row">
+                <span className="mono tv-detail-label">0x4d5e...4b5c</span>
+                <span className="mono font-semibold">42.00 ETH (Hop 3)</span>
+              </div>
+              <div className="tv-detail-row">
+                <span className="mono tv-detail-label">UPI-REF-998412</span>
+                <span className="mono font-semibold">₹3,40,000 (Hop 4)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* VASP Associations */}
+          <div className="tv-card">
+            <div className="tv-card-header">
+              <span className="tv-card-title">Potential VASP Associations</span>
+              <span className="tv-badge tv-risk-low">82% Confidence</span>
+            </div>
+            <div className="tv-details-list">
+              <div className="tv-detail-row">
+                <span className="tv-detail-label">Candidate</span>
+                <span className="font-semibold text-primary">Binance Custody Hub</span>
+              </div>
+              <div className="tv-detail-row">
+                <span className="tv-detail-label">Type</span>
+                <span>Centralized VASP</span>
+              </div>
+              <div className="tv-detail-row">
+                <span className="tv-detail-label">Registry Source</span>
+                <span>TRACEVAULT Cluster Registry</span>
+              </div>
+              <div className="tv-detail-row">
+                <span className="tv-detail-label">Legal Status</span>
+                <span className="tv-badge" style={{ color: 'var(--risk-high)', backgroundColor: 'var(--status-high-bg)', borderColor: 'var(--status-high-border)' }}>
+                  Investigator Review Required
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="muted" style={{ fontSize: '11px' }}>Correlated UPI VPA</span>
-                <span className="mono" style={{ fontSize: '11px', color: '#a855f7' }}>
-                  p2p_desk_blr@axis (Analytical Association)
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span className="muted" style={{ fontSize: '11px' }}>Attribution Confidence</span>
-                <strong style={{ color: '#10b981' }}>82% (Heuristic Cluster Match)</strong>
-              </div>
-            </div>
-          </div>
-
-          {/* Behavior & Heuristic Findings */}
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">Behavioral Risk Heuristics</span>
-            </div>
-            <div className="card-body">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ padding: '8px 10px', background: 'var(--color-surface-soft)', border: '1px solid var(--color-border)', borderRadius: '3px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '11px' }}>
-                    <span>Peel-Chain Layering Detected</span>
-                    <span style={{ color: '#ef4444' }}>+20 PTS</span>
-                  </div>
-                  <p style={{ margin: '3px 0 0', fontSize: '10px', color: 'var(--color-secondary-text)' }}>
-                    High-entropy peeling transfers to 4 unhosted intermediate wallets before reaching exchange deposit node.
-                  </p>
-                </div>
-
-                <div style={{ padding: '8px 10px', background: 'var(--color-surface-soft)', border: '1px solid var(--color-border)', borderRadius: '3px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '11px' }}>
-                    <span>Wasabi Mixer Interaction</span>
-                    <span style={{ color: '#ef4444' }}>+25 PTS</span>
-                  </div>
-                  <p style={{ margin: '3px 0 0', fontSize: '10px', color: 'var(--color-secondary-text)' }}>
-                    Direct interaction with Wasabi CoinJoin coordinator pool within 3 hops of primary target wallet.
-                  </p>
-                </div>
-
-                <div style={{ padding: '8px 10px', background: 'var(--color-surface-soft)', border: '1px solid var(--color-border)', borderRadius: '3px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '11px' }}>
-                    <span>UPI Mule Funnel Dispersal</span>
-                    <span style={{ color: '#f97316' }}>+20 PTS</span>
-                  </div>
-                  <p style={{ margin: '3px 0 0', fontSize: '10px', color: 'var(--color-secondary-text)' }}>
-                    Cross-rail fiat off-ramp disbursed across multiple beneficiary accounts in Bengaluru within 15 minutes.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: VASP & Statutory Evidence Summary */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">VASP Attribution Profiles</span>
+        {/* 4. RISK & BEHAVIOR */}
+        <div className="tv-overview-top-grid">
+          {/* Risk */}
+          <div className="tv-card">
+            <div className="tv-card-header">
+              <span className="tv-card-title">Risk Analysis</span>
+              <span className="tv-badge tv-risk-critical">Critical · 88 / 100</span>
             </div>
-            <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ padding: '8px 10px', background: 'var(--color-surface-soft)', border: '1px solid var(--color-border)', borderRadius: '3px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '11px' }}>
-                  <span style={{ color: '#24c7c9' }}>Binance Global Hot Wallet Cluster</span>
-                  <span className="badge badge-low">82% CONF</span>
-                </div>
-                <div className="mono" style={{ fontSize: '9px', color: '#64748b', marginTop: '3px' }}>
-                  Deposit Wallet: 0x88fa3910b2...10b2 · Hop 2
-                </div>
-              </div>
-
-              <div style={{ padding: '8px 10px', background: 'var(--color-surface-soft)', border: '1px solid var(--color-border)', borderRadius: '3px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '11px' }}>
-                  <span style={{ color: '#24c7c9' }}>CoinDCX Institutional Liquidity Desk</span>
-                  <span className="badge badge-medium">64% CONF</span>
-                </div>
-                <div className="mono" style={{ fontSize: '9px', color: '#64748b', marginTop: '3px' }}>
-                  Off-ramp bridge to Axis Bank settlement node
-                </div>
-              </div>
-            </div>
+            <p style={{ margin: 0, fontSize: '12.5px', lineHeight: '1.5', color: 'var(--text-secondary)' }}>
+              High-velocity layering across 4 hops within 23 minutes. Rapid conversion into domestic fiat off-ramp with structured round amounts.
+            </p>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">Linked Evidence & Exhibits</span>
+          {/* Behavior */}
+          <div className="tv-card">
+            <div className="tv-card-header">
+              <span className="tv-card-title">Observed Behavior</span>
+              <span className="tv-badge tv-badge-mono">Programmatic</span>
             </div>
-            <div className="card-body">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                  <span className="mono" style={{ color: '#38bdf8' }}>EX-01 (Ledger Trail)</span>
-                  <span className="badge badge-low">SEAL VALID</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                  <span className="mono" style={{ color: '#38bdf8' }}>EX-02 (Frankfurt PCAP)</span>
-                  <span className="badge badge-low">SEAL VALID</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                  <span className="mono" style={{ color: '#38bdf8' }}>EX-03 (KYC Airtel IPDR)</span>
-                  <span className="badge badge-low">SEAL VALID</span>
-                </div>
+            <p style={{ margin: 0, fontSize: '12.5px', lineHeight: '1.5', color: 'var(--text-secondary)' }}>
+              Consistent with algorithmic peeling scripts: precise round split followed by change address sweep into custodial liquidity pool.
+            </p>
+          </div>
+        </div>
+
+        {/* 5. GEOSPATIAL SIGNALS & EVIDENCE */}
+        <div className="tv-overview-top-grid">
+          {/* Geospatial Signals */}
+          <div className="tv-card">
+            <div className="tv-card-header">
+              <span className="tv-card-title">Geospatial Signals</span>
+              <span className="tv-badge tv-risk-high">Speed Anomaly</span>
+            </div>
+            <p style={{ margin: 0, fontSize: '12.5px', lineHeight: '1.5', color: 'var(--text-secondary)' }}>
+              Tor exit relay (Frankfurt, DE) recorded 18s before broadband session in Bengaluru (IN). Denotes network-level proxy routing evasion.
+            </p>
+          </div>
+
+          {/* Evidence */}
+          <div className="tv-card">
+            <div className="tv-card-header">
+              <span className="tv-card-title">Evidence References</span>
+              <span className="tv-badge tv-risk-low">4 Sealed Exhibits</span>
+            </div>
+            <div className="tv-details-list">
+              <div className="tv-detail-row">
+                <span className="mono tv-detail-label">EX-01</span>
+                <span>Ledger Transaction Trail</span>
+              </div>
+              <div className="tv-detail-row">
+                <span className="mono tv-detail-label">EX-03</span>
+                <span>Broadband IPDR &amp; Tower Log</span>
               </div>
             </div>
           </div>

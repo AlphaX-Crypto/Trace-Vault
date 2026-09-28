@@ -1,172 +1,168 @@
 /**
- * TRACEVAULT — Architectural Luxury & Forensic Intelligence Design System
- * Reference: Modern crypto/blockchain bento design (ZQL / Vercel / Linear inspired).
- * Features razor-sharp hairline gridlines, technical HUD notches, grotesque typography,
- * deep obsidian black dark mode, and pristine gallery white light mode.
+ * TRACEVAULT OFFICIAL DESIGN TOKENS
+ * Strict adherence to the official TRACEVAULT design system.
+ * Minimal, controlled, precise, zero-gimmick architecture.
  */
 
 :root {
-  /* Default: Clean Architectural Light Mode */
-  color-scheme: light;
+  /* Official Typography */
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, 'Liberation Mono', monospace;
 
-  /* Typography */
-  --font-ui: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  /* Official Dark Tokens */
+  --bg-dark-base: #071018;
+  --bg-dark-surface: #0b141c;
+  --bg-dark-elevated: #111e2a;
+  --border-dark-subtle: #16222f;
+  --border-dark-strong: #213547;
+  --accent-cyan: #24c7c9;
+  --accent-cyan-glow: #00f0ff;
+  --accent-cyan-dim: rgba(36, 199, 201, 0.12);
 
-  /* Sizing & HUD Layout */
-  --topbar-height: 64px;
-  --sidebar-width: 250px;
-  --footer-height: 36px;
+  /* Official Risk Tokens */
+  --risk-critical: #ef4444;
+  --risk-high: #f97316;
+  --risk-medium: #eab308;
+  --risk-low: #10b981;
+
+  /* Official Light Tokens */
+  --bg-light-base: #f8fafc;
+  --bg-light-surface: #ffffff;
+  --border-light: #e2e8f0;
+  --accent-light: #0d9488;
+  --text-light: #0f172a;
+
+  /* Structural Dimensions */
+  --header-height: 56px;
+  --sidebar-width: 220px;
   --radius-xs: 2px;
   --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
   --radius-pill: 9999px;
 
-  /* LIGHT THEME (Pristine Gallery White & Architectural Slate) */
-  --bg-app: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-surface-raised: #f1f5f9;
-  --bg-surface-glass: rgba(255, 255, 255, 0.85);
-  --bg-surface-header: rgba(255, 255, 255, 0.92);
-  --bg-sidebar: #0a0f1d;
-  --bg-sidebar-hover: rgba(255, 255, 255, 0.08);
-  --bg-sidebar-active: #1e293b;
+  /* Transitions */
+  --motion-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-base: 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-slow: 360ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Hairline Architectural Grid Lines */
-  --border-subtle: rgba(15, 23, 42, 0.08);
-  --border-medium: rgba(15, 23, 42, 0.15);
-  --border-strong: rgba(15, 23, 42, 0.3);
-  --grid-line-color: rgba(15, 23, 42, 0.04);
-  --grid-cross-color: rgba(15, 23, 42, 0.25);
+  /* DEFAULT: DARK MODE */
+  color-scheme: dark;
+  --bg-base: var(--bg-dark-base);
+  --bg-surface: var(--bg-dark-surface);
+  --bg-elevated: var(--bg-dark-elevated);
+  --bg-sidebar: #060d14;
+  --border-subtle: var(--border-dark-subtle);
+  --border-strong: var(--border-dark-strong);
+  
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #071018;
 
-  /* High-Contrast Typography */
-  --text-primary: #0a0f1d;
+  --accent-primary: var(--accent-cyan);
+  --accent-subtle: var(--accent-cyan-dim);
+
+  /* Semantic aliases */
+  --bg-app: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-border: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --primary-color: var(--accent-cyan);
+  --primary-hover: #1eb5b7;
+  --primary-light: var(--accent-cyan-dim);
+
+  /* Status Colors */
+  --status-low-text: var(--risk-low);
+  --status-low-bg: rgba(16, 185, 129, 0.1);
+  --status-low-border: rgba(16, 185, 129, 0.25);
+
+  --status-medium-text: var(--risk-medium);
+  --status-medium-bg: rgba(234, 179, 8, 0.1);
+  --status-medium-border: rgba(234, 179, 8, 0.25);
+
+  --status-high-text: var(--risk-high);
+  --status-high-bg: rgba(249, 115, 22, 0.1);
+  --status-high-border: rgba(249, 115, 22, 0.25);
+
+  --status-critical-text: var(--risk-critical);
+  --status-critical-bg: rgba(239, 68, 68, 0.1);
+  --status-critical-border: rgba(239, 68, 68, 0.25);
+
+  /* Rails */
+  --rail-crypto: #38bdf8;
+  --rail-upi: #a855f7;
+  --rail-cross: #f43f5e;
+  --rail-geo: #f59e0b;
+}
+
+/* Explicit Light Mode */
+[data-theme='light'] {
+  color-scheme: light;
+  --bg-base: var(--bg-light-base);
+  --bg-surface: var(--bg-light-surface);
+  --bg-elevated: #f1f5f9;
+  --bg-sidebar: #0b141c; /* Kept dark as in official reference screenshots! */
+  --border-subtle: var(--border-light);
+  --border-strong: #cbd5e1;
+  
+  --text-primary: var(--text-light);
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-muted: #64748b;
   --text-inverse: #ffffff;
 
-  /* Sleek Accent (Deep Obsidian / Royal Steel / Amber Pulse) */
-  --primary-color: #0f172a;
-  --primary-hover: #1e293b;
-  --primary-light: rgba(15, 23, 42, 0.06);
-  --primary-border: rgba(15, 23, 42, 0.18);
-  --accent-amber: #d97706;
-  --accent-purple: #7c3aed;
+  --accent-primary: var(--accent-light);
+  --accent-subtle: rgba(13, 148, 136, 0.1);
 
-  /* Refined Status Tiers */
-  --status-low-text: #16a34a;
-  --status-low-bg: rgba(22, 163, 74, 0.08);
-  --status-low-border: rgba(22, 163, 74, 0.2);
+  --bg-app: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-border: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --primary-color: var(--accent-light);
+  --primary-hover: #0f766e;
+  --primary-light: rgba(13, 148, 136, 0.1);
+
+  --status-low-text: #059669;
+  --status-low-bg: rgba(16, 185, 129, 0.08);
+  --status-low-border: rgba(16, 185, 129, 0.3);
 
   --status-medium-text: #d97706;
   --status-medium-bg: rgba(217, 119, 6, 0.08);
-  --status-medium-border: rgba(217, 119, 6, 0.2);
+  --status-medium-border: rgba(217, 119, 6, 0.3);
 
-  --status-high-text: #ea580c;
+  --status-high-text: #c2410c;
   --status-high-bg: rgba(234, 88, 12, 0.08);
-  --status-high-border: rgba(234, 88, 12, 0.2);
+  --status-high-border: rgba(234, 88, 12, 0.3);
 
-  --status-critical-text: #dc2626;
+  --status-critical-text: #b91c1c;
   --status-critical-bg: rgba(220, 38, 38, 0.08);
-  --status-critical-border: rgba(220, 38, 38, 0.2);
-
-  /* Rails Semantics */
-  --rail-crypto: #0284c7;
-  --rail-upi: #7c3aed;
-  --rail-cross: #db2777;
-  --rail-geo: #d97706;
-
-  /* Subtle Architectural Elevation */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06);
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
-
-  /* Legacy Aliases */
-  --color-surface: var(--bg-surface);
-  --color-surface-raised: var(--bg-surface-raised);
-  --color-surface-soft: var(--bg-surface-raised);
-  --color-border: var(--border-subtle);
-  --color-border-strong: var(--border-medium);
-  --color-primary-text: var(--text-primary);
-  --color-secondary-text: var(--text-secondary);
-  --color-muted-text: var(--text-muted);
-  --color-accent: var(--primary-color);
-  --color-accent-bright: var(--primary-color);
+  --status-critical-border: rgba(220, 38, 38, 0.3);
 }
 
-/* DARK THEME (Obsidian Black & Luxury Glass Bento Grid) */
+/* Explicit Dark Mode */
 [data-theme='dark'] {
   color-scheme: dark;
+  --bg-base: var(--bg-dark-base);
+  --bg-surface: var(--bg-dark-surface);
+  --bg-elevated: var(--bg-dark-elevated);
+  --bg-sidebar: #060d14;
+  --border-subtle: var(--border-dark-subtle);
+  --border-strong: var(--border-dark-strong);
+  
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #071018;
 
-  --bg-app: #040406;
-  --bg-surface: #0a0b0e;
-  --bg-surface-raised: #121318;
-  --bg-surface-glass: rgba(10, 11, 14, 0.85);
-  --bg-surface-header: rgba(4, 4, 6, 0.88);
-  --bg-sidebar: #040406;
-  --bg-sidebar-hover: rgba(255, 255, 255, 0.06);
-  --bg-sidebar-active: #151720;
+  --accent-primary: var(--accent-cyan);
+  --accent-subtle: var(--accent-cyan-dim);
 
-  /* Hairline Architectural Grid Lines */
-  --border-subtle: rgba(255, 255, 255, 0.09);
-  --border-medium: rgba(255, 255, 255, 0.16);
-  --border-strong: rgba(255, 255, 255, 0.28);
-  --grid-line-color: rgba(255, 255, 255, 0.035);
-  --grid-cross-color: rgba(255, 255, 255, 0.35);
-
-  /* High-Contrast Stark White Typography */
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  --text-inverse: #000000;
-
-  /* Clean White Primary on Dark */
-  --primary-color: #ffffff;
-  --primary-hover: #e4e4e7;
-  --primary-light: rgba(255, 255, 255, 0.1);
-  --primary-border: rgba(255, 255, 255, 0.22);
-  --accent-amber: #f59e0b;
-  --accent-purple: #a855f7;
-
-  /* Refined Status Tiers */
-  --status-low-text: #4ade80;
-  --status-low-bg: rgba(34, 197, 94, 0.12);
-  --status-low-border: rgba(34, 197, 94, 0.25);
-
-  --status-medium-text: #fbbf24;
-  --status-medium-bg: rgba(245, 158, 11, 0.12);
-  --status-medium-border: rgba(245, 158, 11, 0.25);
-
-  --status-high-text: #fb923c;
-  --status-high-bg: rgba(249, 115, 22, 0.12);
-  --status-high-border: rgba(249, 115, 22, 0.25);
-
-  --status-critical-text: #f87171;
-  --status-critical-bg: rgba(239, 68, 68, 0.12);
-  --status-critical-border: rgba(239, 68, 68, 0.25);
-
-  /* Rails Semantics */
-  --rail-crypto: #38bdf8;
-  --rail-upi: #c084fc;
-  --rail-cross: #f472b6;
-  --rail-geo: #fbbf24;
-
-  /* Architectural Depth */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.8);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.7);
-  --shadow-glass: 0 12px 40px rgba(0, 0, 0, 0.8);
-
-  /* Legacy Aliases */
+  --bg-app: var(--bg-base);
   --color-surface: var(--bg-surface);
-  --color-surface-raised: var(--bg-surface-raised);
-  --color-surface-soft: var(--bg-surface-raised);
   --color-border: var(--border-subtle);
-  --color-border-strong: var(--border-medium);
-  --color-primary-text: var(--text-primary);
-  --color-secondary-text: var(--text-secondary);
-  --color-muted-text: var(--text-muted);
-  --color-accent: var(--primary-color);
-  --color-accent-bright: var(--primary-color);
+  --color-border-strong: var(--border-strong);
+  --primary-color: var(--accent-cyan);
+  --primary-hover: #1eb5b7;
+  --primary-light: var(--accent-cyan-dim);
 }

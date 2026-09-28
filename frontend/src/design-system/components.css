@@ -1,0 +1,255 @@
+/**
+ * TRACEVAULT OFFICIAL COMPONENT PRIMITIVES
+ * Built on strict tokens: tables, badges, cards, inputs, tabs.
+ */
+
+/* =========================================================================
+   CARDS & PANELS
+   ========================================================================= */
+
+.tv-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  position: relative;
+  transition: border-color var(--duration-micro) ease;
+}
+
+.tv-card:hover {
+  border-color: var(--border-medium);
+}
+
+.tv-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-panel-body {
+  padding: 20px;
+}
+
+/* =========================================================================
+   BUTTONS
+   ========================================================================= */
+
+.tv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-micro) ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.tv-btn-primary {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  border-color: var(--text-primary);
+}
+
+.tv-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.tv-btn-secondary {
+  background-color: var(--bg-surface-raised);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.tv-btn-secondary:hover {
+  background-color: var(--bg-surface-elevated);
+  border-color: var(--text-muted);
+}
+
+.tv-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.tv-btn-ghost:hover {
+  background-color: var(--bg-surface-raised);
+  color: var(--text-primary);
+}
+
+.tv-btn-cyan {
+  background-color: var(--cyan-subtle);
+  color: var(--cyan-primary);
+  border-color: var(--cyan-border);
+}
+
+.tv-btn-cyan:hover {
+  background-color: rgba(36, 199, 201, 0.2);
+}
+
+/* =========================================================================
+   BADGES & RISK INDICATORS
+   ========================================================================= */
+
+.tv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-technical);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tv-badge-critical {
+  background-color: var(--risk-critical-bg);
+  color: var(--risk-critical);
+  border: 1px solid var(--risk-critical-border);
+}
+
+.tv-badge-high {
+  background-color: var(--risk-high-bg);
+  color: var(--risk-high);
+  border: 1px solid var(--risk-high-border);
+}
+
+.tv-badge-medium {
+  background-color: var(--risk-medium-bg);
+  color: var(--risk-medium);
+  border: 1px solid var(--risk-medium-border);
+}
+
+.tv-badge-low,
+.tv-badge-normal {
+  background-color: var(--risk-low-bg);
+  color: var(--risk-low);
+  border: 1px solid var(--risk-low-border);
+}
+
+.tv-badge-neutral {
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+/* =========================================================================
+   FORM INPUTS
+   ========================================================================= */
+
+.tv-input {
+  height: 34px;
+  padding: 0 12px;
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  outline: none;
+  transition: border-color var(--duration-micro) ease;
+}
+
+.tv-input:focus {
+  border-color: var(--cyan-primary);
+}
+
+.tv-input-technical {
+  font-family: var(--font-technical);
+  font-size: 11px;
+}
+
+/* =========================================================================
+   TECHNICAL DATA TABLES
+   ========================================================================= */
+
+.tv-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.tv-table th {
+  padding: 10px 14px;
+  font-family: var(--font-technical);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tv-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+  color: var(--text-secondary);
+}
+
+.tv-table tr:hover td {
+  background-color: var(--bg-surface-raised);
+  color: var(--text-primary);
+}
+
+/* =========================================================================
+   WORKSPACE TABS
+   ========================================================================= */
+
+.tv-tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 4px;
+  overflow-x: auto;
+}
+
+.tv-tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all var(--duration-micro) ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tv-tab-item:hover {
+  color: var(--text-primary);
+}
+
+.tv-tab-item.active {
+  color: var(--text-primary);
+  font-weight: 600;
+  border-bottom-color: var(--cyan-primary);
+}
