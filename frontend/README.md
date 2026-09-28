@@ -1,16 +1,25 @@
-# React + Vite
+# TRACEVAULT investigator frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This frontend provides a secure sign-in, an authenticated case registry, and a focused investigation workspace. Each workspace section has one job: case overview, transactions, graph, timeline, risk, attribution, geospatial, evidence, and report review.
 
-Currently, two official plugins are available:
+## Design foundation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Canvas `#071018`, surfaces `#0b161f` and `#101c26`, with restrained teal `#24c7c9` for active controls.
+- Inter for interface text and DM Mono with system monospace fallbacks for identifiers and ledger references.
+- Dark institutional surfaces, clear labels, and no decorative analytics. Cross-rail colors follow `docs/INVESTIGATOR_WORKSPACE.md`.
+- Risk values are investigative indicators; associations do not establish identity or ownership. Missing source timestamps display as `TIME UNKNOWN`.
 
-## React Compiler
+## Data and access
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+`src/services/api.js` remains the centralized client for Express. The frontend uses the existing authenticated routes for sign-in, session verification, case list/detail, analysis, evidence, and investigation APIs. It does not synthesize case, analysis, or identity data when those calls fail. `AuthContext` and `ProtectedRoute` preserve the existing session boundary. Express, the intelligence engine, PostgreSQL, RBAC, and API contracts are outside this frontend.
 
-## Expanding the Oxlint configuration
+## Local development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Configure `VITE_API_BASE_URL` in `.env` when the API is not available through the Vite `/api` and `/health` proxy. Then run:
+
+```sh
+npm run dev
+npm run build
+```
+
+`node test_ui.mjs` runs browser smoke checks and captures screenshots in the task output directory. Set `TRACEVAULT_TEST_USERNAME` and `TRACEVAULT_TEST_PASSWORD` to exercise the authenticated case flow; the script contains no credentials.

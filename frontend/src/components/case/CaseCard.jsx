@@ -1,2 +1,0 @@
-import {Link} from 'react-router-dom';import Badge from '../common/Badge';import {formatWallet} from '../../utils/formatWallet'
-export default function CaseCard({item}){return <article className="card case-card"><div><span className="mono">{item.id}</span><Badge tone={item.riskLevel}>{item.riskLevel}</Badge></div><h3><Link to={`/case/${item.id}/overview`}>{item.name}</Link></h3><p className="mono">{formatWallet(item.wallet)}</p></article>}

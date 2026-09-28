@@ -33,8 +33,8 @@ export function AuthProvider({ children }) {
           } catch (_) {}
         }
 
-        // Verify session freshness with backend /api/auth/me (unless demo token)
-        if (!storedToken.startsWith('tv_token_demo')) {
+        // Verify session freshness with backend /api/auth/me
+        {
           try {
             const profile = await api.getMe();
             setUser(profile);
@@ -66,28 +66,9 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (identifier, password, remember = false) => {
     setError(null);
     try {
-      let authToken = null;
-      let authUser = null;
-
-      try {
-        const data = await api.login({ identifier, password });
-        authToken = data.token;
-        authUser = data.user;
-      } catch (backendErr) {
-        // Fallback for demonstration / local testing when backend service is offline
-        if (identifier && password) {
-          authToken = 'tv_token_demo_officer_8327';
-          authUser = {
-            id: 'usr_8327',
-            name: 'Jimmy Dane',
-            badge_id: 'LE ID #8327A',
-            role: 'LEAD_INVESTIGATOR',
-            division: 'Central Cyber Forensic Cell'
-          };
-        } else {
-          throw backendErr;
-        }
-      }
+      const data = await api.login({ identifier, password });
+      const authToken = data.token;
+      const authUser = data.user;
 
       setAuthToken(authToken);
       setToken(authToken);

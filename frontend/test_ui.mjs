@@ -1,83 +1,61 @@
 import { chromium } from 'playwright';
-import fs from 'fs';
+import { createServer } from 'vite';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
-const SCREENSHOTS_DIR = 'C:/Users/Samarth/.gemini/antigravity-ide/brain/f10d02c2-5077-48f1-9238-26e3592f604f/scratch/screenshots';
-
-if (!fs.existsSync(SCREENSHOTS_DIR)) {
-  fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
-}
-
-async function runTests() {
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-  const page = await context.newPage();
-
-  const consoleErrors = [];
-  page.on('console', msg => {
-    if (msg.type() === 'error') {
-      consoleErrors.push(`[${msg.type()}] ${msg.text()}`);
+const root = path.join(process.cwd(), 'frontend');
+const output = 'C:/Users/Samarth/Documents/Codex/2026-09-29/referenced-chatgpt-conversation-this-is-an/outputs/TRACEVAULT';
+await fs.mkdir(output, { recursive: true });
+const server = await createServer({ configFile: path.join(root, 'vite.config.js'), root, server: { host: '127.0.0.1', port: 3000 } });
+await server.listen();
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
+const errors = [];
+page.on('pageerror', e => errors.push(e.message));
+try {
+  await page.goto('http://127.0.0.1:3000/login', { waitUntil: 'networkidle' });
+  await page.getByRole('heading', { name: 'Sign in to TRACEVAULT' }).waitFor();
+  await page.screenshot({ path: path.join(output, '01-secure-opening.png'), fullPage: true });
+  await page.goto('http://127.0.0.1:3000/cases', { waitUntil: 'networkidle' });
+  await page.waitForURL('**/login');
+  await page.getByRole('heading', { name: 'Sign in to TRACEVAULT' }).waitFor();
+  await page.screenshot({ path: path.join(output, '02-protected-route.png'), fullPage: true });
+  const testUser = process.env.TRACEVAULT_TEST_USERNAME;
+  const testPassword = process.env.TRACEVAULT_TEST_PASSWORD;
+  if (testUser && testPassword) {
+    await page.locator('input[autocomplete="username"]').fill(testUser);
+    await page.locator('input[autocomplete="current-password"]').fill(testPassword);
+    await page.getByRole('button', { name: 'Continue securely' }).click();
+    await page.waitForTimeout(1800);
+  }
+  if (new URL(page.url()).pathname === '/cases') {
+    await page.getByText(/Loading assigned cases|records|No assigned cases|Unable to load/i).first().waitFor({ timeout: 8000 }).catch(() => {});
+    await page.screenshot({ path: path.join(output, '03-case-registry.png'), fullPage: true });
+    const firstCase = page.locator('a.case-link').first();
+    if (await firstCase.count()) {
+      await firstCase.click();
+      await page.waitForURL(/\/cases\/[^/]+\/overview/);
+      await page.locator('.metrics, .problem').waitFor({ timeout: 10000 });
+      await page.screenshot({ path: path.join(output, '04-investigation-overview.png'), fullPage: true });
+      await page.getByRole('link', { name: /Graph/ }).click();
+      await page.waitForTimeout(500);
+      await page.screenshot({ path: path.join(output, '05-investigation-graph.png'), fullPage: true });
+      console.log('PASS authenticated case list and investigation workspace rendered from API');
+    } else {
+      console.log('PASS authenticated case registry rendered; no case records are assigned');
     }
-  });
-
-  page.on('pageerror', error => {
-    consoleErrors.push(`[PAGE ERROR] ${error.message}`);
-  });
-
-  const routes = [
-    { name: '01_login', url: 'http://localhost:3000/login' },
-    { name: '02_dashboard', url: 'http://localhost:3000/dashboard' },
-    { name: '03_cases', url: 'http://localhost:3000/cases' },
-    { name: '04_new_case', url: 'http://localhost:3000/cases/new' },
-    { name: '05_investigation_overview', url: 'http://localhost:3000/investigations/INV-001/overview' },
-    { name: '06_investigation_transactions', url: 'http://localhost:3000/investigations/INV-001/transactions' },
-    { name: '07_investigation_graph', url: 'http://localhost:3000/investigations/INV-001/graph' },
-    { name: '08_investigation_timeline', url: 'http://localhost:3000/investigations/INV-001/timeline' },
-    { name: '09_investigation_risk', url: 'http://localhost:3000/investigations/INV-001/risk' },
-    { name: '10_investigation_attribution', url: 'http://localhost:3000/investigations/INV-001/attribution' },
-    { name: '11_investigation_geospatial', url: 'http://localhost:3000/investigations/INV-001/geospatial' },
-    { name: '12_investigation_evidence', url: 'http://localhost:3000/investigations/INV-001/evidence' },
-    { name: '13_investigation_report', url: 'http://localhost:3000/investigations/INV-001/report' },
-    { name: '14_disclosure', url: 'http://localhost:3000/disclosure' },
-    { name: '15_audit', url: 'http://localhost:3000/audit' },
-    { name: '16_entity', url: 'http://localhost:3000/entity' }
-  ];
-
-  console.log('--- STARTING PLAYWRIGHT VERIFICATION ---');
-
-  // First log in
-  console.log('Navigating to Login...');
-  await page.goto('http://localhost:3000/login', { waitUntil: 'networkidle' });
-  await page.screenshot({ path: `${SCREENSHOTS_DIR}/01_login.png` });
-
-  // Fill credentials and click submit
-  await page.fill('input[type="text"]', 'TV-LE-8327');
-  await page.fill('input[type="password"]', 'investigator123');
-  await page.click('button[type="submit"]');
-  await page.waitForTimeout(1000);
-
-  for (const r of routes) {
-    if (r.name === '01_login') continue;
-    console.log(`Navigating to ${r.name} (${r.url})...`);
-    await page.goto(r.url, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(600);
-    const title = await page.title();
-    await page.screenshot({ path: `${SCREENSHOTS_DIR}/${r.name}.png` });
-    console.log(`  -> Rendered: ${title}`);
+  } else if (testUser && testPassword) {
+      await page.locator('.form-error').waitFor({ timeout: 8000 });
+      const authFailure = await page.locator('.form-error').textContent();
+      throw new Error(`Configured test account was rejected by the API: ${authFailure}`);
   }
-
+  if (errors.length) throw new Error(`Browser runtime errors: ${errors.join('; ')}`);
+  console.log('PASS login opening render');
+  console.log('PASS unauthenticated /cases redirects to /login');
+  if (!testUser || !testPassword) console.log('SKIP authenticated case flow (test credentials were not supplied)');
+  console.log('PASS no browser runtime errors');
+  console.log(`Screenshots saved to ${output}`);
+} finally {
   await browser.close();
-
-  console.log('\n--- VERIFICATION SUMMARY ---');
-  console.log(`Total Routes Tested: ${routes.length}`);
-  console.log(`Console Errors: ${consoleErrors.length}`);
-  if (consoleErrors.length > 0) {
-    consoleErrors.forEach(err => console.error(err));
-  } else {
-    console.log('PASSED: Zero console or runtime errors detected!');
-  }
+  await server.close();
 }
-
-runTests().catch(err => {
-  console.error('Test execution failed:', err);
-  process.exit(1);
-});

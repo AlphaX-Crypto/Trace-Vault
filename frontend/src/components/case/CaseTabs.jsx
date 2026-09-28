@@ -1,2 +1,0 @@
-import {NavLink,useParams} from 'react-router-dom';import './case.css'
-export default function CaseTabs(){const{id}=useParams();const tabs=[['overview','Overview'],['graph','Transaction graph'],['attribution','Attribution & risk'],['evidence','Evidence'],['report','Report']];return <nav className="case-tabs" aria-label="Case sections">{tabs.map(([path,label])=><NavLink key={path} to={`/case/${id}/${path}`}>{label}</NavLink>)}</nav>}

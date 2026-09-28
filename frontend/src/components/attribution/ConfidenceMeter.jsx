@@ -1,3 +1,0 @@
-export default function ConfidenceMeter({attribution}){
-  return <section className="intel-panel confidence-section"><header><div><span>Confidence</span><h2>Attribution confidence</h2></div><strong>{attribution.confidence}%</strong></header><div className="confidence-track" role="progressbar" aria-label={`Attribution confidence: ${attribution.confidence} percent, ${attribution.confidenceLabel}`} aria-valuemin="0" aria-valuemax="100" aria-valuenow={attribution.confidence}><span style={{width:`${attribution.confidence}%`}}/></div><div className="confidence-scale"><span>Low · 0–39%</span><span>Moderate · 40–69%</span><span>High · 70–100%</span></div><p>{attribution.confidenceLabel}</p></section>
-}

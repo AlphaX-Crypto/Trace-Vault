@@ -1,4 +1,0 @@
-.sidebar-signout{display:grid;place-items:center;width:26px;height:26px;padding:0;color:var(--color-muted-text);background:transparent;border:1px solid transparent;border-radius:3px;cursor:pointer}
-.sidebar-signout:hover{color:var(--color-primary-text);border-color:var(--color-border)}
-.sidebar-signout svg{width:13px}
-@media(max-width:760px){.sidebar-signout{display:none}}
