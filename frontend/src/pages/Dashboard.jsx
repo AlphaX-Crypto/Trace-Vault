@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
   ArrowRight, 
@@ -7,538 +7,700 @@ import {
   Layers, 
   Building2, 
   Lock,
-  ArrowUpRight,
-  TrendingUp,
+  Search,
   Cpu,
   Radio,
   FileSpreadsheet,
-  Globe2,
-  ChevronRight
+  AlertTriangle,
+  ExternalLink,
+  ChevronRight,
+  FileText,
+  MapPin,
+  CheckCircle2,
+  X,
+  Download
 } from 'lucide-react';
 import api from '../services/api';
-import './Dashboard.css';
+import './dashboard.css';
 
-const RAIL_SHOWCASE_DATA = {
+const RAIL_DATA = {
   EVM: {
     title: 'Ethereum EVM NetworkX Traversal Engine',
+    tag: 'ETH MAINNET // ACTIVE',
+    ref: '0x9a8f3b12...561a012',
     description: 'Autonomous graph traversal computing multi-hop peel-chains, co-spend heuristics, and smart contract mixer pool interaction trees in real-time.',
-    specs: [
+    hops: [
+      {
+        hop: 'HOP 00',
+        name: 'Seed Inflow',
+        address: '0x71c8564804d3e20e8b7c7b80267f5df7325b3b29',
+        amount: '140.00 ETH (₹3.92 Cr)',
+        risk: '96/100 • CRITICAL',
+        riskClass: 'critical',
+        note: 'Source of illicit funds from unhosted ransomware wallet'
+      },
+      {
+        hop: 'HOP 01',
+        name: 'Peel-Chain Layer',
+        address: '0x3a9f029c7b82410a8c2918471029481920381048',
+        amount: '42.50 ETH (₹1.19 Cr)',
+        risk: '88/100 • HIGH',
+        riskClass: 'high',
+        note: 'Peel ratio 88.4% retained, 11.6% gas burn across 6 sub-transfers'
+      },
+      {
+        hop: 'HOP 02',
+        name: 'P2P Counterparty',
+        address: 'rahul98@paytm // 0x88921a9c...',
+        amount: '₹38,50,000 INR',
+        risk: '82/100 • HIGH',
+        riskClass: 'high',
+        note: 'Instant fiat off-ramp settlement on domestic UPI payment switch'
+      },
+      {
+        hop: 'HOP 03',
+        name: 'VASP Deposit',
+        address: 'Binance Hot Wallet #4',
+        amount: '15.20 ETH ($42,560 USD)',
+        risk: '12/100 • IDENTIFIED',
+        riskClass: 'low',
+        note: 'Reporting Entity KYC match ready for Section 91 CrPC notice service'
+      }
+    ],
+    stats: [
       { label: 'THROUGHPUT', value: '14,200 TPS Graph Traversal' },
       { label: 'DEPTH HORIZON', value: 'Up to 12 Hops Deep' },
       { label: 'MEMPOOL MONITOR', value: 'Sub-second Zero-Confirmation' },
       { label: 'EVM CORRIDORS', value: 'ETH, Arbitrum, Optimism, Polygon' }
-    ],
-    statusTag: 'ACTIVE // ETH MAINNET',
-    hash: '0x9a8f3b12...561a012'
+    ]
   },
   UPI: {
     title: 'NPCI Core Switch UPI Telemetry Engine',
+    tag: 'NPCI BATCH 992 // LIVE',
+    ref: 'UPI-RR-481928401928',
     description: 'Rule-based explainable risk engine correlating Virtual Payment Addresses (VPAs), IMPS/NEFT batches, and rapid multi-state dispersal funnels.',
-    specs: [
+    hops: [
+      {
+        hop: 'HOP 00',
+        name: 'Syndicate VPA',
+        address: 'fastmule@okaxis',
+        amount: '₹48,20,000 INR',
+        risk: '94/100 • CRITICAL',
+        riskClass: 'critical',
+        note: 'Mule account registered with forged Aadhaar document'
+      },
+      {
+        hop: 'HOP 01',
+        name: 'Dispersal Layer',
+        address: 'smurf91@paytm, kiran7@ybl',
+        amount: '₹14,50,000 INR (18 splits)',
+        risk: '91/100 • CRITICAL',
+        riskClass: 'critical',
+        note: 'Structured smurfing under ₹50,000 threshold to evade AML alerts'
+      },
+      {
+        hop: 'HOP 02',
+        name: 'Aggregator Node',
+        address: 'apex.trader@icici',
+        amount: '₹32,00,000 INR',
+        risk: '85/100 • HIGH',
+        riskClass: 'high',
+        note: 'Current account showing 42 transactions per minute velocity'
+      },
+      {
+        hop: 'HOP 03',
+        name: 'ATM Cash Out',
+        address: 'ATM Terminal DL-0941',
+        amount: '₹9,80,000 Cash',
+        risk: '78/100 • ELEVATED',
+        riskClass: 'high',
+        note: 'Physical withdrawal in South Delhi within 14 minutes of inflow'
+      }
+    ],
+    stats: [
       { label: 'TRANSACTION VELOCITY', value: '42 Tx / Minute Peak' },
-      { label: 'GEOSPATIAL AUDIT', value: 'BTS Cell Tower Telemetry' },
+      { label: 'GEOSPATIAL AUDIT', value: 'BTS Cell Tower Triangulation' },
       { label: 'SETTLEMENT LATENCY', value: '<240ms NPCI Core' },
       { label: 'BANK NODES', value: 'Axis, ICICI, SBI, HDFC' }
-    ],
-    statusTag: 'LIVE // NPCI BATCH 992',
-    hash: 'UPI-RR-481928401928'
+    ]
   },
   VASP: {
     title: 'VASP Gateway & KYC Attestation Engine',
+    tag: 'FIU-IND COMPLIANT // REG-04',
+    ref: 'FIU-CRY-0082-CERT',
     description: 'Deterministic clustering attribution linking unhosted crypto deposits to FIU-IND registered Reporting Entities with automated Section 91 notices.',
-    specs: [
-      { label: 'CLUSTER ACCURACY', value: '82% - 96% Confidence' },
+    hops: [
+      {
+        hop: 'HOP 00',
+        name: 'Unhosted Origin',
+        address: '0x184a8b7c91029384710293847102938471029384',
+        amount: '68.40 ETH',
+        risk: '92/100 • SUSPICIOUS',
+        riskClass: 'critical',
+        note: 'Direct withdrawal from Tornado Cash mixer contracts'
+      },
+      {
+        hop: 'HOP 01',
+        name: 'Intermediary Hop',
+        address: '0x559281a98c7b8291039481920394810293847192',
+        amount: '68.32 ETH',
+        risk: '87/100 • HIGH',
+        riskClass: 'high',
+        note: 'Single transit wallet active for less than 4 minutes'
+      },
+      {
+        hop: 'HOP 02',
+        name: 'VASP Deposit Memo',
+        address: 'Binance Main Deposit Pool',
+        amount: '68.25 ETH ($191,100 USD)',
+        risk: '45/100 • VASP IDENTIFIED',
+        riskClass: 'medium',
+        note: 'Internal memo tag matched to KYC UID #IND-89104-BN'
+      },
+      {
+        hop: 'HOP 03',
+        name: 'Legal Subpoena Served',
+        address: 'Nodal Officer // Binance India',
+        amount: 'Sec 91 CrPC Notice',
+        risk: '05/100 • PROCESSED',
+        riskClass: 'low',
+        note: 'Account freeze executed and full KYC dossier requisitioned'
+      }
+    ],
+    stats: [
+      { label: 'CLUSTER ACCURACY', value: '88% - 96% Confidence' },
       { label: 'FIU REGISTRY', value: '28 Registered Exchanges' },
       { label: 'SUBPOENA CYCLE', value: 'Instant Sec 91 CrPC Pack' },
       { label: 'FREEZE PROTOCOL', value: 'Automated MLAT Draft' }
-    ],
-    statusTag: 'COMPLIANT // FIU-IND',
-    hash: 'FIU-CRY-0082-CERT'
+    ]
   }
 };
 
-const SPOTLIGHT_ITEMS = [
+const DEFAULT_CASES = [
   {
-    id: 'spot-1',
-    date: 'MARCH 28, 2026',
-    title: 'Peel-Chain Layering Signature Identified (Corridor ETH-9842)',
-    summary: 'A high-frequency fund-splitting sequence was intercepted traversing 4 intermediate unhosted wallets within 90 seconds. Cluster heuristic attributed the ultimate deposit endpoint to Binance Hot Wallet #4 with 82% confidence.'
+    id: 'TV-2026-CR-0891',
+    name: 'Operation IronChain — Hawala Syndicate',
+    target: '0x71c8564804d3e20e8b7c7b80267f5df7325b3b29',
+    rail: 'ETH + UPI',
+    volume: '₹4.85 Cr',
+    riskScore: 96,
+    status: 'S.91 SERVED'
   },
   {
-    id: 'spot-2',
-    date: 'MARCH 26, 2026',
-    title: 'Cross-Rail Crypto-to-UPI Arbitrage Anomaly Flagged',
-    summary: 'Temporal velocity correlation detected a fiat off-ramp settlement on Axis Bank P2P desk occurred exactly 21 minutes after an on-chain Wasabi Mixer unspent output release. Section 91 CrPC freeze notice served.'
+    id: 'TV-2026-CR-0844',
+    name: 'Mule Ring Layering — Axis/Paytm Funnel',
+    target: 'fastmule@okaxis',
+    rail: 'NPCI UPI',
+    volume: '₹1.42 Cr',
+    riskScore: 91,
+    status: 'FROZEN'
   },
   {
-    id: 'spot-3',
-    date: 'MARCH 24, 2026',
-    title: 'Geospatial Impossibility Travel Flag (6,400 km in 18 seconds)',
-    summary: 'Simultaneous telecom cell IPDR logs revealed an active subscriber session in Bangalore while transaction routing originated from a Frankfurt Tor exit node. Section 65B forensic certificate exported.'
+    id: 'TV-2026-CR-0792',
+    name: 'CoinJoin Mixer Outflow Attribution',
+    target: '0x3a9f029c7b82410a8c2918471029481920381048',
+    rail: 'ETH EVM',
+    volume: '₹2.18 Cr',
+    riskScore: 84,
+    status: 'UNDER TRACE'
   },
   {
-    id: 'spot-4',
-    date: 'MARCH 21, 2026',
-    title: 'Automated FIPS 180-4 Merkle Root Ledger Attestation',
-    summary: 'All 14 exhibits in Docket TV-2026-041 were committed to write-once hardware enclaves with RFC 3161 timestamps, establishing an unbroken chain of custody admissible in judicial proceedings.'
+    id: 'TV-2026-CR-0715',
+    name: 'VASP Off-Ramp Smurfing Cluster',
+    target: 'Binance HotWallet #4',
+    rail: 'VASP / P2P',
+    volume: '₹6.30 Cr',
+    riskScore: 78,
+    status: 'KYC REQUISITION'
   }
 ];
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [cases, setCases] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedRail, setSelectedRail] = useState('EVM');
-  const [openSpotlight, setOpenSpotlight] = useState('spot-1');
+  const [selectedHopIndex, setSelectedHopIndex] = useState(0);
+  const [searchTarget, setSearchTarget] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('ALL');
+  const [cases, setCases] = useState(DEFAULT_CASES);
+  const [showSubpoenaModal, setShowSubpoenaModal] = useState(false);
 
   useEffect(() => {
-    async function fetchDashboardData() {
+    async function loadCases() {
       try {
         const data = await api.getCases();
-        setCases(Array.isArray(data) ? data : []);
+        if (Array.isArray(data) && data.length > 0) {
+          const formatted = data.map((c, idx) => ({
+            id: c.case_id || `TV-2026-CR-0${890 - idx}`,
+            name: c.case_name || c.title || `Investigation Docket #${idx + 1}`,
+            target: c.suspect_wallet || c.target || '0x71c8...b29',
+            rail: c.rail || 'ETH + UPI',
+            volume: c.volume || '₹3.40 Cr',
+            riskScore: c.risk_score || (95 - idx * 5),
+            status: c.status || 'UNDER TRACE'
+          }));
+          setCases(formatted);
+        }
       } catch (err) {
-        console.error('Failed to load dashboard cases:', err);
-      } finally {
-        setLoading(false);
+        console.warn('Using default cases fallback:', err);
       }
     }
-    fetchDashboardData();
+    loadCases();
   }, []);
 
-  const activeRailData = RAIL_SHOWCASE_DATA[selectedRail];
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    if (searchTarget.trim()) {
+      navigate(`/graph?target=${encodeURIComponent(searchTarget.trim())}`);
+    } else {
+      navigate('/graph');
+    }
+  }
+
+  function handleQuickPreset(targetStr) {
+    setSearchTarget(targetStr);
+    navigate(`/graph?target=${encodeURIComponent(targetStr)}`);
+  }
+
+  const activeRail = RAIL_DATA[selectedRail];
+  const activeHop = activeRail.hops[selectedHopIndex] || activeRail.hops[0];
 
   return (
-    <div className="dash-page">
-      {/* Laser beam scanner line */}
-      <div className="grid-beam-scanner" aria-hidden="true" />
-
-      {/* Hero Command Header with Floating Cyber Core */}
-      <section className="dash-hero anim-fade-in">
-        <div className="dash-hero-left">
-          <div className="dash-eyebrow">
-            <span>[ 01 // NATIONAL FORENSIC COMMAND PLATFORM ]</span>
-            <span>•</span>
-            <span style={{ color: '#4ade80' }}>HSM IMMUTABLE ENCLAVE ACTIVE</span>
-          </div>
-          <h1 className="dash-hero-title">
-            Autonomous Multi-Rail Financial Intelligence
-          </h1>
-          <p className="dash-hero-desc">
-            Unified forensic tracing infrastructure traversing Ethereum unhosted wallets, peel-chain layering corridors, VASP deposit clusters, and NPCI core UPI banking switches.
-          </p>
-
-          <div className="dash-hero-actions">
-            <Link to="/cases/new" className="btn-pill btn-pill-primary">
-              <Plus size={14} />
-              <span>Open New Case</span>
-            </Link>
-            <Link to="/graph" className="btn-pill btn-pill-secondary">
-              <Layers size={13} />
-              <span>Multi-Hop Matrix</span>
-            </Link>
-            <Link to="/evidence" className="btn-pill btn-pill-secondary">
-              <Lock size={13} />
-              <span>Evidence Vault</span>
-            </Link>
-          </div>
+    <div className="dash-container">
+      {/* 1. Executive Master Header */}
+      <section className="dash-header-section anim-fade-in">
+        <div className="dash-eyebrow-tag">
+          <span className="eyebrow-bullet">■■■</span>
+          <span>NATIONAL FINANCIAL FORENSIC INTELLIGENCE PLATFORM</span>
+          <span className="eyebrow-sep">•</span>
+          <span className="eyebrow-highlight">S.91 / S.65B STATUTORY ENGINE</span>
         </div>
 
-        {/* Floating 3D Enclave Hologram (Matching video hero core) */}
-        <div className="hero-hologram-card">
-          <div className="hologram-header">
-            <span className="bento-tag">[ FIPS 140-3 HARDWARE VAULT ]</span>
-            <span className="tag tag-low">ONLINE</span>
+        <h1 className="dash-main-title">
+          Multi-Rail Forensic Intelligence <span className="title-faded">for Sovereign Investigations</span>
+        </h1>
+
+        <p className="dash-main-subtitle">
+          Autonomous graph traversal, peel-chain heuristic tracking, VASP attribution, and NPCI UPI banking switch forensics.
+        </p>
+
+        {/* Universal Target Investigation Workbench Bar */}
+        <form className="universal-search-bar" onSubmit={handleSearchSubmit}>
+          <div className="search-input-wrapper">
+            <Search size={16} className="search-icon" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Enter suspect Wallet (0x...), UPI ID (user@upi), Bank A/C, Phone, or Docket #..."
+              value={searchTarget}
+              onChange={(e) => setSearchTarget(e.target.value)}
+            />
           </div>
 
-          <div className="hologram-visual-wrapper">
-            <div className="hologram-cube">
-              <div className="cube-face cube-front" />
-              <div className="cube-face cube-back" />
-              <div className="cube-face cube-right" />
-              <div className="cube-face cube-left" />
-              <div className="cube-face cube-top" />
-              <div className="cube-face cube-bottom" />
-            </div>
-          </div>
-
-          <div className="hologram-footer">
-            <div>
-              <div className="mono muted" style={{ fontSize: '9px' }}>ACTIVE MERKLE ROOT</div>
-              <div className="mono" style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                0x7a8f...9b2c
-              </div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div className="mono muted" style={{ fontSize: '9px' }}>PROVENANCE</div>
-              <div className="mono" style={{ fontSize: '11px', fontWeight: 700, color: '#4ade80' }}>
-                100% UNBROKEN
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Top 4 Bento Metric Cards */}
-      <section className="dash-metrics-grid anim-fade-in anim-stagger-1">
-        <div className="bento-metric-box">
-          <div className="bento-metric-top">
-            <span className="bento-metric-tag">[ 01 // CASEWORK ]</span>
-            <span className="tag tag-critical">18 Active</span>
-          </div>
-          <div className="bento-metric-val">18 Cases</div>
-          <div className="bento-metric-sub">4 Critical Severity · 7 State Units</div>
-        </div>
-
-        <div className="bento-metric-box">
-          <div className="bento-metric-top">
-            <span className="bento-metric-tag">[ 02 // TRAVERSED VALUE ]</span>
-            <span className="tag tag-low">Cross-Rail</span>
-          </div>
-          <div className="bento-metric-val">₹48.20 Cr</div>
-          <div className="bento-metric-sub">84.70 ETH + ₹3.85M UPI Dispersal</div>
-        </div>
-
-        <div className="bento-metric-box">
-          <div className="bento-metric-top">
-            <span className="bento-metric-tag">[ 03 // VASP ATTRIBUTION ]</span>
-            <span className="tag tag-high">Probable</span>
-          </div>
-          <div className="bento-metric-val">82% Match</div>
-          <div className="bento-metric-sub">Binance Hot Wallet #4 Identified</div>
-        </div>
-
-        <div className="bento-metric-box">
-          <div className="bento-metric-top">
-            <span className="bento-metric-tag">[ 04 // STATUTORY VAULT ]</span>
-            <span className="tag tag-low">Sec 65B</span>
-          </div>
-          <div className="bento-metric-val">100% Sealed</div>
-          <div className="bento-metric-sub">FIPS 180-4 SHA-256 Merkle Provenance</div>
-        </div>
-      </section>
-
-      {/* Interactive Rail Engine Showcase (Like "Universal ZQL Wallets" in video) */}
-      <section className="rail-showcase-section anim-fade-in anim-stagger-2">
-        <div className="rail-showcase-header">
-          <span className="bento-tag">[ 02 // MULTI-RAIL INTELLIGENCE ENGINES ]</span>
-          <h2 className="rail-showcase-title">Autonomous Rail Telemetry Architecture</h2>
-          <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>
-            Switch between financial rail pipelines to inspect real-time traversal heuristics, throughput, and cryptographic attestation.
-          </p>
-        </div>
-
-        {/* Tab Switcher Pills */}
-        <div className="rail-tabs-control">
-          <button 
-            className={`rail-tab-btn ${selectedRail === 'EVM' ? 'active' : ''}`}
-            onClick={() => setSelectedRail('EVM')}
-          >
-            <Cpu size={13} />
-            <span>[ 01 // ETHEREUM EVM ENGINE ]</span>
-          </button>
-          <button 
-            className={`rail-tab-btn ${selectedRail === 'UPI' ? 'active' : ''}`}
-            onClick={() => setSelectedRail('UPI')}
-          >
-            <Radio size={13} />
-            <span>[ 02 // NPCI UPI CORE SWITCH ]</span>
-          </button>
-          <button 
-            className={`rail-tab-btn ${selectedRail === 'VASP' ? 'active' : ''}`}
-            onClick={() => setSelectedRail('VASP')}
-          >
-            <Building2 size={13} />
-            <span>[ 03 // VASP FIAT OFF-RAMP ]</span>
-          </button>
-        </div>
-
-        {/* Active Display Panel with Animated Specs */}
-        <div className="rail-display-panel">
-          <div className="rail-details-left">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span className="tag tag-low">{activeRailData.statusTag}</span>
-              <span className="mono muted" style={{ fontSize: '10px' }}>REF: {activeRailData.hash}</span>
-            </div>
-            <h3>{activeRailData.title}</h3>
-            <p>{activeRailData.description}</p>
-            <Link to="/graph" className="btn-pill btn-pill-primary" style={{ height: '32px', fontSize: '11px', padding: '0 14px' }}>
-              <span>Traverse This Rail</span>
-              <ArrowRight size={12} />
-            </Link>
-          </div>
-
-          <div className="rail-specs-grid">
-            {activeRailData.specs.map((s, idx) => (
-              <div key={idx} className="spec-item">
-                <span className="spec-label">{s.label}</span>
-                <span className="spec-value">{s.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Sequential Multi-Rail Flow Progression Bento Section */}
-      <section className="dash-flow-section anim-fade-in anim-stagger-3">
-        <div className="dash-section-header">
-          <h2 className="dash-section-title">
-            <Layers size={15} />
-            <span>Multi-Rail Dispersion Corridor (Hop 0 → Hop 5)</span>
-          </h2>
-          <Link to="/graph" className="btn-pill btn-pill-secondary" style={{ height: '28px', fontSize: '11px', padding: '0 12px' }}>
-            <span>View Full Ledger</span>
-            <ArrowRight size={12} />
-          </Link>
-        </div>
-
-        <div className="bento-flow-grid">
-          <div className="bento-flow-card" onClick={() => navigate('/graph')}>
-            <div className="bento-flow-top">
-              <span className="bento-flow-num">[ 00 ]</span>
-              <span className="tag tag-critical">SEED</span>
-            </div>
-            <div>
-              <div className="bento-flow-role">Threat Actor</div>
-              <div className="bento-flow-target">0x71F9...E84C2</div>
-            </div>
-            <div className="bento-flow-val">84.70 ETH</div>
-          </div>
-
-          <div className="bento-flow-card" onClick={() => navigate('/graph')}>
-            <div className="bento-flow-top">
-              <span className="bento-flow-num">[ 01 ]</span>
-              <span className="tag tag-high">SPLIT</span>
-            </div>
-            <div>
-              <div className="bento-flow-role">Peel-Chain</div>
-              <div className="bento-flow-target">0x1a2b...9012</div>
-            </div>
-            <div className="bento-flow-val">45.20 ETH</div>
-          </div>
-
-          <div className="bento-flow-card" onClick={() => navigate('/graph')}>
-            <div className="bento-flow-top">
-              <span className="bento-flow-num">[ 02 ]</span>
-              <span className="tag tag-high">SWEEP</span>
-            </div>
-            <div>
-              <div className="bento-flow-role">Consolidation</div>
-              <div className="bento-flow-target">0x88fa...b210</div>
-            </div>
-            <div className="bento-flow-val">42.00 ETH</div>
-          </div>
-
-          <div className="bento-flow-card" onClick={() => navigate('/graph')}>
-            <div className="bento-flow-top">
-              <span className="bento-flow-num">[ 03 ]</span>
-              <span className="tag tag-medium">GATEWAY</span>
-            </div>
-            <div>
-              <div className="bento-flow-role">VASP Cluster</div>
-              <div className="bento-flow-target">Binance #4</div>
-            </div>
-            <div className="bento-flow-val">42.00 ETH</div>
-          </div>
-
-          <div className="bento-flow-card" onClick={() => navigate('/graph')}>
-            <div className="bento-flow-top">
-              <span className="bento-flow-num">[ 04 ]</span>
-              <span className="tag tag-high">P2P BRIDGE</span>
-            </div>
-            <div>
-              <div className="bento-flow-role">Off-Ramp Desk</div>
-              <div className="bento-flow-target">p2p_blr@axis</div>
-            </div>
-            <div className="bento-flow-val">₹3,850,000</div>
-          </div>
-
-          <div className="bento-flow-card" onClick={() => navigate('/graph')}>
-            <div className="bento-flow-top">
-              <span className="bento-flow-num">[ 05 ]</span>
-              <span className="tag tag-critical">MULE CASH</span>
-            </div>
-            <div>
-              <div className="bento-flow-role">Mule Funnel</div>
-              <div className="bento-flow-target">outlet@icici</div>
-            </div>
-            <div className="bento-flow-val">₹950,000</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Spotlight Intelligence Disclosures (Like "In the Spotlight" from Video) */}
-      <section className="spotlight-section anim-fade-in anim-stagger-4">
-        <div className="dash-section-header">
-          <h2 className="dash-section-title">
-            <span>In the Forensic Spotlight · Key Operational Disclosures</span>
-          </h2>
-          <span className="bento-tag">[ REAL-TIME INTELLIGENCE FEED ]</span>
-        </div>
-
-        {SPOTLIGHT_ITEMS.map((item) => {
-          const isOpen = openSpotlight === item.id;
-          return (
-            <div 
-              key={item.id} 
-              className={`spotlight-item ${isOpen ? 'open' : ''}`}
-              onClick={() => setOpenSpotlight(isOpen ? null : item.id)}
+          <div className="search-filter-select">
+            <select 
+              value={selectedFilter} 
+              onChange={(e) => setSelectedFilter(e.target.value)}
+              className="rail-select"
             >
-              <div className="spotlight-header">
-                <div>
-                  <div className="spotlight-date">{item.date}</div>
-                  <h3 className="spotlight-title">{item.title}</h3>
-                </div>
-                <div className="spotlight-expand-icon">
-                  <Plus size={14} />
-                </div>
-              </div>
+              <option value="ALL">All Financial Rails</option>
+              <option value="ETH">Ethereum EVM</option>
+              <option value="UPI">NPCI UPI</option>
+              <option value="VASP">VASP Exchanges</option>
+            </select>
+          </div>
 
-              {isOpen && (
-                <div className="spotlight-body">
-                  <p style={{ margin: '0 0 10px 0' }}>{item.summary}</p>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button 
-                      className="btn-pill btn-pill-secondary" 
-                      style={{ height: '26px', fontSize: '10px', padding: '0 10px' }}
-                      onClick={(e) => { e.stopPropagation(); navigate('/graph'); }}
-                    >
-                      Inspect Ledger Proof
-                    </button>
-                    <button 
-                      className="btn-pill btn-pill-secondary" 
-                      style={{ height: '26px', fontSize: '10px', padding: '0 10px' }}
-                      onClick={(e) => { e.stopPropagation(); navigate('/evidence'); }}
-                    >
-                      View Merkle Exhibit
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+          <button type="submit" className="search-action-btn">
+            <span>EXECUTE FORENSIC TRACE</span>
+            <ArrowRight size={14} />
+          </button>
+        </form>
+
+        {/* Quick Suspect Presets */}
+        <div className="quick-presets-row">
+          <span className="presets-label">QUICK TARGET PRESETS:</span>
+          <button 
+            type="button" 
+            className="preset-pill"
+            onClick={() => handleQuickPreset('0x71c8564804d3e20e8b7c7b80267f5df7325b3b29')}
+          >
+            <span>⚡ 0x71c8...b29 (Hawala Mule)</span>
+          </button>
+          <button 
+            type="button" 
+            className="preset-pill"
+            onClick={() => handleQuickPreset('fastmule@okaxis')}
+          >
+            <span>⚡ fastmule@okaxis (P2P Structuring)</span>
+          </button>
+          <button 
+            type="button" 
+            className="preset-pill"
+            onClick={() => handleQuickPreset('0x3a9f029c7b82410a8c2918471029481920381048')}
+          >
+            <span>⚡ 0x3a9f...c12 (Peel-Chain Layer)</span>
+          </button>
+        </div>
       </section>
 
-      {/* Two-Column Command Grid: Cases Table & VASP Attributions */}
-      <section className="dash-main-grid anim-fade-in anim-stagger-5">
-        {/* Left Column: Active Cases Table */}
-        <div className="bento-card">
-          <div className="gov-card-header">
-            <h3 className="gov-card-title">Priority Casework Registry</h3>
-            <Link to="/cases" style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>View All 18 Cases</span>
-              <ArrowUpRight size={12} />
-            </Link>
+      {/* 2. Executive Forensic Metrics Bento Grid (4 Columns) */}
+      <section className="dash-bento-metrics-row anim-fade-in anim-stagger-1">
+        <div className="bento-stat-card">
+          <div className="stat-card-header">
+            <span className="stat-tag">[ 01 // ACTIVE CASEWORK ]</span>
+            <span className="status-badge status-critical">18 Active</span>
           </div>
-
-          <table className="gov-table">
-            <thead>
-              <tr>
-                <th>Docket ID</th>
-                <th>Target Reference</th>
-                <th>Rail Scope</th>
-                <th>Risk Tier</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="mono" style={{ fontWeight: 700 }}>TV-2024-0847</td>
-                <td>
-                  <div style={{ fontWeight: 600 }}>DarkNet Mixer Peel Trace</div>
-                  <div className="mono muted" style={{ fontSize: '10px' }}>0x71F9...E84C2</div>
-                </td>
-                <td><span className="rail-badge crypto">CRYPTO</span></td>
-                <td><span className="tag tag-critical">CRITICAL (88)</span></td>
-                <td>
-                  <Link to="/graph" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
-                    Open Hop
-                  </Link>
-                </td>
-              </tr>
-              <tr>
-                <td className="mono" style={{ fontWeight: 700 }}>TV-2026-0041</td>
-                <td>
-                  <div style={{ fontWeight: 600 }}>Cross-Rail Ransom Liquidity</div>
-                  <div className="mono muted" style={{ fontSize: '10px' }}>p2p_desk_blr@axis</div>
-                </td>
-                <td><span className="rail-badge upi">CROSS-RAIL</span></td>
-                <td><span className="tag tag-high">HIGH (74)</span></td>
-                <td>
-                  <Link to="/geospatial" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
-                    Telemetry
-                  </Link>
-                </td>
-              </tr>
-              <tr>
-                <td className="mono" style={{ fontWeight: 700 }}>TV-2026-0092</td>
-                <td>
-                  <div style={{ fontWeight: 600 }}>Rapid Funnel Mule Network</div>
-                  <div className="mono muted" style={{ fontSize: '10px' }}>merchant_delhi@icici</div>
-                </td>
-                <td><span className="rail-badge upi">UPI</span></td>
-                <td><span className="tag tag-critical">CRITICAL (92)</span></td>
-                <td>
-                  <Link to="/evidence" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
-                    Exhibits
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="stat-main-value">18 Dockets</div>
+          <div className="stat-sub-text">4 Critical Priority · 7 State Cyber Units Active</div>
         </div>
 
-        {/* Right Column: VASP Partners & Corroboration Wall */}
-        <div className="bento-card">
-          <div className="gov-card-header">
-            <h3 className="gov-card-title">Corroborated VASP & Gateway Endpoints</h3>
-            <span className="bento-tag">[ FIU-IND REPORTING ENTITIES ]</span>
+        <div className="bento-stat-card">
+          <div className="stat-card-header">
+            <span className="stat-tag">[ 02 // CROSS-RAIL VOLUME ]</span>
+            <span className="status-badge status-success">Traversed</span>
+          </div>
+          <div className="stat-main-value">₹48.92 Cr</div>
+          <div className="stat-sub-text">84.70 ETH + ₹3.85M UPI Dispersal Traversed</div>
+        </div>
+
+        <div className="bento-stat-card">
+          <div className="stat-card-header">
+            <span className="stat-tag">[ 03 // VASP ATTRIBUTION ]</span>
+            <span className="status-badge status-warning">88% Match</span>
+          </div>
+          <div className="stat-main-value">Binance #4</div>
+          <div className="stat-sub-text">FIU-IND Registered Hot Wallet Attributed</div>
+        </div>
+
+        <div className="bento-stat-card">
+          <div className="stat-card-header">
+            <span className="stat-tag">[ 04 // EVIDENCE VAULT ]</span>
+            <span className="status-badge status-info">Sec 65B</span>
+          </div>
+          <div className="stat-main-value">34 Sealed</div>
+          <div className="stat-sub-text">FIPS 180-4 SHA-256 Merkle Provenance Guaranteed</div>
+        </div>
+      </section>
+
+      {/* 3. Multi-Rail Intelligence Workbench (Video Frame 8s & 11s Layout) */}
+      <section className="dash-workbench-section anim-fade-in anim-stagger-2">
+        <div className="section-title-group">
+          <div className="dash-eyebrow-tag">
+            <span className="eyebrow-bullet">■■■</span>
+            <span>AUTONOMOUS MULTI-RAIL PIPELINE</span>
+          </div>
+          <h2 className="section-title">Cross-Rail Forensic Intelligence Engine</h2>
+          <p className="section-desc">
+            Select an investigation rail to inspect active traversal heuristics, counterparty clusters, and statutory intervention status.
+          </p>
+        </div>
+
+        {/* 3 Tab Mode Switcher (Matching Video Frame 8s) */}
+        <div className="rail-mode-tabs-container">
+          <button 
+            type="button"
+            className={`rail-mode-tab ${selectedRail === 'EVM' ? 'active' : ''}`}
+            onClick={() => { setSelectedRail('EVM'); setSelectedHopIndex(0); }}
+          >
+            <Cpu size={16} />
+            <div className="tab-text-group">
+              <span className="tab-title">ETHEREUM EVM TRACE</span>
+              <span className="tab-subtitle">Unhosted Wallets & Peel-Chains</span>
+            </div>
+          </button>
+
+          <button 
+            type="button"
+            className={`rail-mode-tab ${selectedRail === 'UPI' ? 'active' : ''}`}
+            onClick={() => { setSelectedRail('UPI'); setSelectedHopIndex(0); }}
+          >
+            <Radio size={16} />
+            <div className="tab-text-group">
+              <span className="tab-title">NPCI UPI FAST-RAIL</span>
+              <span className="tab-subtitle">VPA Multiplexing & Mule Rings</span>
+            </div>
+          </button>
+
+          <button 
+            type="button"
+            className={`rail-mode-tab ${selectedRail === 'VASP' ? 'active' : ''}`}
+            onClick={() => { setSelectedRail('VASP'); setSelectedHopIndex(0); }}
+          >
+            <Building2 size={16} />
+            <div className="tab-text-group">
+              <span className="tab-title">VASP GATEWAY & S.91</span>
+              <span className="tab-subtitle">FIU Reporting Entities & Subpoenas</span>
+            </div>
+          </button>
+        </div>
+
+        {/* Split Bento Workbench (Matching Video Frame 11s) */}
+        <div className="workbench-bento-grid">
+          {/* Left Large Card: Live Hop Progression Visualizer (58% width) */}
+          <div className="featured-traversal-card">
+            <div className="card-top-header">
+              <div className="header-meta">
+                <span className="card-tag">• LIVE FORENSIC HOP SEQUENCE</span>
+                <span className="corridor-badge">{activeRail.tag}</span>
+              </div>
+              <span className="case-ref">REF: {activeRail.ref}</span>
+            </div>
+
+            <div className="interactive-hop-timeline">
+              {activeRail.hops.map((item, idx) => (
+                <div 
+                  key={item.hop} 
+                  className={`hop-timeline-node ${selectedHopIndex === idx ? 'selected' : ''}`}
+                  onClick={() => setSelectedHopIndex(idx)}
+                >
+                  <div className="hop-step-pill">{item.hop}</div>
+                  <div className="hop-node-body">
+                    <div className="node-title">{item.name}</div>
+                    <div className="node-addr">{item.address.slice(0, 18)}...</div>
+                    <div className="node-amt">{item.amount}</div>
+                  </div>
+                  {idx < activeRail.hops.length - 1 && (
+                    <div className="hop-connector-line">
+                      <div className="pulse-bead" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Selected Hop Inspector Detail Box */}
+            <div className="hop-inspector-detail-box">
+              <div className="inspector-header">
+                <div>
+                  <span className="inspector-title">SELECTED ENTITY TELEMETRY // {activeHop.hop}: {activeHop.name}</span>
+                  <div className="inspector-addr">{activeHop.address}</div>
+                </div>
+                <span className={`risk-indicator risk-${activeHop.riskClass}`}>
+                  {activeHop.risk}
+                </span>
+              </div>
+              <p className="inspector-notes">{activeHop.note}</p>
+            </div>
+
+            <div className="card-bottom-actions">
+              <button 
+                type="button" 
+                className="btn-link-action"
+                onClick={() => navigate('/graph')}
+              >
+                <span>OPEN IN FULL GRAPH MATRIX</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
           </div>
 
-          <div className="vasp-wall-list">
-            <div className="vasp-wall-item">
-              <div>
-                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Binance (Hot Wallet #4)</div>
-                <div className="mono muted" style={{ fontSize: '10px' }}>Deposit Cluster · 42.00 ETH Inflow</div>
+          {/* Right Stacked Bento Cards (42% width) */}
+          <div className="stacked-bento-column">
+            {/* Card 1: Statutory Action & Subpoena Generator */}
+            <div className="bento-action-card">
+              <div className="card-top-header">
+                <span className="card-tag">• STATUTORY INTERVENTION</span>
+                <span className="status-badge status-warning">Section 91 CrPC</span>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <span className="tag tag-low">82% Match</span>
-                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>S.91 Served</div>
+
+              <h3 className="bento-card-title">Automated Subpoena Dispatch</h3>
+              <p className="bento-card-desc">
+                Pre-configured judicial requisition ready for automated service to FIU-IND Nodal Officers.
+              </p>
+
+              <div className="subpoena-spec-box">
+                <div className="spec-row">
+                  <span className="spec-lbl">RECIPIENT VASP:</span>
+                  <span className="spec-val">Binance Holdings Ltd (FIU #004)</span>
+                </div>
+                <div className="spec-row">
+                  <span className="spec-lbl">DEMAND:</span>
+                  <span className="spec-val">KYC Dossier, IP Logs, Immediate Account Freeze</span>
+                </div>
               </div>
+
+              <button 
+                type="button" 
+                className="btn-bento-action"
+                onClick={() => setShowSubpoenaModal(true)}
+              >
+                <span>DRAFT COURT SUBPOENA</span>
+                <Plus size={13} />
+              </button>
             </div>
 
-            <div className="vasp-wall-item">
-              <div>
-                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>CoinDCX (Settlement Pool)</div>
-                <div className="mono muted" style={{ fontSize: '10px' }}>FIU-IND Reg #FIU-CRY-0082</div>
+            {/* Card 2: Behavioral Risk & IPDR Intelligence */}
+            <div className="bento-action-card">
+              <div className="card-top-header">
+                <span className="card-tag">• THREAT HEURISTICS</span>
+                <span className="status-badge status-critical">Risk 94/100</span>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <span className="tag tag-low">94% Match</span>
-                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>KYC Confirmed</div>
-              </div>
-            </div>
 
-            <div className="vasp-wall-item">
-              <div>
-                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Axis Bank Core Gateway</div>
-                <div className="mono muted" style={{ fontSize: '10px' }}>P2P Fiat Off-Ramp Desk (BLR)</div>
+              <h3 className="bento-card-title">Telecom IPDR & Behavioral Radar</h3>
+              <p className="bento-card-desc">
+                Heuristic velocity models flag rapid peel-chain dispersal and anomalous mobile cell session hops.
+              </p>
+
+              <div className="threat-metrics-list">
+                <div className="threat-item">
+                  <span className="threat-lbl">Peel-Chain Structuring:</span>
+                  <span className="threat-val">92% Match</span>
+                </div>
+                <div className="threat-item">
+                  <span className="threat-lbl">SIM-Box / Proxy Telemetry:</span>
+                  <span className="threat-val">Airtel ASN 24560 (Delhi NCR)</span>
+                </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <span className="tag tag-critical">Frozen</span>
-                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>₹3.85M Locked</div>
-              </div>
+
+              <button 
+                type="button" 
+                className="btn-bento-secondary"
+                onClick={() => navigate('/geospatial')}
+              >
+                <span>VIEW GEOSPATIAL RADAR</span>
+                <ArrowRight size={13} />
+              </button>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span className="mono muted" style={{ fontSize: '10px' }}>CERTIFIED PRODUCTION ORDERS</span>
-            <button className="btn-pill btn-pill-secondary" style={{ height: '28px', fontSize: '10px', padding: '0 12px' }} onClick={() => alert('Generating Consolidated VASP Attestation Package...')}>
-              <span>Generate Package</span>
-              <ArrowRight size={11} />
+      {/* 4. Active Investigation Registry Table (Clean, Formal Government Cyber Table) */}
+      <section className="dash-registry-section anim-fade-in anim-stagger-3">
+        <div className="registry-table-header">
+          <div>
+            <h3 className="registry-title">Active Investigation Dockets & Suspect Registry</h3>
+            <span className="registry-sub">Multi-rail criminal investigation registry with continuous mempool surveillance</span>
+          </div>
+
+          <div className="registry-header-actions">
+            <button 
+              type="button" 
+              className="btn-pill-secondary btn-sm"
+              onClick={() => navigate('/reports')}
+            >
+              <FileSpreadsheet size={13} />
+              <span>Export Master Dossier</span>
+            </button>
+            <button 
+              type="button" 
+              className="btn-pill-primary btn-sm"
+              onClick={() => navigate('/cases/new')}
+            >
+              <Plus size={13} />
+              <span>Open New Case</span>
             </button>
           </div>
         </div>
+
+        <div className="registry-table-wrapper">
+          <table className="formal-cyber-table">
+            <thead>
+              <tr>
+                <th>Docket ID</th>
+                <th>Investigation Title</th>
+                <th>Primary Suspect / Target</th>
+                <th>Financial Rail</th>
+                <th>Volume Traced</th>
+                <th>Risk Index</th>
+                <th>Statutory Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cases.map((c) => (
+                <tr key={c.id}>
+                  <td className="mono font-bold" style={{ color: 'var(--text-primary)' }}>{c.id}</td>
+                  <td>{c.name}</td>
+                  <td className="mono muted">{c.target}</td>
+                  <td>
+                    <span className="rail-tag">{c.rail}</span>
+                  </td>
+                  <td className="mono font-bold">{c.volume}</td>
+                  <td>
+                    <span className={`risk-badge risk-${c.riskScore > 85 ? 'critical' : c.riskScore > 70 ? 'high' : 'medium'}`}>
+                      {c.riskScore}/100
+                    </span>
+                  </td>
+                  <td>
+                    <span className="status-pill">{c.status}</span>
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    <button 
+                      type="button" 
+                      className="table-action-btn"
+                      onClick={() => navigate(`/graph?target=${encodeURIComponent(c.target)}`)}
+                      title="Inspect in Graph Matrix"
+                    >
+                      <span>Inspect</span>
+                      <ChevronRight size={13} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
+
+      {/* Subpoena Requisition Modal */}
+      {showSubpoenaModal && (
+        <div className="modal-backdrop">
+          <div className="subpoena-modal-card">
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <span className="modal-tag">[ STATUTORY REQUISITION // SEC 91 CrPC ]</span>
+                <h3 className="modal-title">Formal Judicial Notice Service Draft</h3>
+              </div>
+              <button 
+                type="button" 
+                className="modal-close-btn"
+                onClick={() => setShowSubpoenaModal(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="notice-preview-box">
+                <div className="notice-stamp">OFFICIAL NOTICE // CYBER CRIME CELL</div>
+                <p>
+                  <strong>TO:</strong> Nodal Officer, Binance Holdings Ltd (FIU-IND Registration RE-004)<br />
+                  <strong>SUBJECT:</strong> Requisition under Section 91, Code of Criminal Procedure, 1973.<br />
+                  <strong>INVESTIGATION DOCKET:</strong> TV-2026-CR-0891 (Operation IronChain)
+                </p>
+                <p>
+                  Whereas information has been received regarding suspicious multi-rail fund dissipation originating from unhosted address <code>0x71c8564804d3e20e8b7c7b80267f5df7325b3b29</code> with direct deposit endpoints attributed to Binance Hot Wallet #4.
+                </p>
+                <p>
+                  You are hereby requisitioned to furnish complete KYC documents, transaction logs, device IPDR sessions, and execute an immediate administrative freeze on associated accounts within 24 hours of receipt.
+                </p>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button 
+                type="button" 
+                className="btn-pill-secondary"
+                onClick={() => setShowSubpoenaModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn-pill-primary"
+                onClick={() => {
+                  alert('Section 91 CrPC Notice dispatched cryptographically with RFC 3161 timestamp and committed to Evidence Locker.');
+                  setShowSubpoenaModal(false);
+                  navigate('/evidence');
+                }}
+              >
+                <Download size={13} />
+                <span>Sign & Export Certified Notice (PDF)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

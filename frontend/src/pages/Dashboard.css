@@ -1,553 +1,1028 @@
 /**
- * TRACEVAULT — Architectural Bento Dashboard Styling with Cyber Motion
- * Reference: High-end Dribbble video (ZQL / Vercel / Linear inspired).
+ * TRACEVAULT — Architectural Bento Dashboard Styling
+ * Reference: Dribbble Luxury Crypto/Forensic Bento Video (ZQL style).
  */
 
-.dash-page {
+.dash-container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 36px;
-  max-width: 1400px;
-  margin: 0 auto;
+  gap: 40px;
   position: relative;
 }
 
 /* =========================================================================
-   Hero Command Header with Floating Enclave Core
+   1. Executive Master Header & Universal Search
    ========================================================================= */
 
-.dash-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
-  gap: 32px;
+.dash-header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  padding: 10px 0 10px;
+}
+
+.dash-eyebrow-tag {
+  display: inline-flex;
   align-items: center;
-  padding: 20px 0 32px;
-  border-bottom: 1px solid var(--border-subtle);
-  position: relative;
-}
-
-@media (max-width: 960px) {
-  .dash-hero {
-    grid-template-columns: 1fr;
-  }
-}
-
-.dash-hero-left {
-  position: relative;
-  z-index: 2;
-}
-
-.dash-eyebrow {
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
+  text-transform: uppercase;
 }
 
-.dash-hero-title {
-  margin: 0 0 14px;
-  font-size: 36px;
+.eyebrow-bullet {
+  color: var(--primary-color);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.eyebrow-sep {
+  opacity: 0.4;
+}
+
+.eyebrow-highlight {
+  color: #4ade80;
+}
+
+.dash-main-title {
+  margin: 0;
+  font-size: 42px;
   font-weight: 800;
   letter-spacing: -0.035em;
-  line-height: 1.08;
+  line-height: 1.1;
   color: var(--text-primary);
 }
 
-.dash-hero-desc {
-  margin: 0 0 24px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  max-width: 580px;
+.title-faded {
+  color: var(--text-muted);
+  font-weight: 600;
+  opacity: 0.7;
 }
 
-.dash-hero-actions {
+.dash-main-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 760px;
+}
+
+/* Universal Search Workbench Bar */
+.universal-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 6px 8px 6px 16px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.universal-search-bar:focus-within {
+  border-color: var(--text-primary);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.search-input-wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  flex: 1;
 }
 
-/* Hero Cyber Hologram Container (Matching reference video hero core) */
-.hero-hologram-card {
-  position: relative;
-  height: 240px;
+.search-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+}
+
+.search-filter-select {
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 10px;
+}
+
+.rail-select {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.search-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 18px;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.search-action-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Quick Suspect Presets Row */
+.quick-presets-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.presets-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.preset-pill {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  overflow: hidden;
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-glass);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.hologram-visual-wrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.hologram-cube {
-  width: 110px;
-  height: 110px;
-  position: relative;
-  transform-style: preserve-3d;
-  animation: floatCore 7s ease-in-out infinite;
-}
-
-.cube-face {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 1px solid rgba(124, 58, 237, 0.4);
-  background: rgba(124, 58, 237, 0.05);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15) inset;
-}
-
-[data-theme='light'] .cube-face {
-  border-color: rgba(15, 23, 42, 0.25);
-  background: rgba(15, 23, 42, 0.03);
-}
-
-.cube-front  { transform: rotateY(0deg) translateZ(55px); }
-.cube-back   { transform: rotateY(180deg) translateZ(55px); }
-.cube-right  { transform: rotateY(90deg) translateZ(55px); }
-.cube-left   { transform: rotateY(-90deg) translateZ(55px); }
-.cube-top    { transform: rotateX(90deg) translateZ(55px); }
-.cube-bottom { transform: rotateX(-90deg) translateZ(55px); }
-
-.hologram-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
-.hologram-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  position: relative;
-  z-index: 2;
+.preset-pill:hover {
+  background: var(--bg-surface-raised);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
 }
 
 /* =========================================================================
-   Top 4 Bento Metric Cards
+   2. Executive Forensic Metrics Bento Grid (4 Columns)
    ========================================================================= */
 
-.dash-metrics-grid {
+.dash-bento-metrics-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
 @media (max-width: 1024px) {
-  .dash-metrics-grid {
+  .dash-bento-metrics-row {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 600px) {
-  .dash-metrics-grid {
+@media (max-width: 640px) {
+  .dash-bento-metrics-row {
     grid-template-columns: 1fr;
   }
 }
 
-.bento-metric-box {
+.bento-stat-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 22px 24px;
+  padding: 22px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 8px;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(12px);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(16px);
 }
 
-.bento-metric-box:hover {
+.bento-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+.bento-stat-card:hover {
+  transform: translateY(-2px);
   border-color: var(--border-medium);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
-.bento-metric-top {
+.stat-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.bento-metric-tag {
+.stat-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+}
+
+.status-critical {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.stat-main-value {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin-top: 4px;
+}
+
+.stat-sub-text {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* =========================================================================
+   3. Multi-Rail Forensic Workbench (Video Frame 8s & 11s Layout)
+   ========================================================================= */
+
+.dash-workbench-section {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.section-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.section-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 680px;
+}
+
+/* 3 Tab Mode Switcher (Matching Video Frame 8s) */
+.rail-mode-tabs-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .rail-mode-tabs-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rail-mode-tab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+}
+
+.rail-mode-tab:hover {
+  background: var(--bg-surface-raised);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.rail-mode-tab.active {
+  background: var(--bg-surface-raised);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.rail-mode-tab.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 1px;
+}
+
+.tab-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tab-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.tab-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Split Bento Grid (Matching Video Frame 11s) */
+.workbench-bento-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .workbench-bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Featured Traversal Card */
+.featured-traversal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.corridor-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.case-ref {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Interactive Hop Timeline Nodes */
+.interactive-hop-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  padding: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .interactive-hop-timeline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.hop-timeline-node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.hop-timeline-node:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-surface);
+}
+
+.hop-timeline-node.selected {
+  border-color: var(--text-primary);
+  background: var(--bg-surface);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hop-step-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.node-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.node-addr {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.node-amt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+.hop-connector-line {
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  width: 16px;
+  height: 2px;
+  background: var(--border-subtle);
+  z-index: 2;
+  display: none; /* keep clean layout */
+}
+
+/* Inspector Detail Box */
+.hop-inspector-detail-box {
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inspector-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.inspector-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.inspector-addr {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+  margin-top: 2px;
+}
+
+.risk-indicator {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.risk-critical {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.risk-high {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.risk-low {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.inspector-notes {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.card-bottom-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-link-action:hover {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border-color: var(--text-primary);
+}
+
+/* Right Stacked Bento Cards */
+.stacked-bento-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bento-action-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  backdrop-filter: blur(16px);
+}
+
+.bento-action-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-medium);
+}
+
+.bento-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.bento-card-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.subpoena-spec-box {
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.spec-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.spec-val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.threat-metrics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.threat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.threat-lbl {
+  color: var(--text-secondary);
+}
+
+.threat-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.btn-bento-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.btn-bento-action:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-bento-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.btn-bento-secondary:hover {
+  background: var(--bg-surface-raised);
+  border-color: var(--text-primary);
+}
+
+/* =========================================================================
+   4. Active Investigation Registry Table (Formal Cyber Table)
+   ========================================================================= */
+
+.dash-registry-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  backdrop-filter: blur(16px);
+}
+
+.registry-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.registry-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.registry-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.registry-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.registry-table-wrapper {
+  overflow-x: auto;
+}
+
+.formal-cyber-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.formal-cyber-table th {
+  padding: 10px 14px;
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.bento-metric-val {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  color: var(--text-primary);
-  font-family: var(--font-display);
-  margin: 14px 0 4px;
+.formal-cyber-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
 }
 
-.bento-metric-sub {
-  font-size: 11px;
+.formal-cyber-table tr:hover td {
+  background: var(--bg-surface-raised);
+}
+
+.rail-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
 }
 
-/* =========================================================================
-   Interactive Rail Engine Showcase (Like "Universal ZQL Wallets" in Video)
-   ========================================================================= */
-
-.rail-showcase-section {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(16px);
-}
-
-.rail-showcase-header {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.rail-showcase-title {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin: 8px 0;
-  color: var(--text-primary);
-}
-
-.rail-tabs-control {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin: 18px 0 24px;
-  flex-wrap: wrap;
-}
-
-.rail-tab-btn {
-  height: 38px;
-  padding: 0 20px;
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  font-weight: 600;
+.risk-badge {
   font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.status-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #4ade80;
+  letter-spacing: 0.05em;
+}
+
+.table-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: transparent;
   border: 1px solid var(--border-subtle);
-  background: var(--bg-surface-raised);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transition: all 0.15s ease;
 }
 
-.rail-tab-btn:hover {
-  border-color: var(--border-strong);
-  color: var(--text-primary);
-}
-
-.rail-tab-btn.active {
+.table-action-btn:hover {
   background: var(--text-primary);
   color: var(--text-inverse);
   border-color: var(--text-primary);
 }
 
-.rail-display-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  gap: 24px;
-  background: var(--bg-surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 24px;
-  align-items: center;
-  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (max-width: 800px) {
-  .rail-display-panel {
-    grid-template-columns: 1fr;
-  }
-}
-
-.rail-details-left h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.rail-details-left p {
-  margin: 0 0 16px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.rail-specs-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.spec-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.spec-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-
-.spec-value {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
 /* =========================================================================
-   Interactive Spotlight Accordions (Like "In the Spotlight" from Video)
+   5. Subpoena Modal Styling
    ========================================================================= */
 
-.spotlight-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.spotlight-item {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.spotlight-item:hover {
-  border-color: var(--border-strong);
-  background: var(--bg-surface-raised);
-}
-
-.spotlight-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.spotlight-date {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin-bottom: 3px;
-}
-
-.spotlight-title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.spotlight-expand-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--border-subtle);
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 200;
   display: grid;
   place-items: center;
-  color: var(--text-secondary);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px;
 }
 
-.spotlight-item.open .spotlight-expand-icon {
-  transform: rotate(45deg);
-  border-color: var(--text-primary);
-  color: var(--text-primary);
-}
-
-.spotlight-body {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-subtle);
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  animation: fadeInUp 0.3s ease;
-}
-
-/* =========================================================================
-   Sequential Multi-Rail Flow Progression Bento Section
-   ========================================================================= */
-
-.dash-flow-section {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.dash-section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dash-section-title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bento-flow-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-}
-
-@media (max-width: 1100px) {
-  .bento-flow-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 650px) {
-  .bento-flow-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.bento-flow-card {
+.subpoena-modal-card {
+  width: 100%;
+  max-width: 640px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 18px 16px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  cursor: pointer;
+  gap: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: fadeInScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bento-flow-card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-}
-
-.bento-flow-top {
+.modal-header {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
 }
 
-.bento-flow-num {
+.modal-tag {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #fbbf24;
+  letter-spacing: 0.1em;
 }
 
-.bento-flow-role {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 2px;
-}
-
-.bento-flow-target {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-secondary);
-}
-
-.bento-flow-val {
-  font-family: var(--font-mono);
-  font-size: 14px;
+.modal-title {
+  margin: 4px 0 0;
+  font-size: 20px;
   font-weight: 800;
   color: var(--text-primary);
 }
 
-/* =========================================================================
-   Two-Column Command Grid: Cases Table & VASP Attributions
-   ========================================================================= */
-
-.dash-main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(360px, 1.2fr);
-  gap: 20px;
-  align-items: start;
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
 }
 
-@media (max-width: 1024px) {
-  .dash-main-grid {
-    grid-template-columns: 1fr;
-  }
+.modal-close-btn:hover {
+  color: var(--text-primary);
 }
 
-.vasp-wall-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.vasp-wall-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
+.notice-preview-box {
   background: var(--bg-surface-raised);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
 }
 
-.vasp-wall-item:hover {
-  border-color: var(--border-medium);
-  transform: translateX(2px);
+.notice-stamp {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  color: #f87171;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+  padding-bottom: 6px;
+}
+
+.notice-preview-box code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: var(--text-primary);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
 }

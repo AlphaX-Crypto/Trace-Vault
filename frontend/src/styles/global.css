@@ -88,16 +88,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .app-main-workspace {
   margin-top: var(--topbar-height);
-  margin-left: var(--sidebar-width);
+  margin-left: 0;
   min-height: calc(100vh - var(--topbar-height) - var(--footer-height));
-  padding: 32px 40px 60px;
+  padding: 36px 32px 64px;
   background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 @media (max-width: 900px) {
   .app-main-workspace {
-    margin-left: 0;
-    padding: 20px 16px;
+    padding: 20px 16px 48px;
   }
 }
 

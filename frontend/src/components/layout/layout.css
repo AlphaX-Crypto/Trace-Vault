@@ -18,22 +18,46 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 24px;
   z-index: 100;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+}
+
+.sidebar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--bg-surface);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
 }
 
 .portal-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   user-select: none;
 }
@@ -57,11 +81,11 @@
 .brand-info {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
 }
 
 .brand-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -73,51 +97,80 @@
   font-size: 9px;
   color: var(--text-muted);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.topbar-center {
+/* =========================================================================
+   Center HUD Navigation Bracket (Matching Reference Video!)
+   ========================================================================= */
+
+.topbar-hud-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 1;
-  max-width: 440px;
-  margin: 0 32px;
+  max-width: 720px;
+  margin: 0 16px;
 }
 
-.portal-search {
-  position: relative;
-  width: 100%;
+@media (max-width: 1080px) {
+  .topbar-hud-nav {
+    display: none;
+  }
 }
 
-.portal-search svg {
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-}
-
-.portal-search input {
-  width: 100%;
-  height: 34px;
-  padding: 0 14px 0 34px;
-  background-color: var(--bg-surface-raised);
+.hud-nav-bracket {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
-  font-size: 11px;
-  color: var(--text-primary);
-  transition: all 0.15s ease;
+  padding: 4px 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
-.portal-search input:focus {
-  background-color: var(--bg-surface);
-  border-color: var(--border-strong);
-  outline: none;
+.hud-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
+
+.hud-nav-link:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='light'] .hud-nav-link:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.hud-nav-link.active {
+  color: var(--text-inverse);
+  background: var(--text-primary);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================================================
+   Right Controls
+   ========================================================================= */
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .theme-toggle-btn {
@@ -130,8 +183,10 @@
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-pill);
   color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -141,47 +196,168 @@
   color: var(--text-primary);
 }
 
-.investigator-badge {
+.btn-hud-action {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  background-color: var(--bg-surface-raised);
-  border: 1px solid var(--border-subtle);
+  height: 32px;
+  padding: 0 14px;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.investigator-badge svg {
+.btn-hud-action:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.user-badge:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-surface-raised);
+}
+
+.user-avatar-initials {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary-light);
   color: var(--primary-color);
+  border: 1px solid var(--primary-border);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.user-dept {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
 }
 
 /* =========================================================================
-   Sidebar Navigation (Hairline Architectural Grid Structure)
+   Sidebar Navigation Drawer (Hairline Architectural Grid Structure)
    ========================================================================= */
+
+.gov-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 120;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.gov-sidebar-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
 .gov-sidebar {
   position: fixed;
-  top: var(--topbar-height);
+  top: 0;
   left: 0;
-  bottom: var(--footer-height);
-  width: var(--sidebar-width);
+  bottom: 0;
+  width: 280px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px 14px 14px;
-  z-index: 90;
+  padding: 20px 16px 20px;
+  z-index: 130;
   overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 900px) {
-  .gov-sidebar {
-    display: none;
-  }
+.gov-sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+}
+
+.drawer-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+}
+
+.drawer-subtitle {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
+}
+
+.drawer-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.drawer-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .sidebar-nav-group {
@@ -201,10 +377,6 @@
   text-transform: uppercase;
 }
 
-[data-theme='light'] .sidebar-group-title {
-  color: rgba(255, 255, 255, 0.45);
-}
-
 .sidebar-links-list {
   display: flex;
   flex-direction: column;
@@ -215,7 +387,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 9px 12px;
   border-radius: var(--radius-sm);
   color: rgba(255, 255, 255, 0.65);
   font-size: 12px;
@@ -286,7 +458,7 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  height: 30px;
+  height: 32px;
   padding: 0 10px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);

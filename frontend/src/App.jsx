@@ -24,10 +24,12 @@ import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function AppLayout() {
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
   return (
-    <div className="app-shell">
-      <Topbar />
-      <Sidebar />
+    <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : ''}`}>
+      <Topbar onToggleSidebar={() => setSidebarOpen(prev => !prev)} sidebarOpen={sidebarOpen} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="app-main-workspace">
         <Outlet />
       </div>
