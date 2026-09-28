@@ -1,121 +1,105 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { 
-  Bell, 
+  ShieldCheck, 
   Search, 
-  ShieldAlert, 
   Plus, 
-  Compass, 
-  Activity, 
-  Sparkles,
-  ChevronDown
+  Sun, 
+  Moon, 
+  Bell 
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
 import './layout.css';
 
-const TITLES = {
-  '/dashboard': 'Live Intelligence & Incident Operations',
-  '/cases': 'Case Registry & Intake Ledger',
-  '/cases/new': 'Initiate Multi-Rail Case',
-  '/cases/analysis': 'Analysis Engine Progress',
-  '/analysis-progress': 'Analysis Engine Progress',
-  '/investigations': 'Unified Investigation Catalog',
-  '/reports': 'Institutional Reports Dossier'
-};
-
 export default function Topbar() {
-  const { pathname } = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [query, setQuery] = useState('');
 
-  let title = TITLES[pathname];
-  if (!title) {
-    if (pathname.includes('/graph')) title = 'Multi-Rail Transaction Graph';
-    else if (pathname.includes('/overview')) title = 'Investigation Overview';
-    else if (pathname.includes('/attribution')) title = 'VASP Attribution & Risk';
-    else if (pathname.includes('/evidence')) title = 'Structured Evidence Locker';
-    else if (pathname.includes('/report') || pathname.includes('/disclosure')) title = 'Case Report & Disclosure';
-    else if (pathname.includes('/investigations/')) title = 'Investigator Workspace Console';
-    else title = 'Financial Intelligence Platform';
-  }
-
-  const initials = user?.username ? user.username.slice(0, 2).toUpperCase() : 'TV';
-
-  function handleSearch(e) {
-    if (e.key === 'Enter' && searchTerm.trim()) {
-      const term = searchTerm.trim();
-      // If Ethereum address
-      if (term.startsWith('0x') || term.length === 42) {
-        navigate(`/cases/new?wallet=${encodeURIComponent(term)}`);
-      } else if (term.includes('@')) {
-        navigate(`/investigations/INV-002`);
-      } else if (term.toUpperCase().startsWith('INV-')) {
-        navigate(`/investigations/${encodeURIComponent(term.toUpperCase())}`);
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && query.trim()) {
+      const q = query.trim();
+      if (q.startsWith('0x') || q.includes('@')) {
+        navigate(`/graph`);
       } else {
-        navigate(`/cases?search=${encodeURIComponent(term)}`);
+        navigate(`/cases`);
       }
     }
   }
 
   return (
-    <header className="topbar">
-      {/* Left: Operations Center Header */}
-      <div className="topbar-left">
-        <span className="topbar-status-icon">
-          <Activity size={16} />
-        </span>
-        <div className="topbar-title-block">
-          <div className="topbar-kicker">TRACEVAULT FINANCIAL INTELLIGENCE</div>
-          <strong className="topbar-title">{title}</strong>
+    <header className="forensic-header">
+      {/* Brand & Wordmark */}
+      <div className="header-left">
+        <div className="header-brand" onClick={() => navigate('/dashboard')}>
+          <div className="brand-badge">
+            <ShieldCheck size={16} />
+          </div>
+          <div className="brand-text">
+            <span className="brand-title">TRACEVAULT</span>
+            <span className="brand-subtitle">FORENSIC & JUDICIAL</span>
+          </div>
+        </div>
+
+        {/* Docket & Classification Pills from Screenshot */}
+        <div className="header-docket-pill">
+          <span>DOCKET:</span>
+          <strong>TV-2026-041 // OP. CYPHER-RANSOM</strong>
+        </div>
+
+        <div className="header-security-badge confidential">
+          CONFIDENTIAL // LE ONLY
+        </div>
+
+        <div className="header-security-badge certified">
+          SEC 65B SEALED CERTIFIED
         </div>
       </div>
 
-      {/* Center: Search & Quick Scope */}
-      <div className="topbar-center">
-        <div className="topbar-search-box">
-          <Search size={14} className="topbar-search-icon" />
-          <input 
+      {/* Global Search Bar */}
+      <div className="header-center">
+        <div className="forensic-search-bar">
+          <Search size={13} className="search-icon" />
+          <input
             type="text"
-            placeholder="Search address, UPI VPA, hash, or case ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={handleSearch}
-            className="topbar-search-input"
+            className="mono"
+            placeholder="Query Hash, Rail, Wallet..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </div>
       </div>
 
-      {/* Right: Actions, Notifications & Avatar */}
-      <div className="topbar-actions">
-        <button 
-          className="topbar-action-btn"
-          onClick={() => navigate('/investigations')}
-          title="Open Investigation Harness"
-        >
-          <Compass size={14} />
-          <span>Catalog</span>
-        </button>
-
-        <button 
-          className="topbar-action-btn primary"
+      {/* Right Controls, Theme Toggle & Investigator Profile */}
+      <div className="header-right">
+        <button
+          className="header-quick-action-btn"
           onClick={() => navigate('/cases/new')}
-          title="Open New Case Dossier"
+          title="Open new case"
         >
-          <Plus size={14} />
-          <span>New Case</span>
+          <Plus size={12} />
+          <span>QUICK ACTION</span>
         </button>
 
-        <button className="icon-button notification" aria-label="Notifications" title="System alerts">
-          <Bell size={16} />
-          <span />
+        <button 
+          className="header-icon-btn" 
+          onClick={toggleTheme} 
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+        >
+          {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
         </button>
 
-        <div 
-          className="topbar-avatar" 
-          title={`${user?.username || 'Investigator'} (${user?.role || 'INVESTIGATOR'})`}
-        >
-          {initials}
+        <button className="header-icon-btn" title="Notifications">
+          <Bell size={14} />
+        </button>
+
+        <div className="header-user-dossier">
+          <div className="user-avatar-tag">TJ</div>
+          <div className="user-details">
+            <span className="user-name">T. JD</span>
+            <span className="user-role">Sr. LE #8327A</span>
+          </div>
         </div>
       </div>
     </header>

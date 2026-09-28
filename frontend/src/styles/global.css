@@ -1,5 +1,6 @@
 /**
- * TRACEVAULT V3 — Stitch Operations Center Global Styles
+ * TRACEVAULT V3.8 LE — Institutional Forensic Workstation Global Styles
+ * Clean, high-density, forensic-grade interfaces for LEA / FIU operations.
  */
 
 * {
@@ -21,7 +22,6 @@
 html {
   min-width: 320px;
   background: var(--color-app);
-  color-scheme: dark;
 }
 
 body {
@@ -31,27 +31,23 @@ body {
   font-family: var(--font-ui);
   color: var(--color-primary-text);
   background: var(--color-app);
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 242, 254, 0.05), transparent),
-    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(168, 85, 247, 0.03), transparent);
-  background-attachment: fixed;
   overflow-x: hidden;
 }
 
-/* Custom modern scrollbars */
+/* Thin forensic scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(3, 7, 13, 0.6);
+  background: var(--color-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(35, 60, 92, 0.5);
-  border-radius: 4px;
+  background: var(--color-border-strong);
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 242, 254, 0.4);
+  background: var(--color-accent);
 }
 
 button, input, select, textarea {
@@ -87,25 +83,38 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
 }
 
+/* Base Shell Architecture */
 .app-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--color-app);
 }
 
+.app-body-container {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - var(--topbar-height) - var(--telemetry-bar-height));
+  margin-top: var(--topbar-height);
+  margin-bottom: var(--telemetry-bar-height);
+}
+
 .app-main {
-  min-height: 100vh;
+  flex: 1;
   margin-left: var(--sidebar-width);
-  padding-top: var(--topbar-height);
-  transition: margin-left 0.2s ease;
+  padding: 24px 32px 40px;
+  min-height: 100%;
+  max-width: calc(100vw - var(--sidebar-width));
+  overflow-y: auto;
 }
 
 .page-container {
-  width: min(1560px, 100%);
+  width: 100%;
+  max-width: 1540px;
   margin: 0 auto;
-  padding: 24px 32px 48px;
 }
 
 .page-heading {
@@ -120,8 +129,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .page-heading h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--color-primary-text);
 }
@@ -132,76 +141,69 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-size: 13px;
 }
 
-/* Card Component (Stitch Glass Card) */
+/* Institutional Cards */
 .card {
   background: var(--color-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  border-color: rgba(56, 95, 142, 0.7);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 20px;
+  padding: 12px 18px;
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
 }
 
 .card-title {
   margin: 0;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--color-primary-text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .card-subtitle {
-  margin: 3px 0 0;
-  color: var(--color-muted-text);
+  margin: 2px 0 0;
+  color: var(--color-secondary-text);
   font-size: 11px;
 }
 
 .card-body {
-  padding: 20px;
+  padding: 16px 18px;
 }
 
-/* Button Component */
+/* Forensic Buttons */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 34px;
-  padding: 0 14px;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .button-primary {
   color: #03070d;
   background: var(--color-accent);
-  border-color: var(--color-accent-bright);
-  box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+  border-color: var(--color-accent);
+  font-weight: 600;
 }
 
 .button-primary:hover {
   background: var(--color-accent-bright);
-  box-shadow: 0 0 18px rgba(0, 242, 254, 0.4);
 }
 
 .button-secondary {
@@ -211,14 +213,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .button-secondary:hover {
-  background: rgba(35, 60, 92, 0.4);
   border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .button-ghost {
   color: var(--color-secondary-text);
   background: transparent;
-  border-color: var(--color-border);
+  border-color: transparent;
 }
 
 .button-ghost:hover {
@@ -226,84 +228,141 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   background: var(--color-surface-raised);
 }
 
-/* Badge Component */
+/* Institutional Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-height: 22px;
-  padding: 0 8px;
+  gap: 5px;
+  min-height: 20px;
+  padding: 1px 7px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  border-radius: var(--radius-xs);
+  font-size: 10px;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-family: var(--font-mono);
   white-space: nowrap;
-}
-
-.badge::before {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  content: "";
 }
 
 .badge-low {
   color: var(--color-low);
-  background: rgba(0, 230, 118, 0.1);
-  border-color: rgba(0, 230, 118, 0.3);
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .badge-medium {
   color: var(--color-medium);
-  background: rgba(255, 145, 0, 0.1);
-  border-color: rgba(255, 145, 0, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 .badge-high {
   color: var(--color-high);
-  background: rgba(255, 82, 82, 0.1);
-  border-color: rgba(255, 82, 82, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 .badge-critical {
-  color: #ff1744;
-  background: rgba(255, 23, 68, 0.12);
-  border-color: rgba(255, 23, 68, 0.4);
-  box-shadow: 0 0 10px rgba(255, 23, 68, 0.2);
+  color: var(--color-critical);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .badge-neutral {
   color: var(--color-secondary-text);
+  background: var(--color-surface-raised);
+  border-color: var(--color-border);
+}
+
+.badge-synthetic {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.1);
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+/* Search input */
+.search-input {
+  position: relative;
+  width: 280px;
+}
+
+.search-input svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  color: var(--color-muted-text);
+}
+
+.search-input input {
+  width: 100%;
+  height: 30px;
+  padding: 0 10px 0 32px;
+  color: var(--color-primary-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.search-input input::placeholder {
+  color: var(--color-muted-text);
+}
+
+.search-input input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Dense Forensic Tables */
+.forensic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.forensic-table th {
+  padding: 8px 12px;
   background: var(--color-surface-soft);
+  color: var(--color-muted-text);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
 }
 
-/* Spin animation */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.forensic-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-primary-text);
 }
 
-.spin {
-  animation: spin 1s linear infinite;
+.forensic-table tr:hover td {
+  background: rgba(36, 199, 201, 0.03);
 }
 
 @media (max-width: 1024px) {
   :root {
-    --sidebar-width: 200px;
+    --sidebar-width: 210px;
   }
-  .page-container {
-    padding: 20px 20px 36px;
+  .app-main {
+    padding: 16px 20px;
   }
 }
 
 @media (max-width: 768px) {
   :root {
-    --sidebar-width: 64px;
+    --sidebar-width: 0px;
   }
-  .page-container {
-    padding: 16px 14px 28px;
+  .app-main {
+    margin-left: 0;
+    max-width: 100vw;
+    padding: 12px;
   }
 }

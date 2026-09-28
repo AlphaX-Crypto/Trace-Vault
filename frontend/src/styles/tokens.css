@@ -1,65 +1,113 @@
 /**
- * TRACEVAULT V3 — Stitch-Referenced Design System Tokens
- * Replicating the institutional, high-contrast, dark-glass Sentinel/Stitch operations center aesthetic.
+ * TRACEVAULT V3.8 LE — MASTER FORENSIC INTELLIGENCE PLATFORM DESIGN TOKENS
+ * Strict compliance with the Master Forensic Intelligence Platform Specification.
  */
 
 :root {
+  /* Default to Dark Mode (Operational Forensic Environment) */
   color-scheme: dark;
 
-  /* Backgrounds & Glass Surfaces */
-  --color-app: #03070d;
-  --color-sidebar: #050b14;
-  --color-surface: rgba(10, 19, 32, 0.88);
-  --color-surface-raised: rgba(16, 29, 48, 0.95);
-  --color-surface-soft: rgba(6, 12, 21, 0.92);
-  --color-surface-glass: rgba(13, 24, 40, 0.65);
-  --color-surface-card: #0a1320;
+  /* Spec Primary Dark Palette */
+  --bg-dark-base: #071018;
+  --bg-dark-surface: #0b141c;
+  --bg-dark-elevated: #111e2a;
+  --border-dark-subtle: #16222f;
+  --border-dark-strong: #213547;
 
-  /* Borders & Dividers */
-  --color-border: rgba(35, 60, 92, 0.45);
-  --color-border-strong: rgba(56, 95, 142, 0.65);
-  --color-border-glow: rgba(0, 242, 254, 0.4);
+  /* Spec Primary Accent */
+  --accent-cyan: #24c7c9;
+  --accent-cyan-glow: #00f0ff;
+  --accent-cyan-dim: rgba(36, 199, 201, 0.12);
 
-  /* Primary Brand & Accents */
-  --color-accent: #00f2fe;
-  --color-accent-teal: #24c7c9;
-  --color-accent-bright: #64e8e1;
-  --color-accent-soft: rgba(0, 242, 254, 0.08);
-  --color-accent-glow: 0 0 16px rgba(0, 242, 254, 0.35);
+  /* Spec Risk Palette */
+  --risk-critical: #ef4444;
+  --risk-high: #f97316;
+  --risk-medium: #eab308;
+  --risk-low: #10b981;
 
-  /* Financial Rails Semantics */
-  --color-rail-crypto: #00f2fe;
-  --color-rail-upi: #a855f7;
-  --color-rail-geo: #f59e0b;
-  --color-rail-cross: #ec4899;
+  /* Spec Rail Semantics */
+  --rail-crypto: #24c7c9;
+  --rail-upi: #a855f7;
+  --rail-geo: #f59e0b;
+  --rail-cross: #ec4899;
 
-  /* Neutral Typography */
-  --color-primary-text: #f0f6fc;
-  --color-secondary-text: #8b9bb4;
-  --color-muted-text: #50647b;
+  /* Active Theme Mapping: Dark */
+  --color-app: var(--bg-dark-base);
+  --color-sidebar: #050b12;
+  --color-header: #071018;
+  --color-footer: #050b12;
+  --color-surface: var(--bg-dark-surface);
+  --color-surface-raised: var(--bg-dark-elevated);
+  --color-surface-soft: #081119;
+  --color-border: var(--border-dark-subtle);
+  --color-border-strong: var(--border-dark-strong);
 
-  /* Severity Semantics */
-  --color-low: #00e676;
-  --color-medium: #ff9100;
-  --color-high: #ff5252;
-  --color-critical: #ff1744;
+  --color-accent: var(--accent-cyan);
+  --color-accent-bright: var(--accent-cyan-glow);
+  --color-accent-soft: var(--accent-cyan-dim);
 
-  /* Dimensions & Spacing */
-  --sidebar-width: 240px;
-  --topbar-height: 64px;
+  --color-primary-text: #f1f5f9;
+  --color-secondary-text: #94a3b8;
+  --color-muted-text: #64748b;
 
-  /* Radii */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  --color-critical: var(--risk-critical);
+  --color-high: var(--risk-high);
+  --color-medium: var(--risk-medium);
+  --color-low: var(--risk-low);
 
-  /* Shadows */
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --shadow-glow: 0 0 24px rgba(0, 242, 254, 0.2);
-  --shadow-panel: none;
+  --color-rail-crypto: var(--rail-crypto);
+  --color-rail-upi: var(--rail-upi);
+  --color-rail-geo: var(--rail-geo);
+  --color-rail-cross: var(--rail-cross);
+
+  /* Dimensions & Shell */
+  --sidebar-width: 250px;
+  --topbar-height: 56px;
+  --telemetry-bar-height: 28px;
+
+  /* Radii - Precision Forensic Corners */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 
   /* Typography */
-  --font-ui: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "Consolas", "SFMono-Regular", "Liberation Mono", Menlo, Courier, monospace;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* Shadows - Minimal & Restrained */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-panel: none;
+}
+
+/* Light Mode (Briefing / Documentation / Review Environment) */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --color-app: #f8fafc;
+  --color-sidebar: #0b141c; /* Kept dark institutional sidebar for clear separation */
+  --color-header: #ffffff;
+  --color-footer: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f1f5f9;
+  --color-surface-soft: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  --color-accent: #0d9488;
+  --color-accent-bright: #14b8a6;
+  --color-accent-soft: rgba(13, 148, 136, 0.12);
+
+  --color-primary-text: #0f172a;
+  --color-secondary-text: #475569;
+  --color-muted-text: #64748b;
+
+  --color-critical: #dc2626;
+  --color-high: #ea580c;
+  --color-medium: #d97706;
+  --color-low: #16a34a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
 }

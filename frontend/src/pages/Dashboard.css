@@ -1,497 +1,274 @@
 /**
- * TRACEVAULT V3 — Stitch-Referenced Operations Center Dashboard Styles
- * Replicating the exact visual composition of the Sentinel/Stitch operations center.
+ * TRACEVAULT V3.8 LE — Institutional Forensic Command Dashboard Styling
+ * Strict compliance with Section 8 of the Master Forensic Specification.
  */
 
-.stitch-dashboard {
+.forensic-dashboard-shell {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: 100%;
+  gap: 16px;
+  max-width: 1560px;
+  margin: 0 auto;
+  font-family: var(--font-ui);
 }
 
-/* =========================================================================
-   Dashboard Header
-   ========================================================================= */
+/* Dashboard Top Header */
+.dashboard-top-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
 
-.stitch-dash-header {
+.dashboard-heading-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-primary-text);
+}
+
+.dashboard-heading-sub {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--color-secondary-text);
+}
+
+/* Multi-Rail Topology Flow (Hero Region) */
+.topology-hero-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+[data-theme='dark'] .topology-hero-card {
+  background: #09131d;
+  border-color: #162432;
+}
+
+.topology-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding-bottom: 4px;
 }
 
-.stitch-dash-title-block h1 {
+.topology-title {
   margin: 0;
-  font-size: 22px;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--color-primary-text);
-  letter-spacing: -0.02em;
-}
-
-.stitch-dash-title-block p {
-  margin: 4px 0 0;
-  font-size: 12.5px;
-  color: var(--color-secondary-text);
+  font-family: var(--font-mono);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-.stitch-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--color-low);
-  box-shadow: 0 0 8px var(--color-low);
+.topology-title svg {
+  color: #24c7c9;
 }
 
-/* =========================================================================
-   Top Hero Grid: Threat Graph (60%) + Risk Arc (40%)
-   ========================================================================= */
-
-.stitch-hero-grid {
-  display: grid;
-  grid-template-columns: 1.55fr 1fr;
-  gap: 20px;
-  align-items: stretch;
-}
-
-@media (max-width: 1100px) {
-  .stitch-hero-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Graph Monitor Card */
-.stitch-graph-card {
-  position: relative;
-  background: var(--color-surface);
+/* Linear Forensic Flow Nodes */
+.topology-flow-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 14px 10px;
+  background: var(--color-surface-soft);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.topology-node-box {
   display: flex;
   flex-direction: column;
-  min-height: 380px;
-  box-shadow: var(--shadow-card);
-}
-
-.stitch-graph-overlay-badge {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: rgba(6, 12, 21, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  gap: 2px;
+  padding: 8px 12px;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border-radius: 3px;
+  min-width: 140px;
+  flex: 1;
 }
 
-.stitch-badge-target-icon {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  color: var(--color-accent);
-  background: rgba(0, 242, 254, 0.12);
-  border: 1px solid rgba(0, 242, 254, 0.3);
+[data-theme='dark'] .topology-node-box {
+  background: #0d1a27;
+  border-color: #1c2e42;
 }
 
-.stitch-overlay-text strong {
-  display: block;
-  font-size: 13px;
+.node-rail-tag {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.node-rail-tag.crypto {
+  color: #24c7c9;
+}
+
+.node-rail-tag.vasp {
+  color: #38bdf8;
+}
+
+.node-rail-tag.upi {
+  color: #a855f7;
+}
+
+.node-rail-tag.cashout {
+  color: #10b981;
+}
+
+.node-label-text {
+  font-size: 11px;
   font-weight: 700;
   color: var(--color-primary-text);
+  line-height: 1.2;
 }
 
-.stitch-overlay-text small {
-  display: block;
-  font-size: 10.5px;
+.node-sub-meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
   color: var(--color-secondary-text);
   margin-top: 2px;
 }
 
-.stitch-graph-canvas-container {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  min-height: 320px;
-  background: 
-    radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.04) 0%, transparent 70%),
-    radial-gradient(rgba(35, 60, 92, 0.25) 1px, transparent 1px);
-  background-size: 100% 100%, 24px 24px;
-  position: relative;
+.topology-arrow-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.stitch-graph-controls-dock {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: rgba(6, 12, 21, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 4px;
-}
-
-.stitch-control-btn {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  background: transparent;
-  border: none;
-  color: var(--color-secondary-text);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.stitch-control-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--color-accent);
-}
-
-/* Risk Arc Monitor Card */
-.stitch-risk-monitor-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: var(--shadow-card);
-  position: relative;
-}
-
-.stitch-risk-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.stitch-risk-header-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.stitch-risk-header-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid var(--color-accent);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
-}
-
-.stitch-risk-header-icon::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-accent);
-}
-
-.stitch-risk-arc-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 12px 0;
-  position: relative;
-}
-
-.stitch-arc-svg {
-  width: 260px;
-  height: 145px;
-  overflow: visible;
-}
-
-.stitch-arc-center-content {
-  position: absolute;
-  top: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stitch-arc-score-num {
-  font-size: 52px;
-  font-weight: 850;
-  line-height: 1;
-  color: var(--color-primary-text);
-  text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-}
-
-.stitch-arc-score-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--color-secondary-text);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-
-.stitch-arc-severity-badge {
-  margin-top: 8px;
-  font-size: 11px;
-  font-weight: 750;
-  padding: 3px 12px;
-  border-radius: var(--radius-sm);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background: rgba(255, 82, 82, 0.15);
-  color: var(--color-high);
-  border: 1px solid rgba(255, 82, 82, 0.35);
-  box-shadow: 0 0 12px rgba(255, 82, 82, 0.2);
-}
-
-.stitch-arc-severity-badge.critical {
-  background: rgba(255, 23, 68, 0.2);
-  color: var(--color-critical);
-  border-color: rgba(255, 23, 68, 0.4);
-}
-
-.stitch-methodology-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  border-top: 1px solid var(--color-border);
-  padding-top: 16px;
-  margin-top: 8px;
-}
-
-.stitch-method-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  color: var(--color-muted-text);
-}
-
-.stitch-method-circle {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-weight: 750;
-  font-size: 11px;
-  color: var(--color-secondary-text);
-  border: 1px solid var(--color-border);
-}
-
-.stitch-method-item.active .stitch-method-circle {
-  color: #03070d;
-  background: var(--color-accent);
-  border-color: var(--color-accent-bright);
-  box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
-}
-
-.stitch-method-item.active {
-  color: var(--color-accent-bright);
-  font-weight: 600;
-}
-
-/* =========================================================================
-   Bottom Grid: 3 Cards (Threat Hunting, Forensics, SOC Messages)
-   ========================================================================= */
-
-.stitch-bottom-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-@media (max-width: 950px) {
-  .stitch-bottom-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.stitch-sub-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
-  box-shadow: var(--shadow-card);
-  transition: all 0.2s ease;
-}
-
-.stitch-sub-card:hover {
-  border-color: rgba(0, 242, 254, 0.4);
-  transform: translateY(-2px);
-}
-
-.stitch-sub-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.stitch-sub-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 242, 254, 0.08);
-  border: 1px solid rgba(0, 242, 254, 0.25);
-  color: var(--color-accent);
-}
-
-.stitch-sub-icon-box.purple {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
-  color: #c084fc;
-}
-
-.stitch-sub-icon-box.amber {
-  background: rgba(255, 145, 0, 0.1);
-  border-color: rgba(255, 145, 0, 0.3);
-  color: #ff9100;
-}
-
-.stitch-count-badge {
-  font-size: 11px;
-  font-weight: 750;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(0, 242, 254, 0.12);
-  color: var(--color-accent);
-  border: 1px solid rgba(0, 242, 254, 0.3);
-}
-
-/* Soundwave visualizer bars */
-.stitch-soundwave-bars {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 48px;
-  gap: 3px;
-  padding: 0 4px;
-}
-
-.stitch-bar {
-  flex: 1;
-  background: var(--color-accent);
-  border-radius: 2px;
-  opacity: 0.6;
-  transition: height 0.3s ease;
-}
-
-.stitch-bar:nth-child(even) {
-  opacity: 0.85;
-}
-
-.stitch-metric-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  color: var(--color-border-strong);
   font-size: 12px;
 }
 
-.stitch-metric-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--color-secondary-text);
-}
-
-.stitch-metric-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  display: inline-block;
-  margin-right: 8px;
-}
-
-/* Donut circle container */
-.stitch-donut-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.stitch-donut-svg {
-  width: 72px;
-  height: 72px;
-  transform: rotate(-90deg);
-}
-
-.stitch-donut-center-num {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--color-accent-bright);
-}
-
-/* Timeline updates list */
-.stitch-update-list {
-  display: flex;
-  flex-direction: column;
+/* 4-Stat Metric Row */
+.dashboard-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
-.stitch-update-item {
+.dash-stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+
+[data-theme='dark'] .dash-stat-card {
+  background: #09131d;
+  border-color: #162432;
+}
+
+.dash-stat-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-secondary-text);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
 }
 
-.stitch-update-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.dash-stat-number {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
   color: var(--color-primary-text);
-  font-weight: 550;
+  margin-top: 4px;
 }
 
-.stitch-update-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 6px var(--color-accent);
+.dash-stat-sub {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--color-secondary-text);
+  margin-top: 2px;
 }
 
-.stitch-sub-card-footer {
+/* Two-Column Forensic Modules Grid */
+.dashboard-modules-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(360px, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.module-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme='dark'] .module-card {
+  background: #09131d;
+  border-color: #162432;
+}
+
+.module-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid var(--color-border);
-  padding-top: 12px;
-  color: var(--color-accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.15s ease;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(15, 23, 42, 0.4);
 }
 
-.stitch-sub-card-footer:hover {
-  color: var(--color-accent-bright);
+.module-card-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-primary-text);
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.module-card-body {
+  padding: 12px 14px;
+}
+
+/* Risk Bars */
+.dash-risk-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.risk-level-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.risk-level-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+
+.risk-track-bar {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.risk-fill-bar {
+  height: 100%;
 }
