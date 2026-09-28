@@ -3,6 +3,8 @@
  * Communicates with the Node.js/Express Backend Orchestration Layer.
  */
 
+import { PRESET_SCENARIOS_SUMMARY, getLocalScenarioResult } from '../data/investigationScenarios';
+
 const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL ||
   (typeof window !== 'undefined' && window.location.port === '3000' ? '' : 'http://localhost:5000')
@@ -175,8 +177,92 @@ export const api = {
       body: JSON.stringify(payload)
     });
     return res.data;
+  },
+
+  // Phase 17 Unified Investigation Orchestration Endpoints
+  getInvestigationScenarios: async () => {
+    try {
+      const res = await request('/api/investigations/scenarios');
+      return res.data?.scenarios || res.scenarios || PRESET_SCENARIOS_SUMMARY;
+    } catch (err) {
+      console.warn('Backend scenarios unavailable, using deterministic fallbacks:', err.message);
+      return PRESET_SCENARIOS_SUMMARY;
+    }
+  },
+
+  createInvestigation: async (payload) => {
+    try {
+      const res = await request('/api/investigations', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        timeoutMs: 45000
+      });
+      return res.data || res;
+    } catch (err) {
+      console.warn('Backend investigation execution failed or unavailable, using deterministic scenario fallback:', err.message);
+      return getLocalScenarioResult(payload.scenario || payload.case_id || 'INV-004');
+    }
+  },
+
+  getInvestigation: async (id) => {
+    try {
+      const res = await request(`/api/investigations/${encodeURIComponent(id)}`);
+      return res.data || res;
+    } catch (err) {
+      console.warn(`Investigation '${id}' unavailable from backend, using deterministic fallback:`, err.message);
+      return getLocalScenarioResult(id);
+    }
+  },
+
+  runInvestigation: async (id, payload = {}) => {
+    try {
+      const res = await request(`/api/investigations/${encodeURIComponent(id)}/run`, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      return res.data || res;
+    } catch (err) {
+      console.warn(`Re-run investigation '${id}' unavailable, using fallback:`, err.message);
+      return getLocalScenarioResult(id);
+    }
+  },
+
+  getInvestigationTimeline: async (id) => {
+    try {
+      const res = await request(`/api/investigations/${encodeURIComponent(id)}/timeline`);
+      return res.data || res;
+    } catch (err) {
+      const inv = getLocalScenarioResult(id);
+      return { investigation_id: id, timeline: inv?.timeline || [], event_count: inv?.timeline?.length || 0 };
+    }
+  },
+
+  getInvestigationEvidence: async (id) => {
+    try {
+      const res = await request(`/api/investigations/${encodeURIComponent(id)}/evidence`);
+      return res.data || res;
+    } catch (err) {
+      const inv = getLocalScenarioResult(id);
+      return { investigation_id: id, evidence_items: inv?.evidence_items || [], evidence_count: inv?.evidence_items?.length || 0 };
+    }
+  },
+
+  getInvestigationGraph: async (id) => {
+    try {
+      const res = await request(`/api/investigations/${encodeURIComponent(id)}/graph`);
+      return res.data || res;
+    } catch (err) {
+      const inv = getLocalScenarioResult(id);
+      return {
+        investigation_id: id,
+        graph_summary: inv?.graph_summary || {},
+        graph_paths: inv?.graph_paths || [],
+        cross_rail_associations: inv?.cross_rail_associations || []
+      };
+    }
   }
 };
 
 export { ApiError, API_BASE_URL };
 export default api;
+

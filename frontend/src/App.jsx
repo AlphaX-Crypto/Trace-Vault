@@ -13,6 +13,8 @@ import AttributionRisk from './pages/AttributionRisk';
 import Evidence from './pages/Evidence';
 import Report from './pages/Report';
 import Reports from './pages/Reports';
+import Investigations from './pages/Investigations';
+import InvestigationWorkspace from './pages/InvestigationWorkspace';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
@@ -39,6 +41,9 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/investigations" element={<Investigations />} />
+            <Route path="/investigations/:id" element={<InvestigationWorkspace />} />
+            <Route path="/investigations/:id/:tab" element={<InvestigationWorkspace />} />
             <Route path="/cases" element={<Cases />} />
             <Route path="/cases/new" element={<NewCase />} />
 

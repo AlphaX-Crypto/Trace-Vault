@@ -6,6 +6,7 @@ const logger = require('./utils/logger');
 const healthRoutes = require('./routes/health');
 const authRoutes = require('./routes/auth');
 const caseRoutes = require('./routes/cases');
+const investigationRoutes = require('./routes/investigations');
 const errorHandler = require('./middleware/errorHandler');
 const notFoundHandler = require('./middleware/notFoundHandler');
 const { securityScanMiddleware } = require('./middleware/validation');
@@ -61,6 +62,7 @@ app.use('/api', generalApiLimiter);
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/cases', caseRoutes);
+app.use('/api/investigations', investigationRoutes);
 
 // 404 handler
 app.use(notFoundHandler);

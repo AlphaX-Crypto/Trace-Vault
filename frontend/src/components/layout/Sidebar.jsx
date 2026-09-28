@@ -1,11 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { BarChart3, BriefcaseBusiness, FileText, LogOut, ShieldCheck } from 'lucide-react'
+import { BarChart3, BriefcaseBusiness, Compass, FileText, LogOut, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import './layout.css'
 import './sidebarAuth.css'
 
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: BarChart3 },
+  { to: '/investigations', label: 'Investigations', icon: Compass },
   { to: '/cases', label: 'Cases', icon: BriefcaseBusiness },
   { to: '/reports', label: 'Reports', icon: FileText }
 ]

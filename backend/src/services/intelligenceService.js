@@ -152,6 +152,82 @@ class IntelligenceService {
       throw error;
     }
   }
+
+  _handleAxiosError(error, actionDescription) {
+    if (error instanceof AppError) throw error;
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      throw new AppError(
+        `Python Intelligence Engine is unreachable while ${actionDescription}.`,
+        502,
+        'INTELLIGENCE_ENGINE_UNAVAILABLE'
+      );
+    }
+    if (error.response) {
+      const errorDetail = error.response.data?.detail || error.response.statusText;
+      const statusCode = error.response.status === 404 ? 404 : (error.response.status === 400 ? 400 : 502);
+      throw new AppError(
+        `Intelligence Engine error while ${actionDescription}: ${typeof errorDetail === 'string' ? errorDetail : JSON.stringify(errorDetail)}`,
+        statusCode,
+        'INTELLIGENCE_ENGINE_ERROR',
+        error.response.data
+      );
+    }
+    throw error;
+  }
+
+  async getInvestigationScenarios() {
+    try {
+      const response = await this.client.get('/api/v1/investigations/scenarios');
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, 'fetching investigation scenarios');
+    }
+  }
+
+  async runInvestigation(payload) {
+    try {
+      const response = await this.client.post('/api/v1/investigations', payload);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, 'running investigation');
+    }
+  }
+
+  async getInvestigation(id) {
+    try {
+      const response = await this.client.get(`/api/v1/investigations/${encodeURIComponent(id)}`);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `fetching investigation ${id}`);
+    }
+  }
+
+  async getInvestigationTimeline(id) {
+    try {
+      const response = await this.client.get(`/api/v1/investigations/${encodeURIComponent(id)}/timeline`);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `fetching timeline for ${id}`);
+    }
+  }
+
+  async getInvestigationEvidence(id) {
+    try {
+      const response = await this.client.get(`/api/v1/investigations/${encodeURIComponent(id)}/evidence`);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `fetching evidence for ${id}`);
+    }
+  }
+
+  async getInvestigationGraph(id) {
+    try {
+      const response = await this.client.get(`/api/v1/investigations/${encodeURIComponent(id)}/graph`);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `fetching graph for ${id}`);
+    }
+  }
 }
 
 // Export singleton instance
