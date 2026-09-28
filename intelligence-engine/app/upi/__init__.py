@@ -15,6 +15,29 @@ from app.upi.models import (
 from app.upi.normalizer import UPITransactionNormalizer
 
 
+from app.upi.intelligence import (
+    ALL_RULES,
+    BaseUPIRule,
+    BeneficiaryBurstRule,
+    HighValueVelocityRule,
+    HighVelocityRule,
+    MultipleFailedAttemptsRule,
+    NewBeneficiaryRule,
+    NewDeviceRule,
+    RapidPassThroughRule,
+    TransactionBurstRule,
+    UPIFeatureExtractor,
+    UPIFeatures,
+    UPIFraudAnalysisResult,
+    UPIFraudFinding,
+    UPIFraudIntelligenceEngine,
+    UPIFraudSignalType,
+    UPIRuleConfig,
+    UnusualAmountRule,
+    UnusualTransactionTimeRule,
+)
+
+
 def get_upi_adapter(source: Optional[str] = None) -> BaseUPIAdapter:
     """
     Factory for selecting and instantiating the authorized UPI adapter.
@@ -49,4 +72,23 @@ __all__ = [
     "PROHIBITED_CREDENTIAL_KEYS",
     "validate_vpa",
     "get_upi_adapter",
+    "UPIFraudIntelligenceEngine",
+    "UPIFeatureExtractor",
+    "UPIFraudAnalysisResult",
+    "UPIFraudFinding",
+    "UPIFeatures",
+    "UPIFraudSignalType",
+    "UPIRuleConfig",
+    "BaseUPIRule",
+    "ALL_RULES",
+    "NewBeneficiaryRule",
+    "HighVelocityRule",
+    "TransactionBurstRule",
+    "UnusualAmountRule",
+    "MultipleFailedAttemptsRule",
+    "NewDeviceRule",
+    "UnusualTransactionTimeRule",
+    "BeneficiaryBurstRule",
+    "HighValueVelocityRule",
+    "RapidPassThroughRule",
 ]
