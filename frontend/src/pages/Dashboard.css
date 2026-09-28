@@ -1,32 +1,40 @@
 /**
- * TRACEVAULT — Architectural Bento Dashboard Styling
- * Reference: Modern crypto/blockchain bento design (ZQL / Vercel / Linear inspired).
+ * TRACEVAULT — Architectural Bento Dashboard Styling with Cyber Motion
+ * Reference: High-end Dribbble video (ZQL / Vercel / Linear inspired).
  */
 
 .dash-page {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 36px;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
 }
 
 /* =========================================================================
-   Hero Command Header
+   Hero Command Header with Floating Enclave Core
    ========================================================================= */
 
 .dash-hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
-  padding-bottom: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  gap: 32px;
+  align-items: center;
+  padding: 20px 0 32px;
   border-bottom: 1px solid var(--border-subtle);
-  flex-wrap: wrap;
+  position: relative;
+}
+
+@media (max-width: 960px) {
+  .dash-hero {
+    grid-template-columns: 1fr;
+  }
 }
 
 .dash-hero-left {
-  max-width: 720px;
+  position: relative;
+  z-index: 2;
 }
 
 .dash-eyebrow {
@@ -39,33 +47,105 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .dash-hero-title {
-  margin: 0 0 10px;
-  font-size: 32px;
+  margin: 0 0 14px;
+  font-size: 36px;
   font-weight: 800;
   letter-spacing: -0.035em;
-  line-height: 1.1;
+  line-height: 1.08;
   color: var(--text-primary);
 }
 
 .dash-hero-desc {
-  margin: 0;
+  margin: 0 0 24px;
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.6;
+  max-width: 580px;
 }
 
 .dash-hero-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Hero Cyber Hologram Container (Matching reference video hero core) */
+.hero-hologram-card {
+  position: relative;
+  height: 240px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-glass);
+}
+
+.hologram-visual-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hologram-cube {
+  width: 110px;
+  height: 110px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: floatCore 7s ease-in-out infinite;
+}
+
+.cube-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.05);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15) inset;
+}
+
+[data-theme='light'] .cube-face {
+  border-color: rgba(15, 23, 42, 0.25);
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.cube-front  { transform: rotateY(0deg) translateZ(55px); }
+.cube-back   { transform: rotateY(180deg) translateZ(55px); }
+.cube-right  { transform: rotateY(90deg) translateZ(55px); }
+.cube-left   { transform: rotateY(-90deg) translateZ(55px); }
+.cube-top    { transform: rotateX(90deg) translateZ(55px); }
+.cube-bottom { transform: rotateX(-90deg) translateZ(55px); }
+
+.hologram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hologram-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
 }
 
 /* =========================================================================
-   4 Top Bento Metric Cards
+   Top 4 Bento Metric Cards
    ========================================================================= */
 
 .dash-metrics-grid {
@@ -90,18 +170,20 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 20px 22px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.15s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(12px);
 }
 
 .bento-metric-box:hover {
   border-color: var(--border-medium);
-  transform: translateY(-1px);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
 .bento-metric-top {
@@ -120,12 +202,12 @@
 }
 
 .bento-metric-val {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   color: var(--text-primary);
   font-family: var(--font-display);
-  margin: 12px 0 4px;
+  margin: 14px 0 4px;
 }
 
 .bento-metric-sub {
@@ -134,7 +216,206 @@
 }
 
 /* =========================================================================
-   Multi-Rail Flow Progression Bento Section
+   Interactive Rail Engine Showcase (Like "Universal ZQL Wallets" in Video)
+   ========================================================================= */
+
+.rail-showcase-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+
+.rail-showcase-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.rail-showcase-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 8px 0;
+  color: var(--text-primary);
+}
+
+.rail-tabs-control {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 24px;
+  flex-wrap: wrap;
+}
+
+.rail-tab-btn {
+  height: 38px;
+  padding: 0 20px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-raised);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rail-tab-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.rail-tab-btn.active {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border-color: var(--text-primary);
+}
+
+.rail-display-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 24px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  align-items: center;
+  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 800px) {
+  .rail-display-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rail-details-left h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rail-details-left p {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.rail-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spec-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.spec-value {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* =========================================================================
+   Interactive Spotlight Accordions (Like "In the Spotlight" from Video)
+   ========================================================================= */
+
+.spotlight-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.spotlight-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-item:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-raised);
+}
+
+.spotlight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spotlight-date {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+
+.spotlight-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.spotlight-expand-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-item.open .spotlight-expand-icon {
+  transform: rotate(45deg);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.spotlight-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  animation: fadeInUp 0.3s ease;
+}
+
+/* =========================================================================
+   Sequential Multi-Rail Flow Progression Bento Section
    ========================================================================= */
 
 .dash-flow-section {
@@ -183,18 +464,20 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 16px 14px;
+  padding: 18px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
-  transition: all 0.15s ease;
+  gap: 12px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  cursor: pointer;
 }
 
 .bento-flow-card:hover {
   border-color: var(--border-strong);
-  background: var(--bg-surface-raised);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .bento-flow-top {
@@ -225,13 +508,13 @@
 
 .bento-flow-val {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 /* =========================================================================
-   Two-Column Command Grid
+   Two-Column Command Grid: Cases Table & VASP Attributions
    ========================================================================= */
 
 .dash-main-grid {
@@ -247,7 +530,6 @@
   }
 }
 
-/* VASP Corroboration Wall */
 .vasp-wall-list {
   display: flex;
   flex-direction: column;
@@ -258,13 +540,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px;
+  padding: 14px 16px;
   background: var(--bg-surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  transition: border-color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .vasp-wall-item:hover {
   border-color: var(--border-medium);
+  transform: translateX(2px);
 }
