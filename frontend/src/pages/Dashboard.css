@@ -1,73 +1,497 @@
-.dashboard-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--color-border)}
-.dashboard-heading h1{margin:0;font-size:28px;font-weight:650;letter-spacing:-.025em}
-.dashboard-heading>div>p:last-child{margin:7px 0 0;color:var(--color-secondary-text);font-size:12px}
-.dashboard-heading .eyebrow{position:relative;padding-left:13px;color:var(--color-secondary-text)}
-.dashboard-heading .eyebrow::before{position:absolute;top:5px;left:0;width:6px;height:6px;background:var(--color-low);border-radius:50%;content:""}
-.dashboard-heading svg{width:16px}
+/**
+ * TRACEVAULT V3 — Stitch-Referenced Operations Center Dashboard Styles
+ * Replicating the exact visual composition of the Sentinel/Stitch operations center.
+ */
 
-.metric-grid{display:grid;grid-template-columns:1.05fr .9fr 1fr 1.2fr;margin-bottom:18px;background:var(--color-surface-soft);border-block:1px solid var(--color-border)}
-.metric-card{--metric-color:var(--color-secondary-text);position:relative;display:grid;grid-template-columns:24px 1fr;align-items:start;gap:10px;min-height:92px;padding:17px 20px;background:transparent;border:0;border-right:1px solid var(--color-border);border-radius:0}
-.metric-card:last-child{border-right:0}
-.metric-icon{display:flex;align-items:center;justify-content:flex-start;width:24px;height:24px;color:var(--metric-color);background:transparent;border:0;border-radius:0}
-.metric-icon svg{width:15px}
-.metric-card>div:last-child{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:8px}
-.metric-card span{grid-column:1/-1;color:var(--color-secondary-text);font-size:10px}
-.metric-card strong{grid-row:2;grid-column:1;margin:5px 0 2px;font-family:var(--font-mono);font-size:24px;font-weight:650;letter-spacing:-.04em}
-.metric-card small{grid-row:3;grid-column:1/-1;color:var(--color-muted-text);font-size:9px}
-.metric-accent{--metric-color:var(--color-accent)}
-.metric-high{--metric-color:var(--color-high)}
-.metric-low{--metric-color:var(--color-low)}
+.stitch-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
 
-.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(265px,.62fr);grid-template-areas:"activity risk" "recent queue";gap:14px 18px;align-items:start}
-.activity-card{grid-area:activity;min-width:0;background:var(--color-surface);border-radius:2px;border-top:2px solid rgba(36,199,201,.5)}
-.risk-card{grid-area:risk;background:transparent;border:0;border-left:1px solid var(--color-border);border-radius:0}
-.recent-card{grid-area:recent;min-width:0;background:transparent;border-radius:0;border-width:1px 0 0}
-.queue-card{grid-area:queue;background:transparent;border:0;border-left:1px solid var(--color-border);border-radius:0}
-.activity-card .card-header{padding:17px 20px 14px}
-.activity-card .card-title{font-size:16px}
-.live-label{display:flex;align-items:center;gap:7px;color:var(--color-muted-text);font-size:9px}
-.live-label i{width:5px;height:5px;background:var(--color-low);border-radius:50%}
-.activity-chart{display:flex;align-items:flex-end;gap:7px;height:220px;padding:21px 4px 27px;background:transparent;border-bottom:1px solid var(--color-border)}
-.activity-column{position:relative;display:flex;align-items:flex-end;flex:1;height:100%}
-.activity-column span{width:100%;min-width:5px;background:var(--color-accent);border-radius:1px 1px 0 0;opacity:.52}
-.activity-column:nth-child(4n) span,.activity-column:nth-child(7n) span{opacity:.82}
-.activity-column i{position:absolute;top:calc(100% + 9px);left:50%;color:var(--color-muted-text);font-size:8px;font-style:normal;white-space:nowrap;transform:translateX(-50%)}
-.activity-footer{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding-top:0}
-.activity-footer div{display:flex;align-items:center;gap:8px;padding:15px 14px;color:var(--color-secondary-text);border-right:1px solid var(--color-border);font-size:9px}
-.activity-footer div:first-child{padding-left:0}
-.activity-footer div:last-child{border-right:0}
-.activity-footer svg{width:13px;color:var(--color-muted-text)}
-.activity-footer strong{color:var(--color-primary-text);font-family:var(--font-mono);font-size:11px}
+/* =========================================================================
+   Dashboard Header
+   ========================================================================= */
 
-.risk-card .card-header,.queue-card .card-header{padding:2px 0 14px 18px}
-.risk-card .card-body,.queue-card .card-body{padding:16px 0 0 18px}
-.risk-total{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--color-border)}
-.risk-total>div{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;width:auto;height:auto;background:transparent;border:0;border-radius:0}
-.risk-total span{font-family:var(--font-mono);font-size:31px;font-weight:620;line-height:1}
-.risk-total small{margin-top:5px;color:var(--color-secondary-text);font-size:8px;letter-spacing:.045em}
-.risk-total p{margin:0;color:var(--color-muted-text);font-size:9px;line-height:1.55}
-.risk-bars{display:flex;flex-direction:column;gap:14px;padding-top:17px}
-.risk-row>div:first-child{display:flex;justify-content:space-between;margin-bottom:6px;font-size:9px}
-.risk-row span{color:var(--color-secondary-text);font-weight:650}
-.risk-row b{font-family:var(--font-mono);font-size:9px;font-weight:600}
-.risk-track{height:3px;overflow:hidden;background:var(--color-border);border-radius:0}
-.risk-fill{display:block;height:100%}
-.risk-fill.critical{background:var(--color-critical)}.risk-fill.high{background:var(--color-high)}.risk-fill.medium{background:var(--color-medium)}.risk-fill.low{background:var(--color-low)}
+.stitch-dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 4px;
+}
 
-.recent-card .card-header{padding:20px 0 13px}
-.recent-card .card-body{padding:0}
-.text-link{display:flex;align-items:center;gap:6px;color:var(--color-accent);font-size:9px;font-weight:650}
-.text-link svg{width:12px}
-.stage-list{display:flex;flex-direction:column}
-.stage-list>div{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--color-border);font-size:10px}
-.stage-list span{display:flex;align-items:center;gap:9px;color:var(--color-secondary-text)}
-.stage-list i{color:var(--color-muted-text);font-family:var(--font-mono);font-size:8px;font-style:normal}
-.stage-list strong{min-width:18px;color:var(--color-primary-text);font-family:var(--font-mono);font-size:10px;font-weight:600;text-align:right}
-.index-status{display:flex;align-items:center;gap:9px;margin-top:16px;padding:11px 0;border-top:1px solid rgba(55,200,120,.22)}
-.index-status div{display:flex;flex-direction:column;gap:3px}
-.index-status b{font-size:9px;font-weight:600}
-.index-status small{color:var(--color-muted-text);font-size:8px}
+.stitch-dash-title-block h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-primary-text);
+  letter-spacing: -0.02em;
+}
 
-@media(max-width:1180px){.metric-grid{grid-template-columns:repeat(2,1fr)}.metric-card:nth-child(2){border-right:0}.metric-card:nth-child(-n+2){border-bottom:1px solid var(--color-border)}.dashboard-grid{grid-template-columns:minmax(0,1fr) 250px}.activity-chart{height:200px}}
-@media(max-width:900px){.dashboard-grid{grid-template-columns:1fr;grid-template-areas:"activity" "risk" "recent" "queue"}.risk-card,.queue-card{border-left:0;border-top:1px solid var(--color-border)}.risk-card .card-header,.queue-card .card-header{padding:18px 0 12px}.risk-card .card-body,.queue-card .card-body{padding:14px 0 0}}
-@media(max-width:620px){.metric-grid{grid-template-columns:1fr}.metric-card{border-right:0;border-bottom:1px solid var(--color-border)}.metric-card:nth-child(-n+2){border-bottom:1px solid var(--color-border)}.metric-card:last-child{border-bottom:0}.dashboard-heading{align-items:flex-start;flex-direction:column}.activity-footer{grid-template-columns:1fr}.activity-footer div,.activity-footer div:first-child{padding:10px 0;border-right:0;border-bottom:1px solid var(--color-border)}.activity-footer div:last-child{border-bottom:0}.activity-card .card-body{padding-inline:14px}}
+.stitch-dash-title-block p {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--color-secondary-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stitch-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-low);
+  box-shadow: 0 0 8px var(--color-low);
+}
+
+/* =========================================================================
+   Top Hero Grid: Threat Graph (60%) + Risk Arc (40%)
+   ========================================================================= */
+
+.stitch-hero-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  .stitch-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Graph Monitor Card */
+.stitch-graph-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 380px;
+  box-shadow: var(--shadow-card);
+}
+
+.stitch-graph-overlay-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(6, 12, 21, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.stitch-badge-target-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--color-accent);
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+}
+
+.stitch-overlay-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary-text);
+}
+
+.stitch-overlay-text small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--color-secondary-text);
+  margin-top: 2px;
+}
+
+.stitch-graph-canvas-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.04) 0%, transparent 70%),
+    radial-gradient(rgba(35, 60, 92, 0.25) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stitch-graph-controls-dock {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(6, 12, 21, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.stitch-control-btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  color: var(--color-secondary-text);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stitch-control-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-accent);
+}
+
+/* Risk Arc Monitor Card */
+.stitch-risk-monitor-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.stitch-risk-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stitch-risk-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stitch-risk-header-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+
+.stitch-risk-header-icon::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.stitch-risk-arc-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0;
+  position: relative;
+}
+
+.stitch-arc-svg {
+  width: 260px;
+  height: 145px;
+  overflow: visible;
+}
+
+.stitch-arc-center-content {
+  position: absolute;
+  top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stitch-arc-score-num {
+  font-size: 52px;
+  font-weight: 850;
+  line-height: 1;
+  color: var(--color-primary-text);
+  text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+}
+
+.stitch-arc-score-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-secondary-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.stitch-arc-severity-badge {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 750;
+  padding: 3px 12px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(255, 82, 82, 0.15);
+  color: var(--color-high);
+  border: 1px solid rgba(255, 82, 82, 0.35);
+  box-shadow: 0 0 12px rgba(255, 82, 82, 0.2);
+}
+
+.stitch-arc-severity-badge.critical {
+  background: rgba(255, 23, 68, 0.2);
+  color: var(--color-critical);
+  border-color: rgba(255, 23, 68, 0.4);
+}
+
+.stitch-methodology-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.stitch-method-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--color-muted-text);
+}
+
+.stitch-method-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 750;
+  font-size: 11px;
+  color: var(--color-secondary-text);
+  border: 1px solid var(--color-border);
+}
+
+.stitch-method-item.active .stitch-method-circle {
+  color: #03070d;
+  background: var(--color-accent);
+  border-color: var(--color-accent-bright);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+}
+
+.stitch-method-item.active {
+  color: var(--color-accent-bright);
+  font-weight: 600;
+}
+
+/* =========================================================================
+   Bottom Grid: 3 Cards (Threat Hunting, Forensics, SOC Messages)
+   ========================================================================= */
+
+.stitch-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 950px) {
+  .stitch-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stitch-sub-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s ease;
+}
+
+.stitch-sub-card:hover {
+  border-color: rgba(0, 242, 254, 0.4);
+  transform: translateY(-2px);
+}
+
+.stitch-sub-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.stitch-sub-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  color: var(--color-accent);
+}
+
+.stitch-sub-icon-box.purple {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+
+.stitch-sub-icon-box.amber {
+  background: rgba(255, 145, 0, 0.1);
+  border-color: rgba(255, 145, 0, 0.3);
+  color: #ff9100;
+}
+
+.stitch-count-badge {
+  font-size: 11px;
+  font-weight: 750;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(0, 242, 254, 0.12);
+  color: var(--color-accent);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+}
+
+/* Soundwave visualizer bars */
+.stitch-soundwave-bars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  gap: 3px;
+  padding: 0 4px;
+}
+
+.stitch-bar {
+  flex: 1;
+  background: var(--color-accent);
+  border-radius: 2px;
+  opacity: 0.6;
+  transition: height 0.3s ease;
+}
+
+.stitch-bar:nth-child(even) {
+  opacity: 0.85;
+}
+
+.stitch-metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.stitch-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-secondary-text);
+}
+
+.stitch-metric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Donut circle container */
+.stitch-donut-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stitch-donut-svg {
+  width: 72px;
+  height: 72px;
+  transform: rotate(-90deg);
+}
+
+.stitch-donut-center-num {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-accent-bright);
+}
+
+/* Timeline updates list */
+.stitch-update-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stitch-update-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.stitch-update-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary-text);
+  font-weight: 550;
+}
+
+.stitch-update-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent);
+}
+
+.stitch-sub-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.stitch-sub-card-footer:hover {
+  color: var(--color-accent-bright);
+}
