@@ -184,9 +184,9 @@
 }
 
 .geo-tab-btn.active {
-  background: var(--primary-color);
-  color: #ffffff;
-  border-color: var(--primary-color);
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border-color: var(--text-primary);
   font-weight: 600;
 }
 

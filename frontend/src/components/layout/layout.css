@@ -184,11 +184,13 @@
   }
 }
 
-.sidebar-nav-section {
-  margin-bottom: 24px;
+.sidebar-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.sidebar-section-title {
+.sidebar-group-title {
   padding: 0 10px;
   margin-bottom: 8px;
   font-family: var(--font-mono);
@@ -199,44 +201,42 @@
   text-transform: uppercase;
 }
 
-[data-theme='light'] .sidebar-section-title {
+[data-theme='light'] .sidebar-group-title {
   color: rgba(255, 255, 255, 0.45);
 }
 
-.sidebar-nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.sidebar-links-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
-.sidebar-nav-item a {
+.sidebar-nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 10px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
   font-weight: 500;
-  transition: all 0.12s ease;
+  transition: all 0.15s ease;
   position: relative;
+  text-decoration: none;
 }
 
-.sidebar-nav-item a:hover {
+.sidebar-nav-item:hover {
   background-color: var(--bg-sidebar-hover);
   color: #ffffff;
 }
 
-.sidebar-nav-item.active a {
+.sidebar-nav-item.active {
   background-color: var(--bg-sidebar-active);
   color: #ffffff;
   font-weight: 600;
 }
 
-.sidebar-nav-item.active a::before {
+.sidebar-nav-item.active::before {
   content: '';
   position: absolute;
   left: 0;
@@ -247,49 +247,29 @@
   border-radius: 1px;
 }
 
-.sidebar-badge {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 700;
-  padding: 1px 5px;
-  border-radius: 2px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.sidebar-badge.danger {
-  background-color: rgba(220, 38, 38, 0.25);
-  color: #f87171;
-}
-
 /* Sidebar Footer */
-.sidebar-footer {
+.sidebar-bottom-panel {
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.sidebar-session-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 0 8px;
-  margin-bottom: 10px;
+  gap: 10px;
 }
 
-.session-badge {
-  display: inline-flex;
+.system-status-indicator {
+  display: flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   color: #4ade80;
-  font-weight: 700;
+  font-weight: 600;
+  padding: 0 4px;
 }
 
-.session-dot {
-  width: 5px;
-  height: 5px;
+.status-dot {
+  width: 6px;
+  height: 6px;
   background-color: #4ade80;
   border-radius: 50%;
   animation: pulse-green 2s infinite;
@@ -301,30 +281,25 @@
   100% { opacity: 0.4; }
 }
 
-.session-jurisdiction {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.sidebar-logout-btn {
+.btn-signout {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
-  height: 28px;
-  padding: 0 8px;
+  height: 30px;
+  padding: 0 10px;
   background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-pill);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all 0.15s ease;
 }
 
-.sidebar-logout-btn:hover {
+.btn-signout:hover {
   background-color: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.3);
   color: #f87171;
 }
 

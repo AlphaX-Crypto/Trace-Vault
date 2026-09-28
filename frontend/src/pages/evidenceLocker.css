@@ -100,18 +100,18 @@
   gap: 6px;
   height: 32px;
   padding: 0 14px;
-  background: var(--primary-color);
-  color: #ffffff;
-  border: 1px solid var(--primary-color);
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .btn-deposit-exhibit:hover {
-  background: var(--primary-hover);
+  opacity: 0.9;
 }
 
 .btn-court-bundle {

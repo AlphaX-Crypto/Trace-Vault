@@ -99,9 +99,9 @@
 
 .gov-login-btn {
   height: 38px;
-  background: var(--primary-color);
-  color: #ffffff;
-  border: 1px solid var(--primary-color);
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
   border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 600;
@@ -110,12 +110,12 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: background-color 0.15s ease;
+  transition: opacity 0.15s ease;
   margin-top: 4px;
 }
 
 .gov-login-btn:hover {
-  background: var(--primary-hover);
+  opacity: 0.9;
 }
 
 .gov-login-notice {

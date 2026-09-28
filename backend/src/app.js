@@ -35,8 +35,22 @@ app.use(helmet({
 }));
 
 // Enable CORS for frontend integration
+const allowedOrigins = [
+  config.corsOrigin,
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173'
+].filter(Boolean);
+
 app.use(cors({
-  origin: config.corsOrigin === '*' ? true : config.corsOrigin,
+  origin: (origin, callback) => {
+    if (!origin || config.corsOrigin === '*' || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Request-ID']
