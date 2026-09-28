@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.routes import analysis, upi
+from app.api.routes import analysis, upi, investigations
 
 app = FastAPI(
     title="TRACEVAULT Intelligence Engine",
@@ -9,6 +9,7 @@ app = FastAPI(
 
 app.include_router(analysis.router)
 app.include_router(upi.router)
+app.include_router(investigations.router)
 
 
 @app.get("/health")
