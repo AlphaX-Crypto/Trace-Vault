@@ -1,274 +1,150 @@
 /**
- * TRACEVAULT V3.8 LE — Institutional Forensic Command Dashboard Styling
- * Strict compliance with Section 8 of the Master Forensic Specification.
+ * TRACEVAULT — Official Government Dashboard Styling
+ * Minimal, formal, human-designed layout.
  */
 
-.forensic-dashboard-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 1560px;
-  margin: 0 auto;
-  font-family: var(--font-ui);
-}
-
-/* Dashboard Top Header */
-.dashboard-top-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.dashboard-heading-title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-primary-text);
-}
-
-.dashboard-heading-sub {
-  margin: 3px 0 0;
-  font-size: 11px;
-  color: var(--color-secondary-text);
-}
-
-/* Multi-Rail Topology Flow (Hero Region) */
-.topology-hero-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-[data-theme='dark'] .topology-hero-card {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.topology-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.topology-title {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--color-primary-text);
-  font-family: var(--font-mono);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.topology-title svg {
-  color: #24c7c9;
-}
-
-/* Linear Forensic Flow Nodes */
-.topology-flow-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 14px 10px;
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  overflow-x: auto;
-}
-
-.topology-node-box {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  min-width: 140px;
-  flex: 1;
-}
-
-[data-theme='dark'] .topology-node-box {
-  background: #0d1a27;
-  border-color: #1c2e42;
-}
-
-.node-rail-tag {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.node-rail-tag.crypto {
-  color: #24c7c9;
-}
-
-.node-rail-tag.vasp {
-  color: #38bdf8;
-}
-
-.node-rail-tag.upi {
-  color: #a855f7;
-}
-
-.node-rail-tag.cashout {
-  color: #10b981;
-}
-
-.node-label-text {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-primary-text);
-  line-height: 1.2;
-}
-
-.node-sub-meta {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--color-secondary-text);
-  margin-top: 2px;
-}
-
-.topology-arrow-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-border-strong);
-  font-size: 12px;
-}
-
-/* 4-Stat Metric Row */
-.dashboard-stat-row {
+.dash-metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 16px;
 }
 
-.dash-stat-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 12px 14px;
+@media (max-width: 1024px) {
+  .dash-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-[data-theme='dark'] .dash-stat-card {
-  background: #09131d;
-  border-color: #162432;
+@media (max-width: 600px) {
+  .dash-metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.dash-stat-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--color-secondary-text);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.dash-stat-number {
-  font-size: 20px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--color-primary-text);
-  margin-top: 4px;
-}
-
-.dash-stat-sub {
-  font-size: 9px;
-  font-family: var(--font-mono);
-  color: var(--color-secondary-text);
-  margin-top: 2px;
-}
-
-/* Two-Column Forensic Modules Grid */
-.dashboard-modules-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(360px, 1fr);
-  gap: 14px;
-  align-items: start;
-}
-
-.module-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
+.dash-stat-box {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
 }
 
-[data-theme='dark'] .module-card {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.module-card-header {
+.dash-stat-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--color-border);
-  background: rgba(15, 23, 42, 0.4);
-}
-
-.module-card-title {
-  margin: 0;
   font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dash-stat-val {
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--color-primary-text);
+  color: var(--text-primary);
+  margin: 6px 0 2px;
   font-family: var(--font-mono);
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
-.module-card-body {
-  padding: 12px 14px;
+.dash-stat-desc {
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
-/* Risk Bars */
-.dash-risk-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* Formal Step-by-Step Flow Path */
+.formal-flow-steps {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-top: 12px;
 }
 
-.risk-level-bar-item {
+@media (max-width: 1100px) {
+  .formal-flow-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .formal-flow-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flow-step-item {
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.risk-level-label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.flow-step-num {
   font-size: 10px;
+  font-weight: 700;
+  color: var(--primary-color);
   font-family: var(--font-mono);
 }
 
-.risk-track-bar {
-  height: 4px;
-  background: var(--color-border);
-  border-radius: 2px;
+.flow-step-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.flow-step-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Two-column layout */
+.dash-two-col {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .dash-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Risk Progress Bars */
+.risk-meter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.risk-meter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.risk-meter-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.risk-meter-track {
+  height: 6px;
+  background-color: var(--border-subtle);
+  border-radius: 3px;
   overflow: hidden;
 }
 
-.risk-fill-bar {
+.risk-meter-fill {
   height: 100%;
 }

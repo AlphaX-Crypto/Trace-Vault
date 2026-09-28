@@ -1,643 +1,277 @@
 /**
- * TRACEVAULT V3.8 LE — Tactical IP Radar & Geospatial Telemetry
- * Pixel-accurate styling matching official forensic console screenshots.
+ * TRACEVAULT — National IP & Geospatial Telemetry Registry
+ * Formal, minimal government styling.
+ * Supports true light (clean white) and true dark (deep slate) modes.
  */
 
-.geospatial-page {
+.geo-page {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  max-width: 1560px;
+  gap: 16px;
+  max-width: 1440px;
   margin: 0 auto;
+  color: var(--text-primary);
   font-family: var(--font-ui);
 }
 
-/* =========================================================================
-   Breadcrumb & Status Strip
-   ========================================================================= */
+/* Header */
+.geo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
 
-.geo-breadcrumb-strip {
+.geo-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.geo-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--primary-color);
+}
+
+.geo-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.geo-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.geo-header-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: #64748b;
 }
 
-.geo-breadcrumb-strip strong {
-  color: #24c7c9;
+/* Metrics */
+.geo-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
 
-.jurisdiction-badge {
-  font-size: 8px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 2px;
-  background: rgba(16, 185, 129, 0.12);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  margin-left: 6px;
+@media (max-width: 900px) {
+  .geo-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.geo-satellite-bar {
+.geo-metric-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 5px 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--color-secondary-text);
-}
-
-[data-theme='dark'] .geo-satellite-bar {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.satellite-status {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
+  box-shadow: var(--shadow-sm);
 }
 
-.satellite-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+.geo-metric-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
 }
 
-/* =========================================================================
-   Filter & Correlate Bar
-   ========================================================================= */
+.geo-metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.geo-metric-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Split Workspace */
+.geo-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(350px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .geo-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Registry Table Container */
+.geo-table-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
 
 .geo-filter-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 8px 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  font-size: 11px;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-raised);
   flex-wrap: wrap;
 }
 
-[data-theme='dark'] .geo-filter-bar {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.geo-input-group {
+.geo-search-box {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.geo-search-input {
-  position: relative;
-  width: 280px;
-}
-
-.geo-search-input input {
-  width: 100%;
-  height: 28px;
-  padding: 0 10px 0 28px;
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  color: var(--color-primary-text);
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.geo-search-input svg {
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%);
-  color: #64748b;
-}
-
-.geo-format-pill {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  padding: 3px 6px;
-  border-radius: 2px;
-  background: rgba(36, 199, 201, 0.1);
-  color: #24c7c9;
-  border: 1px solid rgba(36, 199, 201, 0.3);
-}
-
-.risk-band-selector {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--color-secondary-text);
-}
-
-.risk-pill {
-  padding: 2px 6px;
-  border-radius: 2px;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 8px;
-}
-
-.risk-pill.crit {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.3);
-}
-
-.risk-pill.elev {
-  background: rgba(249, 115, 22, 0.12);
-  color: #f97316;
-  border-color: rgba(249, 115, 22, 0.3);
-}
-
-.risk-pill.all {
-  background: #0284c7;
-  color: #ffffff;
-}
-
-.btn-correlate-subpoena {
-  display: inline-flex;
   align-items: center;
   gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0 8px;
   height: 30px;
-  padding: 0 14px;
-  background: #008ba3;
-  color: #ffffff;
+  width: 260px;
+}
+
+.geo-search-box input {
   border: none;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  box-shadow: 0 0 12px rgba(0, 139, 163, 0.35);
-}
-
-.btn-correlate-subpoena:hover {
-  background: #00acc1;
-}
-
-/* =========================================================================
-   Radar Main Split View
-   ========================================================================= */
-
-.geo-main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(350px, 1fr);
-  gap: 14px;
-  align-items: start;
-}
-
-/* Radar Container */
-.radar-panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-[data-theme='dark'] .radar-panel {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.radar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.radar-title-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.radar-icon-box {
-  color: #24c7c9;
-}
-
-.radar-title {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--color-primary-text);
-  font-family: var(--font-mono);
-}
-
-.radar-subtitle {
-  margin: 2px 0 0;
-  font-size: 8px;
-  color: #64748b;
-  letter-spacing: 0.06em;
-  font-family: var(--font-mono);
-}
-
-.radar-badges {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.radar-badge {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  padding: 2px 6px;
-  border-radius: 2px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--color-border);
-  color: var(--color-secondary-text);
-}
-
-.radar-badge.active {
-  background: rgba(36, 199, 201, 0.12);
-  color: #24c7c9;
-  border-color: rgba(36, 199, 201, 0.3);
-}
-
-/* Tactical Radar Screen Canvas */
-.radar-screen-canvas {
-  position: relative;
-  width: 100%;
-  height: 380px;
-  background: #060c14;
-  border: 1px solid #162432;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-[data-theme='light'] .radar-screen-canvas {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-}
-
-.radar-coordinates-overlay {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  color: #64748b;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  z-index: 10;
-}
-
-.radar-coordinates-overlay strong {
-  color: #94a3b8;
-}
-
-/* Node Pings on Radar */
-.radar-ping-card {
-  position: absolute;
-  background: rgba(9, 19, 29, 0.92);
-  border: 1px solid #1e293b;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  z-index: 20;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme='light'] .radar-ping-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: #cbd5e1;
-  color: #0f172a;
-}
-
-.ping-ip-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-weight: 700;
-  color: var(--color-primary-text);
-}
-
-.ping-role-text {
-  font-size: 7px;
-  color: #64748b;
-  margin-top: 1px;
-}
-
-.ping-role-text.tainted {
-  color: #ef4444;
-}
-
-.ping-role-text.fiu {
-  color: #10b981;
-}
-
-/* Radar Footer Axis */
-.radar-footer-axis {
-  position: absolute;
-  bottom: 6px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  color: #475569;
-}
-
-/* Bottom 3 Summary Cards */
-.radar-summary-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.radar-mini-card {
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mini-card-icon {
-  color: #24c7c9;
-}
-
-.mini-card-val {
-  font-size: 14px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--color-primary-text);
-  line-height: 1;
-}
-
-.mini-card-desc {
-  font-size: 8px;
-  color: #64748b;
-  font-family: var(--font-mono);
-  margin-top: 2px;
-}
-
-.mini-card-badge {
-  font-size: 7px;
-  font-weight: 700;
-  padding: 1px 4px;
-  border-radius: 2px;
-  margin-left: auto;
-}
-
-.mini-card-badge.live {
-  background: rgba(16, 185, 129, 0.12);
-  color: #10b981;
-}
-
-.mini-card-badge.tainted {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-}
-
-.mini-card-badge.ready {
-  background: rgba(36, 199, 201, 0.12);
-  color: #24c7c9;
-}
-
-/* =========================================================================
-   Right Column: Target Dossier & Enforcement
-   ========================================================================= */
-
-.geo-dossier-column {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.target-dossier-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-[data-theme='dark'] .target-dossier-card {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.dossier-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.dossier-title {
-  margin: 0;
+  background: transparent;
+  color: var(--text-primary);
   font-size: 11px;
-  font-weight: 700;
-  color: var(--color-primary-text);
-  font-family: var(--font-mono);
+  width: 100%;
 }
 
-.primary-suspect-badge {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 2px;
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.35);
+.geo-search-box input:focus {
+  outline: none;
 }
 
-/* Correlated Crypto Wallet Box */
-.correlated-wallet-box {
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 8px 10px;
+.geo-filter-tabs {
   display: flex;
-  flex-direction: column;
   gap: 4px;
 }
 
-.correlated-wallet-title {
-  font-size: 8px;
-  color: #64748b;
-  font-family: var(--font-mono);
+.geo-tab-btn {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.geo-tab-btn:hover {
+  background: var(--bg-surface-raised);
+}
+
+.geo-tab-btn.active {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
   font-weight: 600;
 }
 
-.wallet-addr-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-mono);
+/* Table */
+.geo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+
+.geo-table th {
+  padding: 8px 12px;
+  background: var(--bg-surface-raised);
+  color: var(--text-muted);
   font-size: 10px;
   font-weight: 700;
-  color: #24c7c9;
-}
-
-.wallet-volume-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-subtle);
   font-family: var(--font-mono);
 }
 
-.volume-val {
-  color: #ef4444;
-  font-weight: 700;
+.geo-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
 }
 
-/* Telemetry Details List */
-.telemetry-details-list {
+.geo-table tr {
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.geo-table tr:hover {
+  background: var(--bg-surface-raised);
+}
+
+.geo-table tr.selected {
+  background: var(--primary-light);
+  border-left: 3px solid var(--primary-color);
+}
+
+/* Detail Dossier */
+.geo-dossier {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  padding: 6px 0;
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  gap: 14px;
 }
 
-.telemetry-row {
+.geo-dossier-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.telemetry-label {
-  color: #64748b;
-  font-size: 8px;
-}
-
-.telemetry-val {
-  color: var(--color-primary-text);
-  font-size: 9px;
-}
-
-.telemetry-val.alert-red {
-  color: #ef4444;
+.geo-dossier-title {
+  font-size: 13px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.telemetry-val.alert-green {
-  color: #10b981;
-  font-weight: 700;
-}
-
-/* Merkle Forensic Seal Card */
-.merkle-seal-card {
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
+.geo-dossier-box {
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-family: var(--font-mono);
+  gap: 6px;
 }
 
-.seal-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 8px;
-  color: #94a3b8;
-  font-weight: 700;
-}
-
-.seal-valid-pill {
-  background: rgba(16, 185, 129, 0.12);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 1px 5px;
-  border-radius: 2px;
-}
-
-.seal-hash {
-  font-size: 9px;
-  color: #24c7c9;
-}
-
-.seal-timestamp {
-  font-size: 8px;
-  color: #64748b;
-}
-
-/* Statutory Enforcement Card */
-.statutory-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 12px 14px;
+.geo-dossier-actions {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-[data-theme='dark'] .statutory-card {
-  background: #09131d;
-  border-color: #162432;
-}
-
-.statutory-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--color-secondary-text);
-}
-
-.statutory-item-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  background: var(--color-surface-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.statutory-item-link:hover {
-  border-color: #24c7c9;
-}
-
-.statutory-item-text {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--color-primary-text);
-}
-
-.statutory-item-sub {
-  font-size: 8px;
-  color: #64748b;
-  font-family: var(--font-mono);
+  margin-top: 6px;
 }

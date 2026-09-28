@@ -1,326 +1,373 @@
 import React, { useState } from 'react';
-import {
-  Radar,
-  Radio,
-  Scale,
-  ShieldCheck,
-  Copy,
-  ChevronRight,
-  ExternalLink,
-  Target,
-  FileText
+import { 
+  Globe2, 
+  Search, 
+  Download, 
+  Copy, 
+  ExternalLink, 
+  ShieldCheck, 
+  AlertTriangle, 
+  MapPin, 
+  FileText, 
+  Scale, 
+  Radio
 } from 'lucide-react';
 import './geospatialRadar.css';
 
+const TELEMETRY_NODES = [
+  {
+    id: 'IP-01',
+    ip: '185.220.101.5',
+    classification: 'TOR EXIT NODE',
+    risk: 'CRITICAL',
+    riskTag: 'crit',
+    isp: 'Zwiebelfreunde e.V.',
+    asn: 'AS60729',
+    city: 'Frankfurt am Main',
+    region: 'Hesse',
+    country: 'Germany (DE)',
+    coords: '50.1109° N, 8.6821° E',
+    geoHash: 'u0yu',
+    port: '9001 (ORPort)',
+    protocol: 'TCP / WireGuard Proxy',
+    velocityAnomaly: 'Impossible Velocity Violation: Hop time 18s from India',
+    subpoenaStatus: 'MLAT Subpoena Drafted (BKA Germany)',
+    timestamp: '2026-02-14 08:21:12 UTC',
+    walletCorrelation: '0x71F9...E84C2 (Seed Actor)'
+  },
+  {
+    id: 'IP-02',
+    ip: '122.166.42.18',
+    classification: 'AIRTEL FIBER BROADBAND',
+    risk: 'HIGH',
+    riskTag: 'high',
+    isp: 'Bharti Airtel Limited',
+    asn: 'AS45609',
+    city: 'Bengaluru',
+    region: 'Karnataka',
+    country: 'India (IN)',
+    coords: '12.9716° N, 77.5946° E',
+    geoHash: 'tdr1',
+    port: '443 (HTTPS) / API Call',
+    protocol: 'Direct Broadband Session',
+    velocityAnomaly: 'Geospatial Ground Truth: Corroborated by BTS Tower #882',
+    subpoenaStatus: 'Section 91 CrPC Notice Executed',
+    timestamp: '2026-02-14 08:44:10 UTC',
+    walletCorrelation: 'p2p_desk_blr@axis (P2P Off-Ramp)'
+  },
+  {
+    id: 'IP-03',
+    ip: '178.249.214.89',
+    classification: 'WASABI MIXER COORDINATOR',
+    risk: 'HIGH',
+    riskTag: 'high',
+    isp: 'Host Europe GmbH',
+    asn: 'AS20773',
+    city: 'Zurich',
+    region: 'Zurich Canton',
+    country: 'Switzerland (CH)',
+    coords: '47.3769° N, 8.5417° E',
+    geoHash: 'u0qj',
+    port: '8333 (CoinJoin P2P)',
+    protocol: 'WabiSabi Protocol v2',
+    velocityAnomaly: 'Anonymization Layering Pool Participant',
+    subpoenaStatus: 'Fedpol MLAT In-Progress',
+    timestamp: '2026-02-14 08:35:02 UTC',
+    walletCorrelation: '0x88fa...b210 (Consolidation Node)'
+  },
+  {
+    id: 'IP-04',
+    ip: '194.26.29.112',
+    classification: 'SATELLITE DOWNLINK RELAY',
+    risk: 'ELEVATED',
+    riskTag: 'med',
+    isp: 'Starlink Internet Services',
+    asn: 'AS14593',
+    city: 'Bucharest',
+    region: 'Ilfov',
+    country: 'Romania (RO)',
+    coords: '44.4268° N, 26.1025° E',
+    geoHash: 'sxfr',
+    port: '1080 (SOCKS5 Proxy)',
+    protocol: 'LEO Ku-Band Uplink',
+    velocityAnomaly: 'Rapid Gateway Switch detected during off-ramp sequence',
+    subpoenaStatus: 'LE Subpoena Package Ready',
+    timestamp: '2026-02-14 08:41:19 UTC',
+    walletCorrelation: 'Binance Hot Wallet Cluster'
+  },
+  {
+    id: 'IP-05',
+    ip: '49.207.181.94',
+    classification: 'MOBILE CELLULAR TOWER',
+    risk: 'CRITICAL',
+    riskTag: 'crit',
+    isp: 'Reliance Jio Infocomm',
+    asn: 'AS55836',
+    city: 'New Delhi',
+    region: 'Delhi NCT',
+    country: 'India (IN)',
+    coords: '28.6139° N, 77.2090° E',
+    geoHash: 'ttnf',
+    port: 'Dynamic CGNAT (Port 38291)',
+    protocol: 'VoLTE / 5G SA Bearer',
+    velocityAnomaly: 'Simultaneous Active Session with Bangalore Node (2,100km)',
+    subpoenaStatus: 'Section 91 Notice Executed · CDR Received',
+    timestamp: '2026-02-14 08:49:22 UTC',
+    walletCorrelation: 'merchant_outlet_delhi@icici'
+  }
+];
+
 export default function GeospatialRadar() {
-  const [riskBand, setRiskBand] = useState('ALL');
-  const [copied, setCopied] = useState(false);
+  const [selectedNode, setSelectedNode] = useState(TELEMETRY_NODES[0]);
+  const [riskFilter, setRiskFilter] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [copiedText, setCopiedText] = useState('');
+
+  const filteredNodes = TELEMETRY_NODES.filter((item) => {
+    const matchesRisk = riskFilter === 'ALL' || item.risk === riskFilter;
+    const matchesSearch = !searchQuery ||
+      item.ip.includes(searchQuery) ||
+      item.isp.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.classification.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesRisk && matchesSearch;
+  });
 
   function handleCopy(text) {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedText(text);
+    setTimeout(() => setCopiedText(''), 2000);
   }
 
   return (
-    <div className="geospatial-page">
-      {/* Breadcrumb Strip matching screenshot */}
-      <div className="geo-breadcrumb-strip">
-        <span>TRACEVAULT</span> / 
-        <strong>GEOSPATIAL & IP RADAR</strong> / 
-        <span>DOCKET TV-2026-041</span>
-        <span className="jurisdiction-badge">JURISDICTIONAL CLEARANCE // CERT. SEC 65B</span>
-      </div>
-
-      {/* Satellite Downlink Bar */}
-      <div className="geo-satellite-bar">
-        <div className="satellite-status">
-          <span className="satellite-dot" />
-          <span>SATELLITE DOWNLINK: <strong>ACTIVE (12.4 GHZ)</strong></span>
-        </div>
-        <div>
-          <span>UTC: <strong>2026-03-30 08:42:19.402</strong></span>
-        </div>
-      </div>
-
-      {/* Filter & Correlate Bar matching screenshot */}
-      <div className="geo-filter-bar">
-        <div className="geo-input-group">
-          <div className="geo-search-input">
-            <Target size={12} />
-            <input
-              type="text"
-              defaultValue="185.220.101.5, 122.166.42.18, 0x7:"
-              placeholder="Search IPs or Wallets..."
-            />
-          </div>
-          <span className="geo-format-pill">IPV4/V6</span>
-          <span className="geo-format-pill">HEX</span>
-
-          <div className="risk-band-selector">
-            <span>RISK BAND:</span>
-            <button
-              className={`risk-pill crit ${riskBand === 'CRIT' ? 'active' : ''}`}
-              onClick={() => setRiskBand('CRIT')}
-            >
-              CRIT
-            </button>
-            <button
-              className={`risk-pill elev ${riskBand === 'ELEV' ? 'active' : ''}`}
-              onClick={() => setRiskBand('ELEV')}
-            >
-              ELEV
-            </button>
-            <button
-              className={`risk-pill all ${riskBand === 'ALL' ? 'active' : ''}`}
-              onClick={() => setRiskBand('ALL')}
-            >
-              ALL
-            </button>
-          </div>
-
-          <span className="geo-format-pill">WINDOW: T - 72H</span>
+    <div className="geo-page">
+      {/* Official Government Header */}
+      <div className="geo-header">
+        <div className="geo-header-left">
+          <span className="geo-eyebrow">
+            National Cyber Forensics Laboratory · Telecom & IP Telemetry Wing
+          </span>
+          <h1 className="geo-title">
+            Geospatial & IP Telemetry Registry
+          </h1>
+          <p className="geo-subtitle">
+            Docket: <strong>TV-2026-041</strong> · Admissible under Section 65B Bharatiya Sakshya Adhiniyam / Indian Evidence Act. Correlating network infrastructure with financial off-ramps.
+          </p>
         </div>
 
-        <button className="btn-correlate-subpoena" title="Generate Section 91 Subpoena Package">
-          <Scale size={13} />
-          <span>CORRELATE ISP SUBPOENA</span>
-        </button>
+        <div className="geo-header-actions">
+          <button className="btn-secondary" onClick={() => handleCopy(JSON.stringify(TELEMETRY_NODES, null, 2))}>
+            <Copy size={13} />
+            <span>{copiedText ? 'Copied' : 'Copy Registry JSON'}</span>
+          </button>
+          <button className="btn-primary" onClick={() => alert('Compiling Section 91 Subpoena Package with IPDR/CDR logs...')}>
+            <Scale size={13} />
+            <span>Generate Subpoena Package (S.91)</span>
+          </button>
+        </div>
       </div>
 
-      {/* Main Split Grid: Radar Canvas on Left, Target Dossier on Right */}
-      <div className="geo-main-grid">
-        {/* Left Column: Radar Workspace */}
-        <div className="radar-panel">
-          <div className="radar-header">
-            <div className="radar-title-group">
-              <div className="radar-icon-box">
-                <Radar size={16} />
-              </div>
-              <div>
-                <h2 className="radar-title">TACTICAL IP RADAR // MULTI-HOP TELEMETRY</h2>
-                <p className="radar-subtitle">COORDINATE MAPPING & SATELLITE INTERCEPT ENGINE</p>
-              </div>
-            </div>
+      {/* 4 Stat Cards */}
+      <div className="geo-metrics-grid">
+        <div className="geo-metric-card">
+          <span className="geo-metric-label">Monitored IP Nodes</span>
+          <span className="geo-metric-value">{TELEMETRY_NODES.length} Correlated Nodes</span>
+          <span className="geo-metric-sub">Across 4 Legal Jurisdictions</span>
+        </div>
 
-            <div className="radar-badges">
-              <span className="radar-badge">GRID: WGS-84</span>
-              <span className="radar-badge active">GEO-LOCK: PINPOINT</span>
-            </div>
-          </div>
+        <div className="geo-metric-card">
+          <span className="geo-metric-label">Velocity Violations</span>
+          <span className="geo-metric-value" style={{ color: '#b91c1c' }}>2 Critical Flags</span>
+          <span className="geo-metric-sub">Impossible Travel Distance Detected</span>
+        </div>
 
-          {/* Radar Screen Canvas with concentric rings & pings */}
-          <div className="radar-screen-canvas">
-            {/* Top-Left Coordinates Overlay */}
-            <div className="radar-coordinates-overlay">
-              <div>LAT: <strong>50.1109° N</strong> | LON: <strong>8.6821° E</strong></div>
-              <div>DATUM: <strong>EPSG 4326 // GEO-HASH: u0yu</strong></div>
-              <div>ELEVATION: <strong>112m AMSL</strong></div>
-            </div>
+        <div className="geo-metric-card">
+          <span className="geo-metric-label">ISP Subpoenas Executed</span>
+          <span className="geo-metric-value" style={{ color: '#15803d' }}>2 Orders Served</span>
+          <span className="geo-metric-sub">Airtel & Jio Telecom Compliance</span>
+        </div>
 
-            {/* SVG Concentric Radar Rings & Crosshairs */}
-            <svg
-              width="100%"
-              height="100%"
-              style={{ position: 'absolute', inset: 0 }}
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <radialGradient id="radarSweep" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#24c7c9" stopOpacity="0.08" />
-                  <stop offset="60%" stopColor="#24c7c9" stopOpacity="0.03" />
-                  <stop offset="100%" stopColor="#24c7c9" stopOpacity="0" />
-                </radialGradient>
-              </defs>
+        <div className="geo-metric-card">
+          <span className="geo-metric-label">MLAT Cross-Border</span>
+          <span className="geo-metric-value">2 Active Requests</span>
+          <span className="geo-metric-sub">Germany (BKA) & Switzerland (Fedpol)</span>
+        </div>
+      </div>
 
-              <rect width="100%" height="100%" fill="url(#radarSweep)" />
-
-              {/* Concentric rings */}
-              <circle cx="50%" cy="50%" r="40" stroke="#162432" strokeWidth="1" fill="none" />
-              <circle cx="50%" cy="50%" r="85" stroke="#162432" strokeWidth="1" fill="none" strokeDasharray="3 3" />
-              <circle cx="50%" cy="50%" r="130" stroke="#1c2f42" strokeWidth="1" fill="none" />
-              <circle cx="50%" cy="50%" r="175" stroke="#162432" strokeWidth="1" fill="none" strokeDasharray="4 4" />
-
-              {/* Crosshair lines */}
-              <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#162432" strokeWidth="1" strokeDasharray="2 2" />
-              <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#162432" strokeWidth="1" strokeDasharray="2 2" />
-
-              {/* Arcs / trajectory path connecting nodes */}
-              <path
-                d="M 330 180 Q 420 150, 480 230 T 640 280"
-                fill="none"
-                stroke="#24c7c9"
-                strokeWidth="1.5"
-                strokeDasharray="4 3"
+      {/* Split Workspace */}
+      <div className="geo-workspace-grid">
+        {/* Left: Registry Table */}
+        <div className="geo-table-container">
+          <div className="geo-filter-bar">
+            <div className="geo-search-box">
+              <Search size={13} color="var(--text-muted)" />
+              <input 
+                type="text" 
+                placeholder="Search IP, ISP, City, or Classification..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <path
-                d="M 330 180 Q 380 260, 480 230"
-                fill="none"
-                stroke="#f97316"
-                strokeWidth="1"
-                strokeDasharray="2 2"
-              />
-            </svg>
-
-            {/* Pings matching screenshot */}
-            {/* Node 1: Swiss Wasabi */}
-            <div className="radar-ping-card" style={{ top: '90px', left: '46%' }}>
-              <div className="ping-ip-row">
-                <span style={{ color: '#f59e0b' }}>●</span>
-                <span>178.249.214.89 CH</span>
-              </div>
-              <div className="ping-role-text">WASABI CJ POOL PARTICIPANT</div>
             </div>
 
-            {/* Node 2: Frankfurt Tor Exit */}
-            <div className="radar-ping-card" style={{ top: '150px', left: '26%' }}>
-              <div className="ping-ip-row">
-                <span style={{ color: '#ef4444' }}>🚩</span>
-                <span>185.220.101.5</span>
-              </div>
-              <div className="ping-role-text tainted">TOR EXIT NODE</div>
-              <div className="ping-role-text">RTT: 18ms · PORT 9001</div>
-            </div>
-
-            {/* Node 3: Starlink Romania */}
-            <div className="radar-ping-card" style={{ top: '210px', left: '48%' }}>
-              <div className="ping-ip-row">
-                <span style={{ color: '#94a3b8' }}>●</span>
-                <span>194.26.29.112 RO</span>
-              </div>
-              <div className="ping-role-text">STARLINK SATELLITE UPLINK</div>
-              <div className="ping-role-text">RTT: 64ms · SOCKS5 GATE</div>
-            </div>
-
-            {/* Node 4: Airtel India Target */}
-            <div className="radar-ping-card" style={{ top: '240px', left: '68%' }}>
-              <div className="ping-ip-row">
-                <span style={{ color: '#10b981' }}>✔</span>
-                <span>122.166.42.18 IN</span>
-              </div>
-              <div className="ping-role-text fiu">AIRTEL BB // FIU-IND REPORTED</div>
-              <div className="ping-role-text fiu">TARGET KYC CORRELATED</div>
-            </div>
-
-            <div className="radar-footer-axis">
-              SCALE: 1:50,000,000 | GEOCODER: LE-TRACE INTEL V3.8
+            <div className="geo-filter-tabs">
+              <button 
+                className={`geo-tab-btn ${riskFilter === 'ALL' ? 'active' : ''}`}
+                onClick={() => setRiskFilter('ALL')}
+              >
+                All Nodes
+              </button>
+              <button 
+                className={`geo-tab-btn ${riskFilter === 'CRITICAL' ? 'active' : ''}`}
+                onClick={() => setRiskFilter('CRITICAL')}
+              >
+                Critical
+              </button>
+              <button 
+                className={`geo-tab-btn ${riskFilter === 'HIGH' ? 'active' : ''}`}
+                onClick={() => setRiskFilter('HIGH')}
+              >
+                High Risk
+              </button>
+              <button 
+                className={`geo-tab-btn ${riskFilter === 'ELEVATED' ? 'active' : ''}`}
+                onClick={() => setRiskFilter('ELEVATED')}
+              >
+                Elevated
+              </button>
             </div>
           </div>
 
-          {/* Bottom 3 Summary Cards */}
-          <div className="radar-summary-cards">
-            <div className="radar-mini-card">
-              <Radio size={14} className="mini-card-icon" />
-              <div>
-                <div className="mini-card-val">4 NODES</div>
-                <div className="mini-card-desc">ACTIVE GEO-PINGS DETECTED</div>
-              </div>
-              <span className="mini-card-badge live">LIVE SYNC</span>
-            </div>
-
-            <div className="radar-mini-card">
-              <Target size={14} style={{ color: '#ef4444' }} />
-              <div>
-                <div className="mini-card-val">2 RELAYS</div>
-                <div className="mini-card-desc">IDENTIFIED TOR / MIX HOPS</div>
-              </div>
-              <span className="mini-card-badge tainted">TAINTED</span>
-            </div>
-
-            <div className="radar-mini-card">
-              <Scale size={14} style={{ color: '#24c7c9' }} />
-              <div>
-                <div className="mini-card-val">3 ORDERS</div>
-                <div className="mini-card-desc">SUBPOENA READINESS</div>
-              </div>
-              <span className="mini-card-badge ready">READY (LE)</span>
-            </div>
-          </div>
+          <table className="geo-table">
+            <thead>
+              <tr>
+                <th>Observed IP / Classification</th>
+                <th>Service Provider (ISP / ASN)</th>
+                <th>Jurisdiction & City</th>
+                <th>Velocity / Behavior</th>
+                <th>Subpoena Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredNodes.map((node) => (
+                <tr 
+                  key={node.id}
+                  className={selectedNode.id === node.id ? 'selected' : ''}
+                  onClick={() => setSelectedNode(node)}
+                >
+                  <td>
+                    <div className="mono" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{node.ip}</div>
+                    <div className="muted" style={{ fontSize: '10px' }}>{node.classification}</div>
+                  </td>
+                  <td>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{node.isp}</div>
+                    <div className="mono muted" style={{ fontSize: '10px' }}>{node.asn}</div>
+                  </td>
+                  <td>
+                    <div style={{ color: 'var(--text-primary)' }}>{node.city}, {node.country}</div>
+                    <div className="mono muted" style={{ fontSize: '10px' }}>{node.coords}</div>
+                  </td>
+                  <td>
+                    <span className={`tag ${node.riskTag === 'crit' ? 'tag-critical' : node.riskTag === 'high' ? 'tag-high' : 'tag-medium'}`}>
+                      {node.risk}
+                    </span>
+                  </td>
+                  <td>
+                    <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                      {node.subpoenaStatus}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* Right Column: Target Dossier & Enforcement */}
-        <div className="geo-dossier-column">
-          {/* Target Dossier Card */}
-          <div className="target-dossier-card">
-            <div className="dossier-header-row">
-              <h3 className="dossier-title">TARGET DOSSIER // LE-8327</h3>
-              <span className="primary-suspect-badge">PRIMARY SUSPECT</span>
-            </div>
+        {/* Right: Selected Node Dossier */}
+        <div className="geo-dossier">
+          <div className="geo-dossier-header">
+            <h3 className="geo-dossier-title">IPDR & Telemetry Inspector</h3>
+            <span className="mono" style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary-color)' }}>
+              {selectedNode.id}
+            </span>
+          </div>
 
-            {/* Correlated Crypto Wallet */}
-            <div className="correlated-wallet-box">
-              <span className="correlated-wallet-title">CORRELATED CRYPTO LEDGER WALLET</span>
-              <div className="wallet-addr-row">
-                <span>0x71F92830d8...E84C2</span>
-                <Copy
-                  size={12}
-                  style={{ cursor: 'pointer', color: '#64748b' }}
-                  onClick={() => handleCopy('0x71F92830d8...E84C2')}
-                />
-              </div>
-              <div className="wallet-volume-row">
-                <span>TETHER USDT (TRC-20)</span>
-                <span className="volume-val">VOLUME: $1,420,000</span>
-              </div>
-            </div>
-
-            {/* Technical Telemetry List */}
-            <div className="telemetry-details-list">
-              <div className="telemetry-row">
-                <span className="telemetry-label">BGP ASN INTERCEPT</span>
-                <span className="telemetry-val">AS13335 (Cloudflare WARP)</span>
-              </div>
-
-              <div className="telemetry-row">
-                <span className="telemetry-label">BYPASS ATTEMPT</span>
-                <span className="telemetry-val alert-red">DETECTED (SPLIT TUNNEL)</span>
-              </div>
-
-              <div className="telemetry-row">
-                <span className="telemetry-label">WEBRTC LOCAL LEAK</span>
-                <span className="telemetry-val alert-green">192.168.1.104 (LEAKED)</span>
-              </div>
-
-              <div className="telemetry-row">
-                <span className="telemetry-label">CLIENT OS FINGERPRINT</span>
-                <span className="telemetry-val">Darwin x86_64 // Chrome 122</span>
-              </div>
-
-              <div className="telemetry-row">
-                <span className="telemetry-label">MAC HASH (ANONYMIZED)</span>
-                <span className="telemetry-val">e4:5f:01:8a:d9:...</span>
+          <div className="geo-dossier-box">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>IP ADDRESS:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="mono" style={{ fontWeight: 700 }}>{selectedNode.ip}</span>
+                <button 
+                  className="btn-secondary" 
+                  style={{ padding: '1px 5px', height: '20px' }}
+                  onClick={() => handleCopy(selectedNode.ip)}
+                  title="Copy IP"
+                >
+                  <Copy size={10} />
+                </button>
               </div>
             </div>
-
-            {/* Merkle Forensic Seal Card */}
-            <div className="merkle-seal-card">
-              <div className="seal-header-row">
-                <span>MERKLE FORENSIC SEAL</span>
-                <span className="seal-valid-pill">HASH VALID</span>
-              </div>
-              <div className="seal-hash">
-                0x892a0f671c08bc...4ea388b1
-              </div>
-              <div className="seal-timestamp">
-                Hardware Sealed Timestamp: UTC 2026-03-30 08:39:04
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>SERVICE PROVIDER:</span>
+              <span style={{ fontWeight: 600 }}>{selectedNode.isp}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>AUTONOMOUS SYSTEM:</span>
+              <span className="mono">{selectedNode.asn}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>COORDINATES (WGS84):</span>
+              <span className="mono">{selectedNode.coords}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>GEO-HASH / DATUM:</span>
+              <span className="mono">{selectedNode.geoHash} (EPSG:4326)</span>
             </div>
           </div>
 
-          {/* Statutory Enforcement Card */}
-          <div className="statutory-card">
-            <div className="statutory-header">
-              <span>STATUTORY ENFORCEMENT</span>
-              <span>CRPC / MLAT</span>
+          <div className="geo-dossier-box">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>PORT & PROTOCOL:</span>
+              <span className="mono">{selectedNode.port} · {selectedNode.protocol}</span>
             </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>LINKED FINANCIAL ENTITY:</span>
+              <span className="mono" style={{ fontWeight: 600, color: 'var(--primary-color)' }}>
+                {selectedNode.walletCorrelation}
+              </span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span className="mono muted" style={{ fontSize: '10px' }}>TIMESTAMP (UTC):</span>
+              <span className="mono">{selectedNode.timestamp}</span>
+            </div>
+          </div>
 
-            <div className="statutory-item-link">
-              <div>
-                <div className="statutory-item-text">Draft Section 91 CrPC ISP Order</div>
-                <div className="statutory-item-sub">Bharti Airtel Broadband KYC / IP logs</div>
-              </div>
-              <ChevronRight size={14} color="#64748b" />
+          <div style={{ padding: '10px 12px', background: 'var(--bg-surface-raised)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+            <div className="mono muted" style={{ fontSize: '10px', marginBottom: '4px', textTransform: 'uppercase' }}>
+              VELOCITY & ROUTING ANOMALY:
             </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+              {selectedNode.velocityAnomaly}
+            </div>
+          </div>
+
+          <div className="geo-dossier-actions">
+            <button 
+              className="btn-primary" 
+              style={{ width: '100%', justifyContent: 'center' }}
+              onClick={() => alert(`Section 91 Notice generated for ${selectedNode.isp} regarding IP ${selectedNode.ip}.`)}
+            >
+              <Scale size={13} />
+              <span>Issue Section 91 Subpoena Notice</span>
+            </button>
+            <button 
+              className="btn-secondary" 
+              style={{ width: '100%', justifyContent: 'center' }}
+              onClick={() => alert(`Exported Section 65B Telemetry Certificate for IP ${selectedNode.ip}.`)}
+            >
+              <FileText size={13} />
+              <span>Export Section 65B Telemetry Certificate</span>
+            </button>
           </div>
         </div>
       </div>

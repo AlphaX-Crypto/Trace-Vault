@@ -5,100 +5,79 @@ import {
   Plus, 
   Sun, 
   Moon, 
-  Bell 
+  UserCheck 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import './layout.css';
 
 export default function Topbar() {
+  const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
 
-  function handleKeyDown(e) {
+  function handleSearch(e) {
     if (e.key === 'Enter' && query.trim()) {
-      const q = query.trim();
-      if (q.startsWith('0x') || q.includes('@')) {
-        navigate(`/graph`);
-      } else {
-        navigate(`/cases`);
-      }
+      navigate('/cases');
     }
   }
 
   return (
-    <header className="forensic-header">
-      {/* Brand & Wordmark */}
-      <div className="header-left">
-        <div className="header-brand" onClick={() => navigate('/dashboard')}>
-          <div className="brand-badge">
-            <ShieldCheck size={16} />
+    <header className="gov-topbar">
+      {/* Brand & Emblem */}
+      <div className="topbar-left">
+        <div className="portal-brand" onClick={() => navigate('/dashboard')} role="button" tabIndex={0}>
+          <div className="brand-emblem">
+            <ShieldCheck size={20} />
           </div>
-          <div className="brand-text">
-            <span className="brand-title">TRACEVAULT</span>
-            <span className="brand-subtitle">FORENSIC & JUDICIAL</span>
+          <div className="brand-info">
+            <span className="brand-name">TRACEVAULT</span>
+            <span className="brand-tagline">Financial Investigation & Attribution Platform</span>
           </div>
-        </div>
-
-        {/* Docket & Classification Pills from Screenshot */}
-        <div className="header-docket-pill">
-          <span>DOCKET:</span>
-          <strong>TV-2026-041 // OP. CYPHER-RANSOM</strong>
-        </div>
-
-        <div className="header-security-badge confidential">
-          CONFIDENTIAL // LE ONLY
-        </div>
-
-        <div className="header-security-badge certified">
-          SEC 65B SEALED CERTIFIED
         </div>
       </div>
 
-      {/* Global Search Bar */}
-      <div className="header-center">
-        <div className="forensic-search-bar">
-          <Search size={13} className="search-icon" />
+      {/* Center Search */}
+      <div className="topbar-center">
+        <div className="portal-search">
+          <Search size={14} />
           <input
             type="text"
-            className="mono"
-            placeholder="Query Hash, Rail, Wallet..."
+            placeholder="Search Case ID, Wallet Address, or VPA..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleSearch}
           />
         </div>
       </div>
 
-      {/* Right Controls, Theme Toggle & Investigator Profile */}
-      <div className="header-right">
+      {/* Right Controls */}
+      <div className="topbar-right">
+        {/* Real Theme Switcher with explicit label */}
         <button
-          className="header-quick-action-btn"
-          onClick={() => navigate('/cases/new')}
-          title="Open new case"
-        >
-          <Plus size={12} />
-          <span>QUICK ACTION</span>
-        </button>
-
-        <button 
-          className="header-icon-btn" 
-          onClick={toggleTheme} 
+          className="theme-toggle-btn"
+          onClick={toggleTheme}
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
         >
           {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
         </button>
 
-        <button className="header-icon-btn" title="Notifications">
-          <Bell size={14} />
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={() => navigate('/cases/new')}
+        >
+          <Plus size={13} />
+          <span>New Case</span>
         </button>
 
-        <div className="header-user-dossier">
-          <div className="user-avatar-tag">TJ</div>
-          <div className="user-details">
-            <span className="user-name">T. JD</span>
-            <span className="user-role">Sr. LE #8327A</span>
+        <div className="user-badge">
+          <div className="user-avatar-initials">TJ</div>
+          <div className="user-meta">
+            <span className="user-title">{user?.name || 'T. JD (Sr. Investigator)'}</span>
+            <span className="user-dept">Central Cyber Crime Cell</span>
           </div>
         </div>
       </div>

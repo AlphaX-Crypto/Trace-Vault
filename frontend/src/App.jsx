@@ -82,6 +82,14 @@ export default function App() {
               <Route path="/cases/:id/evidence" element={<Evidence />} />
               <Route path="/cases/:id/report" element={<Report />} />
               <Route path="/cases/:id/disclosure" element={<Report />} />
+              <Route path="/case/:id" element={<InvestigationOverview />} />
+              <Route path="/case/:id/overview" element={<InvestigationOverview />} />
+              <Route path="/case/:id/graph" element={<TransactionGraphPage />} />
+              <Route path="/case/:id/attribution" element={<AttributionRisk />} />
+              <Route path="/case/:id/risk" element={<AttributionRisk />} />
+              <Route path="/case/:id/evidence" element={<Evidence />} />
+              <Route path="/case/:id/report" element={<Report />} />
+              <Route path="/case/:id/disclosure" element={<Report />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -1,152 +1,93 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  GitFork,
-  FileSpreadsheet,
-  Radar,
-  FileLock2,
-  UserCheck2,
   LayoutDashboard,
   FolderOpen,
-  SearchCode,
+  PlusCircle,
+  GitFork,
   ShieldAlert,
   Building2,
+  MapPin,
+  Briefcase,
+  FileLock2,
+  FileSpreadsheet,
+  FileText,
   Scale,
-  History
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import './layout.css';
 
+const SECTIONS = [
+  {
+    title: 'Casework',
+    links: [
+      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/cases', label: 'Case Registry', icon: FolderOpen },
+      { to: '/cases/new', label: 'Open New Case', icon: PlusCircle }
+    ]
+  },
+  {
+    title: 'Intelligence & Tracing',
+    links: [
+      { to: '/graph', label: 'Hop Trace & Ledger', icon: GitFork },
+      { to: '/risk', label: 'Risk Intelligence', icon: ShieldAlert },
+      { to: '/vasp', label: 'VASP Attribution', icon: Building2 },
+      { to: '/geospatial', label: 'Geospatial & IP Logs', icon: MapPin },
+      { to: '/investigations', label: 'Investigation Workspace', icon: Briefcase }
+    ]
+  },
+  {
+    title: 'Evidentiary Records',
+    links: [
+      { to: '/evidence', label: 'Evidence Locker', icon: FileLock2 },
+      { to: '/ledger', label: 'Audit Ledger (Sec 65B)', icon: FileSpreadsheet },
+      { to: '/reports', label: 'Reports & Briefings', icon: FileText },
+      { to: '/disclosure', label: 'Disclosure / SAHYOG', icon: Scale }
+    ]
+  }
+];
+
 export default function Sidebar() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleSignOut() {
+    logout();
+    navigate('/login', { replace: true });
+  }
+
   return (
-    <aside className="forensic-sidebar" aria-label="Forensic Navigation">
-      <div>
-        {/* Top Corridor Box matching screenshot */}
-        <div className="sidebar-corridor-box">
-          <div className="corridor-header">
-            <span>CORRIDOR SEC_65B</span>
-            <span className="corridor-dot" />
+    <aside className="gov-sidebar" aria-label="Portal Navigation">
+      <div className="sidebar-nav-group">
+        {SECTIONS.map((sec) => (
+          <div key={sec.title}>
+            <div className="sidebar-group-title">{sec.title}</div>
+            <div className="sidebar-links-list">
+              {sec.links.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
+                >
+                  <Icon size={15} />
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </div>
           </div>
-          <div className="corridor-hash">
-            HASH: SHA256//98AE...44BC
-          </div>
-        </div>
-
-        {/* 5 Primary Forensic Modules from screenshot */}
-        <div className="sidebar-nav-list">
-          <NavLink
-            to="/graph"
-            className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-          >
-            <GitFork size={15} />
-            <span>1. Hop Architecture (Graph)</span>
-          </NavLink>
-
-          <NavLink
-            to="/ledger"
-            className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-          >
-            <FileSpreadsheet size={15} />
-            <span>2. Audit Ledger (Sec 65B)</span>
-          </NavLink>
-
-          <NavLink
-            to="/geospatial"
-            className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-          >
-            <Radar size={15} />
-            <span>3. Geospatial Radar</span>
-          </NavLink>
-
-          <NavLink
-            to="/evidence"
-            className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-          >
-            <FileLock2 size={15} />
-            <span>4. Evidence Locker</span>
-          </NavLink>
-
-          <NavLink
-            to="/entity"
-            className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-          >
-            <UserCheck2 size={15} />
-            <span>5. Entity Dossier</span>
-          </NavLink>
-        </div>
-
-        <div className="sidebar-nav-divider" />
-
-        {/* Supporting Investigation Consoles */}
-        <div className="sidebar-secondary-title">ADDITIONAL CONSOLES</div>
-        <div className="sidebar-nav-list">
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <LayoutDashboard size={13} />
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink
-            to="/cases"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <FolderOpen size={13} />
-            <span>Cases Ledger</span>
-          </NavLink>
-
-          <NavLink
-            to="/investigations"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <SearchCode size={13} />
-            <span>Investigations Catalog</span>
-          </NavLink>
-
-          <NavLink
-            to="/risk"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <ShieldAlert size={13} />
-            <span>Risk Intelligence</span>
-          </NavLink>
-
-          <NavLink
-            to="/vasp"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <Building2 size={13} />
-            <span>VASP Attribution</span>
-          </NavLink>
-
-          <NavLink
-            to="/disclosure"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <Scale size={13} />
-            <span>Disclosure / SAHYOG</span>
-          </NavLink>
-
-          <NavLink
-            to="/audit"
-            className={({ isActive }) => `sidebar-secondary-item ${isActive ? 'active' : ''}`}
-          >
-            <History size={13} />
-            <span>Audit Activity</span>
-          </NavLink>
-        </div>
+        ))}
       </div>
 
-      {/* Bottom Integrity Box matching screenshot */}
-      <div className="sidebar-bottom-status">
-        <div className="bottom-status-row">
-          <span>EVIDENCE INTEGRITY</span>
-          <strong className="sealed">100% SEALED</strong>
+      <div className="sidebar-bottom-panel">
+        <div className="system-status-indicator">
+          <span className="status-dot" />
+          <span>System Status: Online & Secured</span>
         </div>
-        <div className="bottom-status-row">
-          <span>NODE ID: LE-BLR-04</span>
-          <strong className="value">CHAIN: BTC/UPI</strong>
-        </div>
+        <button className="btn-signout" onClick={handleSignOut} title="Sign out of system">
+          <LogOut size={12} />
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
   );

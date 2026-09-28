@@ -1,113 +1,136 @@
 /**
- * TRACEVAULT V3.8 LE — MASTER FORENSIC INTELLIGENCE PLATFORM DESIGN TOKENS
- * Strict compliance with the Master Forensic Intelligence Platform Specification.
+ * TRACEVAULT — Official Government Intelligence & Investigation Portal
+ * Minimal, human-made, formal design system.
+ * True light mode (clean white & slate) and true dark mode (deep formal navy).
  */
 
 :root {
-  /* Default to Dark Mode (Operational Forensic Environment) */
-  color-scheme: dark;
+  /* Default: Clean Formal Light Mode */
+  color-scheme: light;
 
-  /* Spec Primary Dark Palette */
-  --bg-dark-base: #071018;
-  --bg-dark-surface: #0b141c;
-  --bg-dark-elevated: #111e2a;
-  --border-dark-subtle: #16222f;
-  --border-dark-strong: #213547;
+  /* Typography */
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Spec Primary Accent */
-  --accent-cyan: #24c7c9;
-  --accent-cyan-glow: #00f0ff;
-  --accent-cyan-dim: rgba(36, 199, 201, 0.12);
-
-  /* Spec Risk Palette */
-  --risk-critical: #ef4444;
-  --risk-high: #f97316;
-  --risk-medium: #eab308;
-  --risk-low: #10b981;
-
-  /* Spec Rail Semantics */
-  --rail-crypto: #24c7c9;
-  --rail-upi: #a855f7;
-  --rail-geo: #f59e0b;
-  --rail-cross: #ec4899;
-
-  /* Active Theme Mapping: Dark */
-  --color-app: var(--bg-dark-base);
-  --color-sidebar: #050b12;
-  --color-header: #071018;
-  --color-footer: #050b12;
-  --color-surface: var(--bg-dark-surface);
-  --color-surface-raised: var(--bg-dark-elevated);
-  --color-surface-soft: #081119;
-  --color-border: var(--border-dark-subtle);
-  --color-border-strong: var(--border-dark-strong);
-
-  --color-accent: var(--accent-cyan);
-  --color-accent-bright: var(--accent-cyan-glow);
-  --color-accent-soft: var(--accent-cyan-dim);
-
-  --color-primary-text: #f1f5f9;
-  --color-secondary-text: #94a3b8;
-  --color-muted-text: #64748b;
-
-  --color-critical: var(--risk-critical);
-  --color-high: var(--risk-high);
-  --color-medium: var(--risk-medium);
-  --color-low: var(--risk-low);
-
-  --color-rail-crypto: var(--rail-crypto);
-  --color-rail-upi: var(--rail-upi);
-  --color-rail-geo: var(--rail-geo);
-  --color-rail-cross: var(--rail-cross);
-
-  /* Dimensions & Shell */
-  --sidebar-width: 250px;
+  /* Sizing & Spacing */
   --topbar-height: 56px;
-  --telemetry-bar-height: 28px;
-
-  /* Radii - Precision Forensic Corners */
-  --radius-xs: 2px;
+  --sidebar-width: 240px;
+  --footer-height: 32px;
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
 
-  /* Typography */
-  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  /* LIGHT THEME (White means White) */
+  --bg-app: #f1f5f9;              /* Slate-100 */
+  --bg-surface: #ffffff;          /* Pure White */
+  --bg-surface-raised: #f8fafc;   /* Slate-50 */
+  --bg-surface-header: #ffffff;   /* Pure White Header */
+  --bg-sidebar: #0f172a;          /* Formal Slate-900 Nav or Dark Navy */
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.08);
+  --bg-sidebar-active: #1e293b;
 
-  /* Shadows - Minimal & Restrained */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-panel: none;
+  --border-subtle: #e2e8f0;       /* Slate-200 */
+  --border-medium: #cbd5e1;       /* Slate-300 */
+  --border-strong: #94a3b8;       /* Slate-400 */
+
+  --text-primary: #0f172a;        /* Slate-900 (High contrast dark) */
+  --text-secondary: #334155;      /* Slate-700 */
+  --text-muted: #64748b;          /* Slate-500 */
+  --text-inverse: #ffffff;
+
+  /* Formal Government Primary Colors (Deep Royal Navy & Steel Blue) */
+  --primary-color: #1d4ed8;       /* Blue-700 */
+  --primary-hover: #1e40af;       /* Blue-800 */
+  --primary-light: #eff6ff;       /* Blue-50 */
+  --primary-border: #bfdbfe;
+
+  /* Official Status / Severity Colors */
+  --status-low-text: #15803d;
+  --status-low-bg: #f0fdf4;
+  --status-low-border: #bbf7d0;
+
+  --status-medium-text: #b45309;
+  --status-medium-bg: #fffbeb;
+  --status-medium-border: #fde68a;
+
+  --status-high-text: #c2410c;
+  --status-high-bg: #fff7ed;
+  --status-high-border: #fed7aa;
+
+  --status-critical-text: #b91c1c;
+  --status-critical-bg: #fef2f2;
+  --status-critical-border: #fecaca;
+
+  /* Rails Semantics */
+  --rail-crypto: #0369a1;
+  --rail-upi: #6b21a8;
+  --rail-cross: #be185d;
+  --rail-geo: #b45309;
+
+  /* Shadows - Minimal, professional, subtle */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+  /* Legacy & Cross-Component Aliases (Clean Institutional) */
+  --color-surface: var(--bg-surface);
+  --color-surface-raised: var(--bg-surface-raised);
+  --color-surface-soft: var(--bg-surface-raised);
+  --color-border: var(--border-subtle);
+  --color-border-strong: var(--border-medium);
+  --color-primary-text: var(--text-primary);
+  --color-secondary-text: var(--text-secondary);
+  --color-muted-text: var(--text-muted);
+  --color-accent: var(--primary-color);
+  --color-accent-bright: var(--primary-color);
 }
 
-/* Light Mode (Briefing / Documentation / Review Environment) */
-[data-theme='light'] {
-  color-scheme: light;
+/* DARK THEME (Dark means Dark) */
+[data-theme='dark'] {
+  color-scheme: dark;
 
-  --color-app: #f8fafc;
-  --color-sidebar: #0b141c; /* Kept dark institutional sidebar for clear separation */
-  --color-header: #ffffff;
-  --color-footer: #f1f5f9;
-  --color-surface: #ffffff;
-  --color-surface-raised: #f1f5f9;
-  --color-surface-soft: #f8fafc;
-  --color-border: #e2e8f0;
-  --color-border-strong: #cbd5e1;
+  --bg-app: #0b0f19;              /* Deep Navy Dark */
+  --bg-surface: #111827;          /* Slate-900 */
+  --bg-surface-raised: #1f2937;   /* Slate-800 */
+  --bg-surface-header: #111827;
+  --bg-sidebar: #0b0f19;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --bg-sidebar-active: #1f2937;
 
-  --color-accent: #0d9488;
-  --color-accent-bright: #14b8a6;
-  --color-accent-soft: rgba(13, 148, 136, 0.12);
+  --border-subtle: #1f2937;
+  --border-medium: #374151;
+  --border-strong: #4b5563;
 
-  --color-primary-text: #0f172a;
-  --color-secondary-text: #475569;
-  --color-muted-text: #64748b;
+  --text-primary: #f9fafb;        /* Pure crisp readable white */
+  --text-secondary: #d1d5db;      /* Slate-300 */
+  --text-muted: #9ca3af;          /* Slate-400 */
+  --text-inverse: #0f172a;
 
-  --color-critical: #dc2626;
-  --color-high: #ea580c;
-  --color-medium: #d97706;
-  --color-low: #16a34a;
+  --primary-color: #3b82f6;       /* Clean Blue */
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(59, 130, 246, 0.15);
+  --primary-border: rgba(59, 130, 246, 0.35);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --status-low-text: #4ade80;
+  --status-low-bg: rgba(22, 163, 74, 0.15);
+  --status-low-border: rgba(22, 163, 74, 0.3);
+
+  --status-medium-text: #fbbf24;
+  --status-medium-bg: rgba(217, 119, 6, 0.15);
+  --status-medium-border: rgba(217, 119, 6, 0.3);
+
+  --status-high-text: #fb923c;
+  --status-high-bg: rgba(234, 88, 12, 0.15);
+  --status-high-border: rgba(234, 88, 12, 0.3);
+
+  --status-critical-text: #f87171;
+  --status-critical-bg: rgba(220, 38, 38, 0.15);
+  --status-critical-border: rgba(220, 38, 38, 0.3);
+
+  --rail-crypto: #38bdf8;
+  --rail-upi: #c084fc;
+  --rail-cross: #f472b6;
+  --rail-geo: #fbbf24;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 }
