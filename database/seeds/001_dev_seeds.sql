@@ -59,27 +59,46 @@ VALUES
     ((SELECT id FROM entities WHERE identifier = 'exchange_deposit'), (SELECT id FROM vasps WHERE name = 'Example Exchange'), '0xexchange_deposit', 'ethereum', 'controlled_test_registry')
 ON CONFLICT (blockchain, address) DO NOTHING;
 
--- 6. Demo Investigation Case
+-- 6. Demo Investigation Cases
 INSERT INTO cases (case_id, title, description, crime_type, priority, subject_type, blockchain, subject_identifier, status)
-VALUES (
-    'CASE-2026-001',
-    'Operation CryptoSweep - Ransomware Cluster',
-    'Tracing unhosted wallet associated with multi-stage ransomware extortion.',
-    'RANSOMWARE',
-    'HIGH',
-    'WALLET',
-    'ethereum',
-    '0x0000000000000000000000000000000000000001',
-    'OPEN'
-)
+VALUES 
+    (
+        'CASE-2026-001',
+        'Operation CryptoSweep - Ransomware Cluster',
+        'Tracing unhosted wallet associated with multi-stage ransomware extortion.',
+        'RANSOMWARE',
+        'HIGH',
+        'WALLET',
+        'ethereum',
+        'A',
+        'OPEN'
+    ),
+    (
+        'CASE-2026-002',
+        'Operation ShadowLoot - Exchange Exit Scoping',
+        'Forensic attribution of illicit fund flow terminating in centralized VASP deposit cluster.',
+        'THEFT',
+        'MEDIUM',
+        'WALLET',
+        'ethereum',
+        'B',
+        'OPEN'
+    )
 ON CONFLICT (case_id) DO NOTHING;
 
--- 7. Case Assignment (Assign demo investigator to demo case)
+-- 7. Case Assignment (Assign demo investigator to demo cases)
 INSERT INTO case_members (case_id, user_id, role)
-VALUES (
-    (SELECT id FROM cases WHERE case_id = 'CASE-2026-001'),
-    (SELECT id FROM users WHERE username = 'investigator'),
-    'INVESTIGATOR'
-)
+VALUES 
+    (
+        (SELECT id FROM cases WHERE case_id = 'CASE-2026-001'),
+        (SELECT id FROM users WHERE username = 'investigator'),
+        'INVESTIGATOR'
+    ),
+    (
+        (SELECT id FROM cases WHERE case_id = 'CASE-2026-002'),
+        (SELECT id FROM users WHERE username = 'investigator'),
+        'INVESTIGATOR'
+    )
 ON CONFLICT (case_id, user_id) DO NOTHING;
+
 
