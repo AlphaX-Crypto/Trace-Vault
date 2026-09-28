@@ -1,10 +1,10 @@
 /**
- * TRACEVAULT — Official Government Layout Styling
- * Human-designed, clean alignment, formal typography, true theme switching.
+ * TRACEVAULT — Architectural Luxury & Forensic Intelligence Layout
+ * Reference: Modern crypto/blockchain bento design (ZQL / Vercel / Linear inspired).
  */
 
 /* =========================================================================
-   Top Portal Header
+   Top Portal Header (Floating HUD with Hairline Border)
    ========================================================================= */
 
 .gov-topbar {
@@ -18,22 +18,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 28px;
   z-index: 100;
-  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .portal-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
+  user-select: none;
 }
 
 .brand-emblem {
@@ -45,31 +47,40 @@
   color: var(--primary-color);
   border: 1px solid var(--primary-border);
   border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.portal-brand:hover .brand-emblem {
+  border-color: var(--text-primary);
 }
 
 .brand-info {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .brand-name {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
-  line-height: 1.1;
+  line-height: 1;
 }
 
 .brand-tagline {
-  font-size: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .topbar-center {
   flex: 1;
-  max-width: 420px;
-  margin: 0 24px;
+  max-width: 440px;
+  margin: 0 32px;
 }
 
 .portal-search {
@@ -80,25 +91,26 @@
 .portal-search svg {
   position: absolute;
   top: 50%;
-  left: 10px;
+  left: 12px;
   transform: translateY(-50%);
   color: var(--text-muted);
 }
 
 .portal-search input {
   width: 100%;
-  height: 32px;
-  padding: 0 12px 0 32px;
+  height: 34px;
+  padding: 0 14px 0 34px;
   background-color: var(--bg-surface-raised);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  font-size: 11px;
   color: var(--text-primary);
+  transition: all 0.15s ease;
 }
 
 .portal-search input:focus {
   background-color: var(--bg-surface);
-  border-color: var(--primary-color);
+  border-color: var(--border-strong);
   outline: none;
 }
 
@@ -112,182 +124,212 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 30px;
-  padding: 0 10px;
-  background-color: var(--bg-surface-raised);
+  height: 32px;
+  padding: 0 12px;
+  background: var(--bg-surface);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   color: var(--text-secondary);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .theme-toggle-btn:hover {
-  background-color: var(--bg-app);
+  background: var(--primary-light);
   color: var(--text-primary);
-  border-color: var(--border-strong);
 }
 
-.user-badge {
-  display: flex;
+.investigator-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  border-left: 1px solid var(--border-subtle);
-  margin-left: 4px;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
 }
 
-.user-avatar-initials {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background-color: var(--primary-light);
+.investigator-badge svg {
   color: var(--primary-color);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.user-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.1;
-}
-
-.user-dept {
-  font-size: 9px;
-  color: var(--text-muted);
 }
 
 /* =========================================================================
-   Left Navigation Sidebar
+   Sidebar Navigation (Hairline Architectural Grid Structure)
    ========================================================================= */
 
 .gov-sidebar {
   position: fixed;
   top: var(--topbar-height);
   left: 0;
-  bottom: 0;
+  bottom: var(--footer-height);
   width: var(--sidebar-width);
-  background-color: var(--bg-surface);
+  background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 16px 12px;
+  padding: 20px 14px 14px;
   z-index: 90;
   overflow-y: auto;
 }
 
-.sidebar-nav-group {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+@media (max-width: 900px) {
+  .gov-sidebar {
+    display: none;
+  }
 }
 
-.sidebar-group-title {
-  font-size: 10px;
+.sidebar-nav-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-section-title {
+  padding: 0 10px;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 9px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0 8px 4px;
-  border-bottom: 1px solid var(--border-subtle);
 }
 
-.sidebar-links-list {
+[data-theme='light'] .sidebar-section-title {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.sidebar-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: 4px;
+  gap: 3px;
 }
 
-.sidebar-nav-item {
+.sidebar-nav-item a {
   display: flex;
   align-items: center;
-  gap: 9px;
-  height: 32px;
-  padding: 0 10px;
+  gap: 10px;
+  padding: 7px 10px;
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
   font-weight: 500;
   transition: all 0.12s ease;
-  text-decoration: none;
+  position: relative;
 }
 
-.sidebar-nav-item:hover {
-  background-color: var(--bg-surface-raised);
-  color: var(--text-primary);
+.sidebar-nav-item a:hover {
+  background-color: var(--bg-sidebar-hover);
+  color: #ffffff;
 }
 
-.sidebar-nav-item.active {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+.sidebar-nav-item.active a {
+  background-color: var(--bg-sidebar-active);
+  color: #ffffff;
   font-weight: 600;
 }
 
-.sidebar-nav-item.active svg {
-  color: var(--primary-color);
+.sidebar-nav-item.active a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background-color: var(--primary-color);
+  border-radius: 1px;
 }
 
-.sidebar-bottom-panel {
-  padding-top: 12px;
-  border-top: 1px solid var(--border-subtle);
+.sidebar-badge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-badge.danger {
+  background-color: rgba(220, 38, 38, 0.25);
+  color: #f87171;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-session-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
+  padding: 0 8px;
+  margin-bottom: 10px;
 }
 
-.system-status-indicator {
-  display: flex;
+.session-badge {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
-  color: var(--text-muted);
-  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #4ade80;
+  font-weight: 700;
 }
 
-.status-dot {
-  width: 6px;
-  height: 6px;
+.session-dot {
+  width: 5px;
+  height: 5px;
+  background-color: #4ade80;
   border-radius: 50%;
-  background-color: var(--status-low-text);
+  animation: pulse-green 2s infinite;
 }
 
-.btn-signout {
+@keyframes pulse-green {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.session-jurisdiction {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.sidebar-logout-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   height: 28px;
-  background-color: transparent;
-  border: 1px solid var(--border-medium);
+  padding: 0 8px;
+  background: transparent;
+  border: none;
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
-.btn-signout:hover {
-  background-color: var(--status-critical-bg);
-  color: var(--status-critical-text);
-  border-color: var(--status-critical-border);
+.sidebar-logout-btn:hover {
+  background-color: rgba(220, 38, 38, 0.15);
+  color: #f87171;
 }
 
 /* =========================================================================
-   Bottom Telemetry / Institutional Footer
+   Bottom Telemetry Footer Bar
    ========================================================================= */
 
 .gov-footer {
@@ -296,13 +338,34 @@
   left: 0;
   right: 0;
   height: var(--footer-height);
-  background-color: var(--bg-surface-raised);
+  background-color: var(--bg-surface-header);
   border-top: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  font-size: 11px;
+  padding: 0 24px;
+  z-index: 80;
+  font-family: var(--font-mono);
+  font-size: 9px;
   color: var(--text-muted);
-  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }

@@ -1,77 +1,89 @@
 /**
- * TRACEVAULT — Official Government Intelligence & Investigation Portal
- * Minimal, human-made, formal design system.
- * True light mode (clean white & slate) and true dark mode (deep formal navy).
+ * TRACEVAULT — Architectural Luxury & Forensic Intelligence Design System
+ * Reference: Modern crypto/blockchain bento design (ZQL / Vercel / Linear inspired).
+ * Features razor-sharp hairline gridlines, technical HUD notches, grotesque typography,
+ * deep obsidian black dark mode, and pristine gallery white light mode.
  */
 
 :root {
-  /* Default: Clean Formal Light Mode */
+  /* Default: Clean Architectural Light Mode */
   color-scheme: light;
 
   /* Typography */
-  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Sizing & Spacing */
-  --topbar-height: 56px;
-  --sidebar-width: 240px;
-  --footer-height: 32px;
+  /* Sizing & HUD Layout */
+  --topbar-height: 64px;
+  --sidebar-width: 250px;
+  --footer-height: 36px;
+  --radius-xs: 2px;
   --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
 
-  /* LIGHT THEME (White means White) */
-  --bg-app: #f1f5f9;              /* Slate-100 */
-  --bg-surface: #ffffff;          /* Pure White */
-  --bg-surface-raised: #f8fafc;   /* Slate-50 */
-  --bg-surface-header: #ffffff;   /* Pure White Header */
-  --bg-sidebar: #0f172a;          /* Formal Slate-900 Nav or Dark Navy */
+  /* LIGHT THEME (Pristine Gallery White & Architectural Slate) */
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #f1f5f9;
+  --bg-surface-glass: rgba(255, 255, 255, 0.85);
+  --bg-surface-header: rgba(255, 255, 255, 0.92);
+  --bg-sidebar: #0a0f1d;
   --bg-sidebar-hover: rgba(255, 255, 255, 0.08);
   --bg-sidebar-active: #1e293b;
 
-  --border-subtle: #e2e8f0;       /* Slate-200 */
-  --border-medium: #cbd5e1;       /* Slate-300 */
-  --border-strong: #94a3b8;       /* Slate-400 */
+  /* Hairline Architectural Grid Lines */
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-medium: rgba(15, 23, 42, 0.15);
+  --border-strong: rgba(15, 23, 42, 0.3);
+  --grid-line-color: rgba(15, 23, 42, 0.04);
+  --grid-cross-color: rgba(15, 23, 42, 0.25);
 
-  --text-primary: #0f172a;        /* Slate-900 (High contrast dark) */
-  --text-secondary: #334155;      /* Slate-700 */
-  --text-muted: #64748b;          /* Slate-500 */
+  /* High-Contrast Typography */
+  --text-primary: #0a0f1d;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
   --text-inverse: #ffffff;
 
-  /* Formal Government Primary Colors (Deep Royal Navy & Steel Blue) */
-  --primary-color: #1d4ed8;       /* Blue-700 */
-  --primary-hover: #1e40af;       /* Blue-800 */
-  --primary-light: #eff6ff;       /* Blue-50 */
-  --primary-border: #bfdbfe;
+  /* Sleek Accent (Deep Obsidian / Royal Steel / Amber Pulse) */
+  --primary-color: #0f172a;
+  --primary-hover: #1e293b;
+  --primary-light: rgba(15, 23, 42, 0.06);
+  --primary-border: rgba(15, 23, 42, 0.18);
+  --accent-amber: #d97706;
+  --accent-purple: #7c3aed;
 
-  /* Official Status / Severity Colors */
-  --status-low-text: #15803d;
-  --status-low-bg: #f0fdf4;
-  --status-low-border: #bbf7d0;
+  /* Refined Status Tiers */
+  --status-low-text: #16a34a;
+  --status-low-bg: rgba(22, 163, 74, 0.08);
+  --status-low-border: rgba(22, 163, 74, 0.2);
 
-  --status-medium-text: #b45309;
-  --status-medium-bg: #fffbeb;
-  --status-medium-border: #fde68a;
+  --status-medium-text: #d97706;
+  --status-medium-bg: rgba(217, 119, 6, 0.08);
+  --status-medium-border: rgba(217, 119, 6, 0.2);
 
-  --status-high-text: #c2410c;
-  --status-high-bg: #fff7ed;
-  --status-high-border: #fed7aa;
+  --status-high-text: #ea580c;
+  --status-high-bg: rgba(234, 88, 12, 0.08);
+  --status-high-border: rgba(234, 88, 12, 0.2);
 
-  --status-critical-text: #b91c1c;
-  --status-critical-bg: #fef2f2;
-  --status-critical-border: #fecaca;
+  --status-critical-text: #dc2626;
+  --status-critical-bg: rgba(220, 38, 38, 0.08);
+  --status-critical-border: rgba(220, 38, 38, 0.2);
 
   /* Rails Semantics */
-  --rail-crypto: #0369a1;
-  --rail-upi: #6b21a8;
-  --rail-cross: #be185d;
-  --rail-geo: #b45309;
+  --rail-crypto: #0284c7;
+  --rail-upi: #7c3aed;
+  --rail-cross: #db2777;
+  --rail-geo: #d97706;
 
-  /* Shadows - Minimal, professional, subtle */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  /* Subtle Architectural Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 
-  /* Legacy & Cross-Component Aliases (Clean Institutional) */
+  /* Legacy Aliases */
   --color-surface: var(--bg-surface);
   --color-surface-raised: var(--bg-surface-raised);
   --color-surface-soft: var(--bg-surface-raised);
@@ -84,53 +96,77 @@
   --color-accent-bright: var(--primary-color);
 }
 
-/* DARK THEME (Dark means Dark) */
+/* DARK THEME (Obsidian Black & Luxury Glass Bento Grid) */
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --bg-app: #0b0f19;              /* Deep Navy Dark */
-  --bg-surface: #111827;          /* Slate-900 */
-  --bg-surface-raised: #1f2937;   /* Slate-800 */
-  --bg-surface-header: #111827;
-  --bg-sidebar: #0b0f19;
+  --bg-app: #040406;
+  --bg-surface: #0a0b0e;
+  --bg-surface-raised: #121318;
+  --bg-surface-glass: rgba(10, 11, 14, 0.85);
+  --bg-surface-header: rgba(4, 4, 6, 0.88);
+  --bg-sidebar: #040406;
   --bg-sidebar-hover: rgba(255, 255, 255, 0.06);
-  --bg-sidebar-active: #1f2937;
+  --bg-sidebar-active: #151720;
 
-  --border-subtle: #1f2937;
-  --border-medium: #374151;
-  --border-strong: #4b5563;
+  /* Hairline Architectural Grid Lines */
+  --border-subtle: rgba(255, 255, 255, 0.09);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-strong: rgba(255, 255, 255, 0.28);
+  --grid-line-color: rgba(255, 255, 255, 0.035);
+  --grid-cross-color: rgba(255, 255, 255, 0.35);
 
-  --text-primary: #f9fafb;        /* Pure crisp readable white */
-  --text-secondary: #d1d5db;      /* Slate-300 */
-  --text-muted: #9ca3af;          /* Slate-400 */
-  --text-inverse: #0f172a;
+  /* High-Contrast Stark White Typography */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-inverse: #000000;
 
-  --primary-color: #3b82f6;       /* Clean Blue */
-  --primary-hover: #60a5fa;
-  --primary-light: rgba(59, 130, 246, 0.15);
-  --primary-border: rgba(59, 130, 246, 0.35);
+  /* Clean White Primary on Dark */
+  --primary-color: #ffffff;
+  --primary-hover: #e4e4e7;
+  --primary-light: rgba(255, 255, 255, 0.1);
+  --primary-border: rgba(255, 255, 255, 0.22);
+  --accent-amber: #f59e0b;
+  --accent-purple: #a855f7;
 
+  /* Refined Status Tiers */
   --status-low-text: #4ade80;
-  --status-low-bg: rgba(22, 163, 74, 0.15);
-  --status-low-border: rgba(22, 163, 74, 0.3);
+  --status-low-bg: rgba(34, 197, 94, 0.12);
+  --status-low-border: rgba(34, 197, 94, 0.25);
 
   --status-medium-text: #fbbf24;
-  --status-medium-bg: rgba(217, 119, 6, 0.15);
-  --status-medium-border: rgba(217, 119, 6, 0.3);
+  --status-medium-bg: rgba(245, 158, 11, 0.12);
+  --status-medium-border: rgba(245, 158, 11, 0.25);
 
   --status-high-text: #fb923c;
-  --status-high-bg: rgba(234, 88, 12, 0.15);
-  --status-high-border: rgba(234, 88, 12, 0.3);
+  --status-high-bg: rgba(249, 115, 22, 0.12);
+  --status-high-border: rgba(249, 115, 22, 0.25);
 
   --status-critical-text: #f87171;
-  --status-critical-bg: rgba(220, 38, 38, 0.15);
-  --status-critical-border: rgba(220, 38, 38, 0.3);
+  --status-critical-bg: rgba(239, 68, 68, 0.12);
+  --status-critical-border: rgba(239, 68, 68, 0.25);
 
+  /* Rails Semantics */
   --rail-crypto: #38bdf8;
   --rail-upi: #c084fc;
   --rail-cross: #f472b6;
   --rail-geo: #fbbf24;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  /* Architectural Depth */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.8);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.7);
+  --shadow-glass: 0 12px 40px rgba(0, 0, 0, 0.8);
+
+  /* Legacy Aliases */
+  --color-surface: var(--bg-surface);
+  --color-surface-raised: var(--bg-surface-raised);
+  --color-surface-soft: var(--bg-surface-raised);
+  --color-border: var(--border-subtle);
+  --color-border-strong: var(--border-medium);
+  --color-primary-text: var(--text-primary);
+  --color-secondary-text: var(--text-secondary);
+  --color-muted-text: var(--text-muted);
+  --color-accent: var(--primary-color);
+  --color-accent-bright: var(--primary-color);
 }

@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  FolderOpen, 
-  ShieldAlert, 
-  Database, 
-  FileLock2, 
-  Plus, 
-  ArrowRight, 
-  Building2, 
-  Network,
-  ExternalLink,
-  ChevronRight
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { 
+  ShieldCheck, 
+  ArrowRight, 
+  Plus, 
+  Layers, 
+  Building2, 
+  ExternalLink, 
+  Lock,
+  ArrowUpRight,
+  TrendingUp,
+  FileSpreadsheet
+} from 'lucide-react';
 import api from '../services/api';
 import './Dashboard.css';
 
@@ -21,292 +21,321 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadData() {
+    async function fetchDashboardData() {
       try {
         const data = await api.getCases();
-        setCases(data);
+        setCases(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.warn('API connection fallback:', err.message);
-        setCases([
-          { id: 'CASE-2025-081', name: 'DarkNet Mixer Trace', target: '0x71F92830...E84C2', rail: 'CRYPTO', risk: 'CRITICAL', status: 'OPEN', updated: '10m ago' },
-          { id: 'CASE-2025-079', name: 'Ransomware Payment Flow', target: '0x3a1b49c0...f82c', rail: 'MULTI_RAIL', risk: 'HIGH', status: 'UNDER_REVIEW', updated: '1h ago' },
-          { id: 'CASE-2025-074', name: 'Exchange Exploit Outflow', target: '0x7c9d110b...e12a', rail: 'CRYPTO', risk: 'CRITICAL', status: 'OPEN', updated: '4h ago' },
-          { id: 'CASE-2025-072', name: 'Illicit OTC Settlement', target: 'p2p_desk_blr@axis', rail: 'UPI', risk: 'MEDIUM', status: 'UNDER_REVIEW', updated: '1d ago' },
-          { id: 'CASE-2025-068', name: 'Phishing Yield Consolidation', target: '0x12d4a89b...q9Yt', rail: 'CRYPTO', risk: 'LOW', status: 'CLOSED', updated: '3d ago' }
-        ]);
+        console.error('Failed to load dashboard cases:', err);
       } finally {
         setLoading(false);
       }
     }
-    loadData();
+    fetchDashboardData();
   }, []);
 
   return (
-    <div className="gov-page">
-      {/* Official Header */}
-      <div className="gov-page-header">
-        <div>
-          <h1 className="gov-page-title">Active Investigation Overview</h1>
-          <p className="gov-page-subtitle">
-            National financial crime investigation portal · Multi-rail transaction tracking across EVM Blockchains and UPI Banking Switches
+    <div className="dash-page">
+      {/* Hero Command Header */}
+      <section className="dash-hero">
+        <div className="dash-hero-left">
+          <div className="dash-eyebrow">
+            <span>[ 01 // NATIONAL FORENSIC COMMAND PLATFORM ]</span>
+            <span>•</span>
+            <span style={{ color: '#4ade80' }}>HSM IMMUTABLE ENCLAVE ACTIVE</span>
+          </div>
+          <h1 className="dash-hero-title">
+            Autonomous Multi-Rail Financial Intelligence
+          </h1>
+          <p className="dash-hero-desc">
+            Unified forensic tracing infrastructure traversing Ethereum unhosted wallets, peel-chain layering corridors, VASP deposit clusters, and NPCI core UPI banking switches.
           </p>
         </div>
 
-        <Link to="/cases/new">
-          <button className="btn btn-primary">
+        <div className="dash-hero-actions">
+          <Link to="/cases/new" className="btn-pill btn-pill-primary">
             <Plus size={14} />
             <span>Open New Case</span>
-          </button>
-        </Link>
-      </div>
+          </Link>
+          <Link to="/evidence" className="btn-pill btn-pill-secondary">
+            <Lock size={13} />
+            <span>Evidence Vault</span>
+          </Link>
+        </div>
+      </section>
 
-      {/* 4 Formal Stat Cards */}
-      <div className="dash-metrics-grid">
-        <div className="dash-stat-box">
-          <div className="dash-stat-top">
-            <span>Active Investigations</span>
-            <FolderOpen size={16} />
+      {/* Top 4 Bento Metric Cards */}
+      <section className="dash-metrics-grid">
+        <div className="bento-metric-box">
+          <div className="bento-metric-top">
+            <span className="bento-metric-tag">[ 01 // CASEWORK ]</span>
+            <span className="tag tag-critical">18 Active</span>
           </div>
-          <div className="dash-stat-val">{cases.length || 12} Cases</div>
-          <div className="dash-stat-desc">Assigned across investigative units</div>
+          <div className="bento-metric-val">18 Cases</div>
+          <div className="bento-metric-sub">4 Critical Severity · 7 State Units</div>
         </div>
 
-        <div className="dash-stat-box">
-          <div className="dash-stat-top">
-            <span>High & Critical Risk</span>
-            <ShieldAlert size={16} style={{ color: 'var(--status-critical-text)' }} />
+        <div className="bento-metric-box">
+          <div className="bento-metric-top">
+            <span className="bento-metric-tag">[ 02 // TRAVERSED VALUE ]</span>
+            <span className="tag tag-low">Cross-Rail</span>
           </div>
-          <div className="dash-stat-val" style={{ color: 'var(--status-critical-text)' }}>
-            {cases.filter((c) => c.risk === 'CRITICAL' || c.risk === 'HIGH').length || 5} Cases
-          </div>
-          <div className="dash-stat-desc">Requires immediate supervisor review</div>
+          <div className="bento-metric-val">₹48.20 Cr</div>
+          <div className="bento-metric-sub">84.70 ETH + ₹3.85M UPI Dispersal</div>
         </div>
 
-        <div className="dash-stat-box">
-          <div className="dash-stat-top">
-            <span>Wallets & VPAs Indexed</span>
-            <Database size={16} />
+        <div className="bento-metric-box">
+          <div className="bento-metric-top">
+            <span className="bento-metric-tag">[ 03 // VASP ATTRIBUTION ]</span>
+            <span className="tag tag-high">Probable</span>
           </div>
-          <div className="dash-stat-val">847 Identifiers</div>
-          <div className="dash-stat-desc">Across Ethereum, Tron & UPI Switches</div>
+          <div className="bento-metric-val">82% Match</div>
+          <div className="bento-metric-sub">Binance Hot Wallet #4 Identified</div>
         </div>
 
-        <div className="dash-stat-box">
-          <div className="dash-stat-top">
-            <span>Secured Evidence Exhibits</span>
-            <FileLock2 size={16} style={{ color: 'var(--status-low-text)' }} />
+        <div className="bento-metric-box">
+          <div className="bento-metric-top">
+            <span className="bento-metric-tag">[ 04 // STATUTORY VAULT ]</span>
+            <span className="tag tag-low">Sec 65B</span>
           </div>
-          <div className="dash-stat-val" style={{ color: 'var(--status-low-text)' }}>14 Exhibits</div>
-          <div className="dash-stat-desc">Section 65B certified audit containers</div>
+          <div className="bento-metric-val">100% Sealed</div>
+          <div className="bento-metric-sub">FIPS 180-4 SHA-256 Merkle Provenance</div>
         </div>
-      </div>
+      </section>
 
-      {/* Formal Multi-Hop Transaction Tracing Sequence (Structured, no toy canvas!) */}
-      <div className="gov-card">
-        <div className="gov-card-header">
-          <div>
-            <h3 className="gov-card-title">Typical Multi-Rail Fund Dispersion Sequence</h3>
-            <p className="gov-card-subtitle">
-              Standard analytical path linking unhosted cryptocurrency wallets, centralized exchange transit, and domestic banking switches
-            </p>
-          </div>
-          <span className="badge badge-neutral">Standard Investigative Pattern</span>
+      {/* Sequential Multi-Rail Flow Progression Bento Section */}
+      <section className="dash-flow-section">
+        <div className="dash-section-header">
+          <h2 className="dash-section-title">
+            <Layers size={15} />
+            <span>Multi-Rail Dispersion Corridor (Hop 0 → Hop 5)</span>
+          </h2>
+          <Link to="/graph" className="btn-pill btn-pill-secondary" style={{ height: '28px', fontSize: '11px', padding: '0 12px' }}>
+            <span>View Full Ledger</span>
+            <ArrowRight size={12} />
+          </Link>
         </div>
-        <div className="gov-card-body">
-          <div className="formal-flow-steps">
-            <div className="flow-step-item">
-              <span className="flow-step-num">STEP 1 · CRYPTO</span>
-              <span className="flow-step-name">Suspect Wallet</span>
-              <span className="flow-step-meta">0x71F9...E84C2</span>
-            </div>
 
-            <div className="flow-step-item">
-              <span className="flow-step-num">STEP 2 · ON-CHAIN</span>
-              <span className="flow-step-name">Peel-Chain Transfer</span>
-              <span className="flow-step-meta">4 Intermediary Hops</span>
+        <div className="bento-flow-grid">
+          <div className="bento-flow-card" onClick={() => navigate('/graph')} style={{ cursor: 'pointer' }}>
+            <div className="bento-flow-top">
+              <span className="bento-flow-num">[ 00 ]</span>
+              <span className="tag tag-critical">SEED</span>
             </div>
-
-            <div className="flow-step-item">
-              <span className="flow-step-num">STEP 3 · VASP</span>
-              <span className="flow-step-name">Exchange Transit</span>
-              <span className="flow-step-meta">Binance Deposit Hot Wallet</span>
-            </div>
-
-            <div className="flow-step-item">
-              <span className="flow-step-num">STEP 4 · BRIDGE</span>
-              <span className="flow-step-name">P2P Desk Settlement</span>
-              <span className="flow-step-meta">Axis Bank Node</span>
-            </div>
-
-            <div className="flow-step-item">
-              <span className="flow-step-num">STEP 5 · BANKING</span>
-              <span className="flow-step-name">UPI Mule Dispersal</span>
-              <span className="flow-step-meta">traveler@sbi (Bengaluru)</span>
-            </div>
-
-            <div className="flow-step-item">
-              <span className="flow-step-num">STEP 6 · FIAT EXIT</span>
-              <span className="flow-step-name">Cashout Exit</span>
-              <span className="flow-step-meta">ATM Cash Withdrawal</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Two-Column Layout */}
-      <div className="dash-two-col">
-        {/* Left: Active Investigations Table */}
-        <div className="gov-card">
-          <div className="gov-card-header">
             <div>
-              <h3 className="gov-card-title">Priority Casework Register</h3>
-              <p className="gov-card-subtitle">Latest active investigations requiring analytical follow-up</p>
+              <div className="bento-flow-role">Threat Actor</div>
+              <div className="bento-flow-target">0x71F9...E84C2</div>
             </div>
-            <Link to="/cases" className="btn btn-secondary btn-sm">
-              <span>View All Cases</span>
-              <ChevronRight size={12} />
+            <div className="bento-flow-val">84.70 ETH</div>
+          </div>
+
+          <div className="bento-flow-card" onClick={() => navigate('/graph')} style={{ cursor: 'pointer' }}>
+            <div className="bento-flow-top">
+              <span className="bento-flow-num">[ 01 ]</span>
+              <span className="tag tag-high">SPLIT</span>
+            </div>
+            <div>
+              <div className="bento-flow-role">Peel-Chain</div>
+              <div className="bento-flow-target">0x1a2b...9012</div>
+            </div>
+            <div className="bento-flow-val">45.20 ETH</div>
+          </div>
+
+          <div className="bento-flow-card" onClick={() => navigate('/graph')} style={{ cursor: 'pointer' }}>
+            <div className="bento-flow-top">
+              <span className="bento-flow-num">[ 02 ]</span>
+              <span className="tag tag-high">SWEEP</span>
+            </div>
+            <div>
+              <div className="bento-flow-role">Consolidation</div>
+              <div className="bento-flow-target">0x88fa...b210</div>
+            </div>
+            <div className="bento-flow-val">42.00 ETH</div>
+          </div>
+
+          <div className="bento-flow-card" onClick={() => navigate('/graph')} style={{ cursor: 'pointer' }}>
+            <div className="bento-flow-top">
+              <span className="bento-flow-num">[ 03 ]</span>
+              <span className="tag tag-medium">GATEWAY</span>
+            </div>
+            <div>
+              <div className="bento-flow-role">VASP Cluster</div>
+              <div className="bento-flow-target">Binance #4</div>
+            </div>
+            <div className="bento-flow-val">42.00 ETH</div>
+          </div>
+
+          <div className="bento-flow-card" onClick={() => navigate('/graph')} style={{ cursor: 'pointer' }}>
+            <div className="bento-flow-top">
+              <span className="bento-flow-num">[ 04 ]</span>
+              <span className="tag tag-high">P2P BRIDGE</span>
+            </div>
+            <div>
+              <div className="bento-flow-role">Off-Ramp Desk</div>
+              <div className="bento-flow-target">p2p_blr@axis</div>
+            </div>
+            <div className="bento-flow-val">₹3,850,000</div>
+          </div>
+
+          <div className="bento-flow-card" onClick={() => navigate('/graph')} style={{ cursor: 'pointer' }}>
+            <div className="bento-flow-top">
+              <span className="bento-flow-num">[ 05 ]</span>
+              <span className="tag tag-critical">MULE CASH</span>
+            </div>
+            <div>
+              <div className="bento-flow-role">Mule Funnel</div>
+              <div className="bento-flow-target">outlet@icici</div>
+            </div>
+            <div className="bento-flow-val">₹950,000</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Two-Column Command Grid: Cases Table & VASP Attributions */}
+      <section className="dash-main-grid">
+        {/* Left Column: Active Cases Table */}
+        <div className="bento-card">
+          <div className="gov-card-header">
+            <h3 className="gov-card-title">Priority Casework Registry</h3>
+            <Link to="/cases" style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>View All 18 Cases</span>
+              <ArrowUpRight size={12} />
             </Link>
           </div>
 
-          <div className="gov-table-container" style={{ border: 'none', borderRadius: 0 }}>
-            <table className="gov-table">
-              <thead>
-                <tr>
-                  <th>Case ID</th>
-                  <th>Investigation Title</th>
-                  <th>Primary Target</th>
-                  <th>Rail</th>
-                  <th>Risk Score</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cases.slice(0, 5).map((c) => (
-                  <tr 
-                    key={c.id} 
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => navigate('/cases')}
-                  >
-                    <td className="mono" style={{ fontWeight: 600, color: 'var(--primary-color)' }}>
-                      {c.id}
-                    </td>
-                    <td style={{ fontWeight: 500 }}>{c.name}</td>
-                    <td className="mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                      {c.target}
-                    </td>
-                    <td>
-                      <span className="badge badge-neutral">
-                        {c.rail}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${
-                        c.risk === 'CRITICAL' ? 'badge-critical' : 
-                        c.risk === 'HIGH' ? 'badge-high' : 
-                        c.risk === 'MEDIUM' ? 'badge-medium' : 'badge-low'
-                      }`}>
-                        {c.risk}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="badge badge-neutral">
-                        {c.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <table className="gov-table">
+            <thead>
+              <tr>
+                <th>Docket ID</th>
+                <th>Target Reference</th>
+                <th>Rail Scope</th>
+                <th>Risk Tier</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="mono" style={{ fontWeight: 700 }}>TV-2024-0847</td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>DarkNet Mixer Peel Trace</div>
+                  <div className="mono muted" style={{ fontSize: '10px' }}>0x71F9...E84C2</div>
+                </td>
+                <td><span className="rail-badge crypto">CRYPTO</span></td>
+                <td><span className="tag tag-critical">CRITICAL (88)</span></td>
+                <td>
+                  <Link to="/graph" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
+                    Open Hop
+                  </Link>
+                </td>
+              </tr>
+              <tr>
+                <td className="mono" style={{ fontWeight: 700 }}>TV-2026-0041</td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>Cross-Rail Ransom Liquidity</div>
+                  <div className="mono muted" style={{ fontSize: '10px' }}>p2p_desk_blr@axis</div>
+                </td>
+                <td><span className="rail-badge upi">CROSS-RAIL</span></td>
+                <td><span className="tag tag-high">HIGH (74)</span></td>
+                <td>
+                  <Link to="/geospatial" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
+                    Telemetry
+                  </Link>
+                </td>
+              </tr>
+              <tr>
+                <td className="mono" style={{ fontWeight: 700 }}>TV-2026-0092</td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>Rapid Funnel Mule Network</div>
+                  <div className="mono muted" style={{ fontSize: '10px' }}>merchant_delhi@icici</div>
+                </td>
+                <td><span className="rail-badge upi">UPI</span></td>
+                <td><span className="tag tag-critical">CRITICAL (92)</span></td>
+                <td>
+                  <Link to="/evidence" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
+                    Exhibits
+                  </Link>
+                </td>
+              </tr>
+              <tr>
+                <td className="mono" style={{ fontWeight: 700 }}>TV-2026-0118</td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>Synthetic Identity Layering</div>
+                  <div className="mono muted" style={{ fontSize: '10px' }}>0x4f12...99bc</div>
+                </td>
+                <td><span className="rail-badge crypto">CRYPTO</span></td>
+                <td><span className="tag tag-medium">MEDIUM (58)</span></td>
+                <td>
+                  <Link to="/entity" className="btn-secondary" style={{ padding: '3px 10px', height: '24px', fontSize: '10px' }}>
+                    Dossier
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        {/* Right: VASP Attribution & Risk Distribution */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Risk Level Distribution */}
-          <div className="gov-card">
-            <div className="gov-card-header">
-              <h3 className="gov-card-title">Risk Prioritization Matrix</h3>
-            </div>
-            <div className="gov-card-body">
-              <div className="risk-meter-list">
-                <div className="risk-meter-row">
-                  <div className="risk-meter-labels">
-                    <span style={{ fontWeight: 600, color: 'var(--status-critical-text)' }}>Critical Risk</span>
-                    <span className="mono">2 Cases</span>
-                  </div>
-                  <div className="risk-meter-track">
-                    <div className="risk-meter-fill" style={{ width: '40%', backgroundColor: 'var(--status-critical-text)' }} />
-                  </div>
-                </div>
+        {/* Right Column: VASP Partners & Corroboration Wall */}
+        <div className="bento-card">
+          <div className="gov-card-header">
+            <h3 className="gov-card-title">Corroborated VASP & Gateway Endpoints</h3>
+            <span className="bento-tag">[ FIU-IND REPORTING ENTITIES ]</span>
+          </div>
 
-                <div className="risk-meter-row">
-                  <div className="risk-meter-labels">
-                    <span style={{ fontWeight: 600, color: 'var(--status-high-text)' }}>High Risk</span>
-                    <span className="mono">5 Cases</span>
-                  </div>
-                  <div className="risk-meter-track">
-                    <div className="risk-meter-fill" style={{ width: '65%', backgroundColor: 'var(--status-high-text)' }} />
-                  </div>
-                </div>
-
-                <div className="risk-meter-row">
-                  <div className="risk-meter-labels">
-                    <span style={{ fontWeight: 600, color: 'var(--status-medium-text)' }}>Medium Risk</span>
-                    <span className="mono">3 Cases</span>
-                  </div>
-                  <div className="risk-meter-track">
-                    <div className="risk-meter-fill" style={{ width: '35%', backgroundColor: 'var(--status-medium-text)' }} />
-                  </div>
-                </div>
-
-                <div className="risk-meter-row">
-                  <div className="risk-meter-labels">
-                    <span style={{ fontWeight: 600, color: 'var(--status-low-text)' }}>Low Risk</span>
-                    <span className="mono">2 Cases</span>
-                  </div>
-                  <div className="risk-meter-track">
-                    <div className="risk-meter-fill" style={{ width: '20%', backgroundColor: 'var(--status-low-text)' }} />
-                  </div>
-                </div>
+          <div className="vasp-wall-list">
+            <div className="vasp-wall-item">
+              <div>
+                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Binance (Hot Wallet #4)</div>
+                <div className="mono muted" style={{ fontSize: '10px' }}>Deposit Cluster · 42.00 ETH Inflow</div>
               </div>
+              <div style={{ textAlign: 'right' }}>
+                <span className="tag tag-low">82% Match</span>
+                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>S.91 Served</div>
+              </div>
+            </div>
 
-              <div style={{ marginTop: '16px', padding: '10px', backgroundColor: 'var(--bg-surface-raised)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)' }}>Statutory Notice</span>
-                <p style={{ margin: '4px 0 0', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                  Risk scores serve exclusively as analytical indicators for investigative prioritization and do not represent judicial findings of guilt.
-                </p>
+            <div className="vasp-wall-item">
+              <div>
+                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>CoinDCX (Settlement Pool)</div>
+                <div className="mono muted" style={{ fontSize: '10px' }}>FIU-IND Reg #FIU-CRY-0082</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span className="tag tag-low">94% Match</span>
+                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>KYC Confirmed</div>
+              </div>
+            </div>
+
+            <div className="vasp-wall-item">
+              <div>
+                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Axis Bank Core Gateway</div>
+                <div className="mono muted" style={{ fontSize: '10px' }}>P2P Fiat Off-Ramp Desk (BLR)</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span className="tag tag-critical">Frozen</span>
+                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>₹3.85M Locked</div>
+              </div>
+            </div>
+
+            <div className="vasp-wall-item">
+              <div>
+                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>ICICI Core Banking Node</div>
+                <div className="mono muted" style={{ fontSize: '10px' }}>Merchant Outlet Funnel (DEL)</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span className="tag tag-critical">Warrant</span>
+                <div className="muted" style={{ fontSize: '10px', marginTop: '3px' }}>ATM Dispersal</div>
               </div>
             </div>
           </div>
 
-          {/* VASP Attribution Preview */}
-          <div className="gov-card">
-            <div className="gov-card-header">
-              <h3 className="gov-card-title">VASP Attribution Corroboration</h3>
-              <Link to="/vasp" style={{ fontSize: '11px', color: 'var(--primary-color)' }}>
-                Details ➔
-              </Link>
-            </div>
-            <div className="gov-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', backgroundColor: 'var(--bg-surface-raised)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-                <div>
-                  <strong style={{ fontSize: '12px' }}>Binance Global Hot Wallet Cluster</strong>
-                  <div className="mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Deposit: 0x88fa...10b2 · Hop 2</div>
-                </div>
-                <span className="badge badge-low">82% Match</span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', backgroundColor: 'var(--bg-surface-raised)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-                <div>
-                  <strong style={{ fontSize: '12px' }}>CoinDCX Institutional Liquidity Node</strong>
-                  <div className="mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Bridge to Axis Settlement · Hop 3</div>
-                </div>
-                <span className="badge badge-medium">68% Match</span>
-              </div>
-            </div>
+          <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span className="mono muted" style={{ fontSize: '10px' }}>CERTIFIED PRODUCTION ORDERS</span>
+            <button className="btn-pill btn-pill-secondary" style={{ height: '28px', fontSize: '10px', padding: '0 12px' }} onClick={() => alert('Generating Consolidated VASP Attestation Package...')}>
+              <span>Generate Package</span>
+              <ArrowRight size={11} />
+            </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

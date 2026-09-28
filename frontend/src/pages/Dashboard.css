@@ -1,7 +1,72 @@
 /**
- * TRACEVAULT — Official Government Dashboard Styling
- * Minimal, formal, human-designed layout.
+ * TRACEVAULT — Architectural Bento Dashboard Styling
+ * Reference: Modern crypto/blockchain bento design (ZQL / Vercel / Linear inspired).
  */
+
+.dash-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* =========================================================================
+   Hero Command Header
+   ========================================================================= */
+
+.dash-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.dash-hero-left {
+  max-width: 720px;
+}
+
+.dash-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dash-hero-title {
+  margin: 0 0 10px;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.dash-hero-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.dash-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* =========================================================================
+   4 Top Bento Metric Cards
+   ========================================================================= */
 
 .dash-metrics-grid {
   display: grid;
@@ -21,130 +86,185 @@
   }
 }
 
-.dash-stat-box {
-  background-color: var(--bg-surface);
+.bento-metric-box {
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.dash-stat-top {
+.bento-metric-box:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+}
+
+.bento-metric-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
-.dash-stat-val {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 6px 0 2px;
+.bento-metric-tag {
   font-family: var(--font-mono);
-}
-
-.dash-stat-desc {
-  font-size: 11px;
+  font-size: 9px;
+  font-weight: 700;
   color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Formal Step-by-Step Flow Path */
-.formal-flow-steps {
+.bento-metric-val {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  margin: 12px 0 4px;
+}
+
+.bento-metric-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* =========================================================================
+   Multi-Rail Flow Progression Bento Section
+   ========================================================================= */
+
+.dash-flow-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dash-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dash-section-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bento-flow-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  margin-top: 12px;
+  gap: 12px;
 }
 
 @media (max-width: 1100px) {
-  .formal-flow-steps {
+  .bento-flow-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 650px) {
-  .formal-flow-steps {
+  .bento-flow-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.flow-step-item {
-  background-color: var(--bg-surface-raised);
+.bento-flow-card {
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.15s ease;
+  position: relative;
 }
 
-.flow-step-num {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--primary-color);
+.bento-flow-card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-raised);
+}
+
+.bento-flow-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bento-flow-num {
   font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
-.flow-step-name {
+.bento-flow-role {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.bento-flow-target {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.bento-flow-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
   color: var(--text-primary);
 }
 
-.flow-step-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-}
+/* =========================================================================
+   Two-Column Command Grid
+   ========================================================================= */
 
-/* Two-column layout */
-.dash-two-col {
+.dash-main-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: minmax(0, 1.8fr) minmax(360px, 1.2fr);
   gap: 20px;
+  align-items: start;
 }
 
-@media (max-width: 900px) {
-  .dash-two-col {
+@media (max-width: 1024px) {
+  .dash-main-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Risk Progress Bars */
-.risk-meter-list {
+/* VASP Corroboration Wall */
+.vasp-wall-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.risk-meter-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.risk-meter-labels {
+.vasp-wall-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  padding: 12px 14px;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease;
 }
 
-.risk-meter-track {
-  height: 6px;
-  background-color: var(--border-subtle);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.risk-meter-fill {
-  height: 100%;
+.vasp-wall-item:hover {
+  border-color: var(--border-medium);
 }
