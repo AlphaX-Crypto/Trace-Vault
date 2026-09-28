@@ -12,6 +12,21 @@ class AuditRepository {
     resourceId = null,
     metadata = {}
   }) {
+    let targetCaseId = caseId;
+    let safeMetadata = { ...metadata };
+
+    if (caseId) {
+      try {
+        const check = await db.query('SELECT 1 FROM cases WHERE case_id = $1 LIMIT 1;', [caseId]);
+        if (check.rows.length === 0) {
+          targetCaseId = null;
+          safeMetadata.unlinked_case_id = caseId;
+        }
+      } catch (_) {
+        targetCaseId = null;
+      }
+    }
+
     const sql = `
       INSERT INTO audit_logs (
         user_id, case_id, action, resource_type, resource_id, metadata
@@ -21,11 +36,11 @@ class AuditRepository {
     `;
     const result = await db.query(sql, [
       userId,
-      caseId,
+      targetCaseId,
       action,
       resourceType,
       resourceId,
-      JSON.stringify(metadata)
+      JSON.stringify(safeMetadata)
     ]);
     return result.rows[0];
   }

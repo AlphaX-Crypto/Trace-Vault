@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/layout/Sidebar';
 import Topbar from './components/layout/Topbar';
 import PageContainer from './components/layout/PageContainer';
@@ -13,16 +13,8 @@ import AttributionRisk from './pages/AttributionRisk';
 import Evidence from './pages/Evidence';
 import Report from './pages/Report';
 import Reports from './pages/Reports';
-import { isAuthenticated } from './utils/mockAuth';
-
-function ProtectedRoute() {
-  const location = useLocation();
-  return isAuthenticated() ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" replace state={{ from: location.pathname }} />
-  );
-}
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function AppLayout() {
   return (
@@ -40,47 +32,49 @@ function AppLayout() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/cases" element={<Cases />} />
-          <Route path="/cases/new" element={<NewCase />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/cases" element={<Cases />} />
+            <Route path="/cases/new" element={<NewCase />} />
 
-          {/* Analysis Progress routes */}
-          <Route path="/cases/analysis" element={<AnalysisProgress />} />
-          <Route path="/analysis-progress" element={<AnalysisProgress />} />
-          <Route path="/cases/:id/analysis" element={<AnalysisProgress />} />
-          <Route path="/case/:id/analysis" element={<AnalysisProgress />} />
+            {/* Analysis Progress routes */}
+            <Route path="/cases/analysis" element={<AnalysisProgress />} />
+            <Route path="/analysis-progress" element={<AnalysisProgress />} />
+            <Route path="/cases/:id/analysis" element={<AnalysisProgress />} />
+            <Route path="/case/:id/analysis" element={<AnalysisProgress />} />
 
-          {/* Canonical Case Investigation Routes (supporting /cases/:id and /case/:id) */}
-          <Route path="/cases/:id" element={<InvestigationOverview />} />
-          <Route path="/case/:id" element={<InvestigationOverview />} />
-          <Route path="/cases/:id/overview" element={<InvestigationOverview />} />
-          <Route path="/case/:id/overview" element={<InvestigationOverview />} />
+            {/* Canonical Case Investigation Routes (supporting /cases/:id and /case/:id) */}
+            <Route path="/cases/:id" element={<InvestigationOverview />} />
+            <Route path="/case/:id" element={<InvestigationOverview />} />
+            <Route path="/cases/:id/overview" element={<InvestigationOverview />} />
+            <Route path="/case/:id/overview" element={<InvestigationOverview />} />
 
-          <Route path="/cases/:id/graph" element={<TransactionGraphPage />} />
-          <Route path="/case/:id/graph" element={<TransactionGraphPage />} />
+            <Route path="/cases/:id/graph" element={<TransactionGraphPage />} />
+            <Route path="/case/:id/graph" element={<TransactionGraphPage />} />
 
-          <Route path="/cases/:id/attribution" element={<AttributionRisk />} />
-          <Route path="/case/:id/attribution" element={<AttributionRisk />} />
-          <Route path="/cases/:id/risk" element={<AttributionRisk />} />
-          <Route path="/case/:id/risk" element={<AttributionRisk />} />
+            <Route path="/cases/:id/attribution" element={<AttributionRisk />} />
+            <Route path="/case/:id/attribution" element={<AttributionRisk />} />
+            <Route path="/cases/:id/risk" element={<AttributionRisk />} />
+            <Route path="/case/:id/risk" element={<AttributionRisk />} />
 
-          <Route path="/cases/:id/evidence" element={<Evidence />} />
-          <Route path="/case/:id/evidence" element={<Evidence />} />
+            <Route path="/cases/:id/evidence" element={<Evidence />} />
+            <Route path="/case/:id/evidence" element={<Evidence />} />
 
-          <Route path="/cases/:id/report" element={<Report />} />
-          <Route path="/case/:id/report" element={<Report />} />
-          <Route path="/cases/:id/disclosure" element={<Report />} />
-          <Route path="/case/:id/disclosure" element={<Report />} />
+            <Route path="/cases/:id/report" element={<Report />} />
+            <Route path="/case/:id/report" element={<Report />} />
+            <Route path="/cases/:id/disclosure" element={<Report />} />
+            <Route path="/case/:id/disclosure" element={<Report />} />
 
-          <Route path="/reports" element={<Reports />} />
+            <Route path="/reports" element={<Reports />} />
+          </Route>
         </Route>
-      </Route>
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }

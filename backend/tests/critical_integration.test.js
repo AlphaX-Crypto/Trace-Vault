@@ -5,11 +5,13 @@ const path = require('path');
 const { spawn } = require('child_process');
 const app = require('../src/app');
 const intelligenceService = require('../src/services/intelligenceService');
+const { getAuthHeaders } = require('./test_helper');
 
 describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> Express', () => {
   let server;
   let baseUrl;
   let pythonProcess;
+  let authHeaders;
   const pythonPort = 8008;
   const originalBaseUrl = intelligenceService.baseUrl;
   const originalClient = intelligenceService.client;
@@ -59,6 +61,7 @@ describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> 
     });
 
     // 3. Start Node Express application
+    authHeaders = getAuthHeaders('ADMIN');
     server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, resolve));
     baseUrl = `http://localhost:${server.address().port}`;
@@ -80,7 +83,7 @@ describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> 
     // Step 1: POST /api/cases
     const caseRes = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         title: 'Operation Ironclad - Live Cross-Engine E2E',
         description: 'End-to-end trace from Express to Python NetworkX pipeline',
@@ -102,7 +105,7 @@ describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> 
     // Step 2: POST /api/cases/:id/analyze -> Node calls FastAPI -> Python executes NetworkX pipeline
     const analyzeRes = await fetch(`${baseUrl}/api/cases/${caseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: 'A',
         blockchain: 'ethereum',
@@ -170,7 +173,7 @@ describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> 
     assert.ok(evidenceTypes.has('HOP_DISTANCE'));
 
     // Step 3: GET /api/cases/:id/analysis -> Verify exact canonical result returned from stored case
-    const getAnalysisRes = await fetch(`${baseUrl}/api/cases/${caseId}/analysis`);
+    const getAnalysisRes = await fetch(`${baseUrl}/api/cases/${caseId}/analysis`, { headers: authHeaders });
     assert.strictEqual(getAnalysisRes.status, 200);
     const storedAnalysis = await getAnalysisRes.json();
     assert.strictEqual(storedAnalysis.success, true);
@@ -179,7 +182,7 @@ describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> 
     assert.strictEqual(storedAnalysis.data.nearest_vasp.confidence, 60.0);
 
     // Step 4: GET /api/cases/:id/evidence -> Verify forensic evidence endpoint
-    const evidenceRes = await fetch(`${baseUrl}/api/cases/${caseId}/evidence`);
+    const evidenceRes = await fetch(`${baseUrl}/api/cases/${caseId}/evidence`, { headers: authHeaders });
     assert.strictEqual(evidenceRes.status, 200);
     const evidenceData = await evidenceRes.json();
     assert.strictEqual(evidenceData.success, true);
@@ -187,7 +190,7 @@ describe('Critical Integration: Express -> FastAPI Python Engine -> NetworkX -> 
     assert.ok(evidenceData.data.length >= 6);
 
     // Step 5: GET /api/cases/:id -> Verify case status transitioned to ANALYSIS_COMPLETE
-    const updatedCaseRes = await fetch(`${baseUrl}/api/cases/${caseId}`);
+    const updatedCaseRes = await fetch(`${baseUrl}/api/cases/${caseId}`, { headers: authHeaders });
     assert.strictEqual(updatedCaseRes.status, 200);
     const updatedCase = await updatedCaseRes.json();
     assert.strictEqual(updatedCase.data.status, 'ANALYSIS_COMPLETE');

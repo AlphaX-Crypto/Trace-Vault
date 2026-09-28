@@ -10,6 +10,16 @@ const API_BASE_URL = (
 
 const DEFAULT_TIMEOUT_MS = 25000;
 
+let currentAuthToken = null;
+
+export function setAuthToken(token) {
+  currentAuthToken = token;
+}
+
+export function getAuthToken() {
+  return currentAuthToken;
+}
+
 class ApiError extends Error {
   constructor(message, status = 500, code = 'API_ERROR', details = null) {
     super(message);
@@ -31,6 +41,7 @@ async function request(endpoint, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    ...(currentAuthToken ? { Authorization: `Bearer ${currentAuthToken}` } : {}),
     ...(options.headers || {})
   };
 
@@ -82,6 +93,33 @@ async function request(endpoint, options = {}) {
 }
 
 export const api = {
+  // Authentication & Session
+  login: async (credentials) => {
+    const res = await request('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    });
+    return res.data;
+  },
+
+  logout: async () => {
+    try {
+      await request('/api/auth/logout', { method: 'POST' });
+    } catch (_) {
+      // Graceful local cleanup even if network fails
+    }
+  },
+
+  getMe: async () => {
+    const res = await request('/api/auth/me');
+    return res.data;
+  },
+
+  getUsers: async () => {
+    const res = await request('/api/auth/users');
+    return res.data || [];
+  },
+
   // System Health
   checkHealth: () => request('/health'),
   checkIntelligenceHealth: () => request('/health/intelligence'),

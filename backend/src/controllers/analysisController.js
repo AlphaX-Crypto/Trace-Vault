@@ -1,5 +1,6 @@
 const caseService = require('../services/caseService');
 const intelligenceService = require('../services/intelligenceService');
+const auditRepository = require('../repositories/auditRepository');
 const ApiResponse = require('../utils/apiResponse');
 const AppError = require('../utils/appError');
 const logger = require('../utils/logger');
@@ -17,10 +18,20 @@ const analyzeCaseWallet = async (req, res, next) => {
     // 1. Verify case exists in repository (throws 404 if not found)
     const existingCase = await caseService.getCaseById(id);
 
-    // 2. Transition case lifecycle status to ANALYZING
+    // 2. Audit log analysis start
+    await auditRepository.logAction({
+      userId: req.user?.id || null,
+      caseId: id,
+      action: 'ANALYSIS_STARTED',
+      resourceType: 'ANALYSIS',
+      resourceId: id,
+      metadata: { wallet_address, blockchain, max_hops }
+    });
+
+    // 3. Transition case lifecycle status to ANALYZING
     await caseService.updateCaseStatus(id, 'ANALYZING');
 
-    // 3. Dispatch to Python Intelligence Engine
+    // 4. Dispatch to Python Intelligence Engine
     const analysisResult = await intelligenceService.analyzeWallet({
       caseId: id,
       blockchain,
@@ -28,8 +39,21 @@ const analyzeCaseWallet = async (req, res, next) => {
       maxHops: max_hops || 3
     });
 
-    // 4. Store canonical analysis result (transitions status to ANALYSIS_COMPLETE)
+    // 5. Store canonical analysis result (transitions status to ANALYSIS_COMPLETE)
     const savedResult = await caseService.saveAnalysisResult(id, analysisResult);
+
+    // 6. Audit log analysis completion
+    await auditRepository.logAction({
+      userId: req.user?.id || null,
+      caseId: id,
+      action: 'ANALYSIS_COMPLETED',
+      resourceType: 'ANALYSIS',
+      resourceId: id,
+      metadata: {
+        nearest_vasp: savedResult.nearest_vasp?.name,
+        risk_score: savedResult.risk_score
+      }
+    });
 
     return ApiResponse.success(res, savedResult, 200);
   } catch (error) {
@@ -39,6 +63,15 @@ const analyzeCaseWallet = async (req, res, next) => {
     } catch (_) {
       // Ignore if case didn't exist in the first place
     }
+
+    await auditRepository.logAction({
+      userId: req.user?.id || null,
+      caseId: id,
+      action: 'ANALYSIS_FAILED',
+      resourceType: 'ANALYSIS',
+      resourceId: id,
+      metadata: { error: error.message }
+    });
 
     logger.error(`Analysis failed for Case ${id}: ${error.message}`);
     next(error);
@@ -62,6 +95,17 @@ const getCaseAnalysis = async (req, res, next) => {
       );
     }
 
+    if (req.user) {
+      await auditRepository.logAction({
+        userId: req.user.id,
+        caseId: id,
+        action: 'ANALYSIS_VIEWED',
+        resourceType: 'ANALYSIS',
+        resourceId: id,
+        metadata: { username: req.user.username }
+      });
+    }
+
     return ApiResponse.success(res, analysis, 200);
   } catch (error) {
     next(error);
@@ -76,6 +120,18 @@ const getCaseEvidence = async (req, res, next) => {
   try {
     const { id } = req.params;
     const evidence = await caseService.getEvidence(id);
+
+    if (req.user) {
+      await auditRepository.logAction({
+        userId: req.user.id,
+        caseId: id,
+        action: 'EVIDENCE_VIEWED',
+        resourceType: 'EVIDENCE',
+        resourceId: id,
+        metadata: { count: evidence.length, username: req.user.username }
+      });
+    }
+
     return ApiResponse.success(res, evidence, 200, { count: evidence.length });
   } catch (error) {
     next(error);

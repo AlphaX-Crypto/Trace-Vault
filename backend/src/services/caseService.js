@@ -67,6 +67,10 @@ class CaseService {
   /**
    * Creates a new investigation case in PostgreSQL
    * @param {Object} caseData
+  /**
+   * Creates a new investigation case in PostgreSQL
+   * @param {Object} caseData
+   * @param {Object} [user] Authenticated user context
    * @returns {Promise<Object>} Created case record
    */
   createCase({
@@ -77,7 +81,7 @@ class CaseService {
     subject_type = 'WALLET',
     blockchain = 'ethereum',
     subject_identifier = null
-  }) {
+  }, user = null) {
     const caseId = this.generateCaseId();
     const now = new Date().toISOString();
 
@@ -102,16 +106,20 @@ class CaseService {
     const task = (async () => {
       await this.ensureInitialized();
       const created = await caseRepository.createCase(newCase);
+      if (user && user.id) {
+        await caseRepository.addCaseMember(caseId, user.id, 'INVESTIGATOR');
+      }
       const combined = { ...newCase, ...created };
       this.cache.set(caseId, combined);
       await auditRepository.logAction({
+        userId: user ? user.id : null,
         caseId,
         action: 'CASE_CREATED',
         resourceType: 'CASE',
         resourceId: caseId,
-        metadata: { title: newCase.title, priority: newCase.priority }
+        metadata: { title: newCase.title, priority: newCase.priority, created_by: user?.username }
       });
-      logger.info(`New investigation case created in PostgreSQL: ${caseId} [${newCase.priority}]`);
+      logger.info(`New investigation case created in PostgreSQL: ${caseId} [${newCase.priority}] by user ${user?.username || 'system'}`);
       return combined;
     })();
 
@@ -129,6 +137,40 @@ class CaseService {
       this.cache.set(c.case_id, c);
     }
     return cases;
+  }
+
+  /**
+   * Retrieves cases scoped by the authenticated user's role and assignments
+   * @param {Object} user
+   * @returns {Promise<Array<Object>>}
+   */
+  async getCasesForUser(user) {
+    await this.ensureInitialized();
+    if (!user || user.role === 'ADMIN' || user.role === 'SUPERVISOR') {
+      return this.getAllCases();
+    }
+    const cases = await caseRepository.getAssignedCases(user.id);
+    for (const c of cases) {
+      this.cache.set(c.case_id, c);
+    }
+    return cases;
+  }
+
+  /**
+   * Verifies if a user has access rights to a specific case
+   * @param {Object} user
+   * @param {string} caseId
+   * @returns {Promise<boolean>}
+   */
+  async canUserAccessCase(user, caseId) {
+    if (!user) return false;
+    if (user.role === 'ADMIN' || user.role === 'SUPERVISOR') {
+      return true;
+    }
+    if (user.role === 'INVESTIGATOR') {
+      return await caseRepository.isUserAssignedToCase(caseId, user.id);
+    }
+    return false;
   }
 
   /**
@@ -253,9 +295,10 @@ class CaseService {
    * Creates a LEA disclosure request record
    * @param {string} caseId
    * @param {Object} requestData
+   * @param {Object} [user] Authenticated user context
    * @returns {Promise<Object>} Draft disclosure request
    */
-  async createDisclosureRequest(caseId, requestData = {}) {
+  async createDisclosureRequest(caseId, requestData = {}, user = null) {
     await this.ensureInitialized();
     const caseRecord = await this.getCaseById(caseId);
     const latestResult = await this.getLatestAnalysis(caseId);
@@ -289,14 +332,15 @@ class CaseService {
     });
 
     await auditRepository.logAction({
+      userId: user ? user.id : null,
       caseId,
       action: 'DISCLOSURE_REQUEST_DRAFTED',
       resourceType: 'DISCLOSURE_REQUEST',
       resourceId: requestId,
-      metadata: { target_vasp: targetVasp, jurisdiction }
+      metadata: { target_vasp: targetVasp, jurisdiction, drafted_by: user?.username }
     });
 
-    logger.info(`Disclosure request drafted for Case ${caseId} targeting ${targetVasp}`);
+    logger.info(`Disclosure request drafted for Case ${caseId} targeting ${targetVasp} by ${user?.username || 'system'}`);
     return disclosureRecord;
   }
 }

@@ -2,12 +2,15 @@ const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert');
 const http = require('http');
 const app = require('../src/app');
+const { getAuthHeaders } = require('./test_helper');
 
 describe('Security & Input Sanitization', () => {
   let server;
   let baseUrl;
+  let authHeaders;
 
   before(async () => {
+    authHeaders = getAuthHeaders('ADMIN');
     server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, resolve));
     const port = server.address().port;
@@ -23,7 +26,7 @@ describe('Security & Input Sanitization', () => {
 
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         title: 'Leaked Key Case',
         description: `Investigating key: ${rawPrivateKey}`
@@ -42,7 +45,7 @@ describe('Security & Input Sanitization', () => {
 
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         title: 'Seed Phrase Case',
         description: seedPhrase
@@ -59,7 +62,7 @@ describe('Security & Input Sanitization', () => {
   it('Rejects request with prohibited field name private_key (400)', async () => {
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         title: 'Prohibited Key Field',
         private_key: 'some_value'
@@ -73,7 +76,9 @@ describe('Security & Input Sanitization', () => {
   });
 
   it('Ensures error responses never leak stack traces', async () => {
-    const res = await fetch(`${baseUrl}/api/cases/INVALID_ID_9999`);
+    const res = await fetch(`${baseUrl}/api/cases/INVALID_ID_9999`, {
+      headers: authHeaders
+    });
     const body = await res.json();
 
     assert.strictEqual(res.status, 404);

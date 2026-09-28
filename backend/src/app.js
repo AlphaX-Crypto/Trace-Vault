@@ -1,18 +1,28 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const config = require('./config/env');
 const logger = require('./utils/logger');
+const authRoutes = require('./routes/auth');
 const caseRoutes = require('./routes/cases');
 const intelligenceService = require('./services/intelligenceService');
 const errorHandler = require('./middleware/errorHandler');
 const notFoundHandler = require('./middleware/notFoundHandler');
 const { securityScanMiddleware } = require('./middleware/validation');
+const { generalApiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
+
+// Security Headers via Helmet
+app.use(helmet({
+  contentSecurityPolicy: false, // Avoid blocking Vite React dev bundles
+  crossOriginEmbedderPolicy: false
+}));
 
 // Enable CORS for frontend integration
 app.use(cors({
   origin: config.corsOrigin === '*' ? true : config.corsOrigin,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
@@ -30,7 +40,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check endpoints
+// Health check endpoints (Public)
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -48,7 +58,11 @@ app.get('/health/intelligence', async (req, res) => {
   });
 });
 
+// General API Rate Limiting for all /api endpoints
+app.use('/api', generalApiLimiter);
+
 // Mount API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/cases', caseRoutes);
 
 // 404 handler

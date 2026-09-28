@@ -11,7 +11,7 @@ const SENSITIVE_KEY_PATTERNS = [
 /**
  * Checks for prohibited credentials, private keys, or seed phrases in input
  */
-function scanForSensitiveContent(value, keyPath = '') {
+function scanForSensitiveContent(value, keyPath = '', isAuthRoute = false) {
   if (value === null || value === undefined) return;
 
   if (typeof value === 'string') {
@@ -37,6 +37,13 @@ function scanForSensitiveContent(value, keyPath = '') {
     }
   } else if (typeof value === 'object') {
     for (const [k, v] of Object.entries(value)) {
+      // Allow password property on authentication routes
+      if (isAuthRoute && k.toLowerCase() === 'password') {
+        // Still scan value to ensure user isn't pasting a 64-char private key or seed phrase
+        scanForSensitiveContent(v, keyPath ? `${keyPath}.${k}` : k, isAuthRoute);
+        continue;
+      }
+
       for (const pattern of SENSITIVE_KEY_PATTERNS) {
         if (pattern.test(k)) {
           throw new AppError(
@@ -46,7 +53,7 @@ function scanForSensitiveContent(value, keyPath = '') {
           );
         }
       }
-      scanForSensitiveContent(v, keyPath ? `${keyPath}.${k}` : k);
+      scanForSensitiveContent(v, keyPath ? `${keyPath}.${k}` : k, isAuthRoute);
     }
   }
 }
@@ -57,12 +64,27 @@ function scanForSensitiveContent(value, keyPath = '') {
 const securityScanMiddleware = (req, res, next) => {
   try {
     if (req.body) {
-      scanForSensitiveContent(req.body);
+      const isAuthRoute = req.path && (req.path.startsWith('/api/auth') || req.path === '/login');
+      scanForSensitiveContent(req.body, '', isAuthRoute);
     }
     next();
   } catch (error) {
     next(error);
   }
+};
+
+/**
+ * Validator for POST /api/auth/login
+ */
+const validateLogin = (req, res, next) => {
+  const { identifier, password } = req.body || {};
+  if (!identifier || typeof identifier !== 'string' || !identifier.trim()) {
+    return next(new AppError('Invalid credentials.', 401, 'INVALID_CREDENTIALS'));
+  }
+  if (!password || typeof password !== 'string') {
+    return next(new AppError('Invalid credentials.', 401, 'INVALID_CREDENTIALS'));
+  }
+  next();
 };
 
 /**
@@ -169,6 +191,7 @@ const validateCaseId = (req, res, next) => {
 
 module.exports = {
   securityScanMiddleware,
+  validateLogin,
   validateCreateCase,
   validateAnalyzeRequest,
   validateCaseId

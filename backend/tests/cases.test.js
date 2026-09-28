@@ -2,13 +2,16 @@ const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert');
 const http = require('http');
 const app = require('../src/app');
+const { getAuthHeaders } = require('./test_helper');
 
 describe('Case Management API', () => {
   let server;
   let baseUrl;
   let createdCaseId;
+  let authHeaders;
 
   before(async () => {
+    authHeaders = getAuthHeaders('ADMIN');
     server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, resolve));
     const port = server.address().port;
@@ -32,7 +35,7 @@ describe('Case Management API', () => {
 
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify(payload)
     });
 
@@ -50,7 +53,7 @@ describe('Case Management API', () => {
   it('POST /api/cases rejects case with missing title (400)', async () => {
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({ description: 'No title provided' })
     });
 
@@ -63,7 +66,7 @@ describe('Case Management API', () => {
   it('POST /api/cases rejects invalid priority (400)', async () => {
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({ title: 'Test Case', priority: 'SUPER_URGENT' })
     });
 
@@ -76,7 +79,7 @@ describe('Case Management API', () => {
   it('POST /api/cases rejects unsupported blockchain (400)', async () => {
     const res = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({ title: 'Test Case', blockchain: 'bitcoin' })
     });
 
@@ -87,7 +90,7 @@ describe('Case Management API', () => {
   });
 
   it('GET /api/cases returns all registered cases', async () => {
-    const res = await fetch(`${baseUrl}/api/cases`);
+    const res = await fetch(`${baseUrl}/api/cases`, { headers: authHeaders });
     assert.strictEqual(res.status, 200);
 
     const body = await res.json();
@@ -97,7 +100,7 @@ describe('Case Management API', () => {
   });
 
   it('GET /api/cases/:id returns specific case details', async () => {
-    const res = await fetch(`${baseUrl}/api/cases/${createdCaseId}`);
+    const res = await fetch(`${baseUrl}/api/cases/${createdCaseId}`, { headers: authHeaders });
     assert.strictEqual(res.status, 200);
 
     const body = await res.json();
@@ -106,7 +109,7 @@ describe('Case Management API', () => {
   });
 
   it('GET /api/cases/:id returns 404 for non-existent case ID', async () => {
-    const res = await fetch(`${baseUrl}/api/cases/NON_EXISTENT_CASE_12345`);
+    const res = await fetch(`${baseUrl}/api/cases/NON_EXISTENT_CASE_12345`, { headers: authHeaders });
     assert.strictEqual(res.status, 404);
 
     const body = await res.json();
@@ -117,7 +120,7 @@ describe('Case Management API', () => {
   it('POST /api/cases/:id/disclosure-request drafts a SAHYOG request (201)', async () => {
     const res = await fetch(`${baseUrl}/api/cases/${createdCaseId}/disclosure-request`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         target_vasp: 'Binance Exchange',
         wallet_address: '0x0000000000000000000000000000000000000001',

@@ -134,6 +134,74 @@ class CaseRepository {
     const result = await db.query(sql, [caseId]);
     return (result.rowCount > 0);
   }
+
+  /**
+   * Assigns a user to a case in case_members table
+   * @param {string} caseId Case external ID (e.g. CASE-...)
+   * @param {number} userId Numeric user ID
+   * @param {string} role Role in case (default: INVESTIGATOR)
+   */
+  async addCaseMember(caseId, userId, role = 'INVESTIGATOR') {
+    const sql = `
+      INSERT INTO case_members (case_id, user_id, role)
+      VALUES (
+        (SELECT id FROM cases WHERE case_id = $1),
+        $2,
+        $3
+      )
+      ON CONFLICT (case_id, user_id) DO NOTHING
+      RETURNING *;
+    `;
+    const result = await db.query(sql, [caseId, userId, role]);
+    return result.rows[0] || null;
+  }
+
+  /**
+   * Checks if a user is assigned to a specific case
+   * @param {string} caseId
+   * @param {number} userId
+   * @returns {Promise<boolean>}
+   */
+  async isUserAssignedToCase(caseId, userId) {
+    const sql = `
+      SELECT 1 FROM case_members cm
+      JOIN cases c ON c.id = cm.case_id
+      WHERE c.case_id = $1 AND cm.user_id = $2
+      LIMIT 1;
+    `;
+    const result = await db.query(sql, [caseId, userId]);
+    return (result.rows.length > 0);
+  }
+
+  /**
+   * Retrieves all cases assigned to a specific user
+   * @param {number} userId
+   * @returns {Promise<Array<Object>>}
+   */
+  async getAssignedCases(userId) {
+    const sql = `
+      SELECT c.* FROM cases c
+      JOIN case_members cm ON cm.case_id = c.id
+      WHERE cm.user_id = $1
+      ORDER BY c.created_at DESC;
+    `;
+    const result = await db.query(sql, [userId]);
+    const cases = result.rows;
+
+    for (const c of cases) {
+      const aRes = await db.query(
+        'SELECT analysis_payload FROM analysis_results WHERE case_id = $1 ORDER BY created_at DESC LIMIT 1;',
+        [c.case_id]
+      );
+      c.analysis = aRes.rows.length > 0
+        ? (typeof aRes.rows[0].analysis_payload === 'string'
+            ? JSON.parse(aRes.rows[0].analysis_payload)
+            : aRes.rows[0].analysis_payload)
+        : null;
+    }
+
+    return cases;
+  }
 }
 
 module.exports = new CaseRepository();

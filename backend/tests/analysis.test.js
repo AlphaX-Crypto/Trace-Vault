@@ -5,21 +5,25 @@ const app = require('../src/app');
 const caseService = require('../src/services/caseService');
 const intelligenceService = require('../src/services/intelligenceService');
 const AppError = require('../src/utils/appError');
+const { getAuthHeaders } = require('./test_helper');
 
 describe('Analysis & Intelligence Gateway API', () => {
   let server;
   let baseUrl;
   let testCaseId;
+  let authHeaders;
   const originalAnalyzeWallet = intelligenceService.analyzeWallet.bind(intelligenceService);
 
   before(async () => {
+    await caseService.ensureInitialized();
+    authHeaders = getAuthHeaders('ADMIN');
     server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, resolve));
     const port = server.address().port;
     baseUrl = `http://localhost:${port}`;
 
     // Create a known case for testing
-    const testCase = caseService.createCase({
+    const testCase = await caseService.createCase({
       title: 'Analysis Test Case',
       description: 'Testing intelligence orchestration',
       priority: 'MEDIUM'
@@ -36,7 +40,7 @@ describe('Analysis & Intelligence Gateway API', () => {
   it('POST /api/cases/:id/analyze rejects non-existent case (404)', async () => {
     const res = await fetch(`${baseUrl}/api/cases/NON_EXISTENT_ID_999/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: '0x0000000000000000000000000000000000000001',
         blockchain: 'ethereum'
@@ -52,7 +56,7 @@ describe('Analysis & Intelligence Gateway API', () => {
   it('POST /api/cases/:id/analyze rejects missing wallet address (400)', async () => {
     const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         blockchain: 'ethereum'
       })
@@ -67,7 +71,7 @@ describe('Analysis & Intelligence Gateway API', () => {
   it('POST /api/cases/:id/analyze rejects unsupported blockchain (400)', async () => {
     const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: '0x0000000000000000000000000000000000000001',
         blockchain: 'bitcoin'
@@ -91,7 +95,7 @@ describe('Analysis & Intelligence Gateway API', () => {
 
     const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: '0x0000000000000000000000000000000000000001',
         blockchain: 'ethereum'
@@ -119,7 +123,7 @@ describe('Analysis & Intelligence Gateway API', () => {
 
     const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: '0x0000000000000000000000000000000000000001',
         blockchain: 'ethereum'
@@ -143,7 +147,7 @@ describe('Analysis & Intelligence Gateway API', () => {
 
     const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: '0x0000000000000000000000000000000000000001',
         blockchain: 'ethereum'
@@ -248,7 +252,7 @@ describe('Analysis & Intelligence Gateway API', () => {
 
     const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: '0x0000000000000000000000000000000000000001',
         blockchain: 'ethereum',
@@ -271,7 +275,7 @@ describe('Analysis & Intelligence Gateway API', () => {
   });
 
   it('GET /api/cases/:id/analysis returns the stored canonical analysis result (200)', async () => {
-    const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analysis`);
+    const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/analysis`, { headers: authHeaders });
     assert.strictEqual(res.status, 200);
 
     const body = await res.json();
@@ -282,7 +286,7 @@ describe('Analysis & Intelligence Gateway API', () => {
   });
 
   it('GET /api/cases/:id/evidence returns structured evidence schedule (200)', async () => {
-    const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/evidence`);
+    const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/evidence`, { headers: authHeaders });
     assert.strictEqual(res.status, 200);
 
     const body = await res.json();
@@ -295,7 +299,7 @@ describe('Analysis & Intelligence Gateway API', () => {
   });
 
   it('GET /api/cases/:id/results returns array of historical results (200)', async () => {
-    const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/results`);
+    const res = await fetch(`${baseUrl}/api/cases/${testCaseId}/results`, { headers: authHeaders });
     assert.strictEqual(res.status, 200);
 
     const body = await res.json();
@@ -306,7 +310,7 @@ describe('Analysis & Intelligence Gateway API', () => {
 
   it('GET /api/cases/:id/analysis returns 404 for unanalyzed case', async () => {
     const unanalyzed = caseService.createCase({ title: 'Unanalyzed Case' });
-    const res = await fetch(`${baseUrl}/api/cases/${unanalyzed.case_id}/analysis`);
+    const res = await fetch(`${baseUrl}/api/cases/${unanalyzed.case_id}/analysis`, { headers: authHeaders });
     assert.strictEqual(res.status, 404);
 
     const body = await res.json();

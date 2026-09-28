@@ -5,11 +5,13 @@ const path = require('path');
 const { spawn } = require('child_process');
 const app = require('../src/app');
 const intelligenceService = require('../src/services/intelligenceService');
+const { getAuthHeaders } = require('./test_helper');
 
 describe('Full System Integration: Frontend Contract -> Express -> Python FastAPI -> NetworkX -> PostgreSQL', () => {
   let server;
   let baseUrl;
   let pythonProcess;
+  let authHeaders;
   const pythonPort = 8009;
   const originalBaseUrl = intelligenceService.baseUrl;
   const originalClient = intelligenceService.client;
@@ -59,6 +61,7 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     });
 
     // 3. Start Node Express application
+    authHeaders = getAuthHeaders('INVESTIGATOR');
     server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, resolve));
     baseUrl = `http://localhost:${server.address().port}`;
@@ -90,7 +93,7 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     assert.strictEqual(intelHealthData.intelligence_service.reachable, true);
 
     // Step 3: Get initial case listing (seeded casework)
-    const listRes = await fetch(`${baseUrl}/api/cases`);
+    const listRes = await fetch(`${baseUrl}/api/cases`, { headers: authHeaders });
     assert.strictEqual(listRes.status, 200);
     const listData = await listRes.json();
     assert.strictEqual(listData.success, true);
@@ -100,7 +103,7 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     // Step 4: Create new case from Frontend UI intake
     const createCaseRes = await fetch(`${baseUrl}/api/cases`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         title: 'Operation BlueMatrix - Cross-Engine Investigation',
         description: 'Tracking unhosted suspect wallet through intermediary layering hops',
@@ -122,7 +125,7 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     // Step 5: Start Analysis (POST /api/cases/:id/analyze -> Node -> FastAPI Python NetworkX -> PostgreSQL)
     const analyzeRes = await fetch(`${baseUrl}/api/cases/${caseId}/analyze`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         wallet_address: 'A',
         blockchain: 'ethereum',
@@ -150,7 +153,7 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     assert.ok(reasoningTrace.length > 0);
 
     // Step 6: Retrieve persisted case (GET /api/cases/:id)
-    const fetchedCaseRes = await fetch(`${baseUrl}/api/cases/${caseId}`);
+    const fetchedCaseRes = await fetch(`${baseUrl}/api/cases/${caseId}`, { headers: authHeaders });
     assert.strictEqual(fetchedCaseRes.status, 200);
     const fetchedCase = await fetchedCaseRes.json();
     assert.strictEqual(fetchedCase.success, true);
@@ -158,14 +161,14 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     assert.ok(fetchedCase.data.analysis);
 
     // Step 7: Retrieve stored canonical analysis (GET /api/cases/:id/analysis)
-    const getAnalysisRes = await fetch(`${baseUrl}/api/cases/${caseId}/analysis`);
+    const getAnalysisRes = await fetch(`${baseUrl}/api/cases/${caseId}/analysis`, { headers: authHeaders });
     assert.strictEqual(getAnalysisRes.status, 200);
     const storedAnalysis = await getAnalysisRes.json();
     assert.strictEqual(storedAnalysis.success, true);
     assert.strictEqual(storedAnalysis.data.case_id, caseId);
 
     // Step 8: Retrieve evidence schedule (GET /api/cases/:id/evidence)
-    const getEvidenceRes = await fetch(`${baseUrl}/api/cases/${caseId}/evidence`);
+    const getEvidenceRes = await fetch(`${baseUrl}/api/cases/${caseId}/evidence`, { headers: authHeaders });
     assert.strictEqual(getEvidenceRes.status, 200);
     const evidenceData = await getEvidenceRes.json();
     assert.strictEqual(evidenceData.success, true);
@@ -174,7 +177,7 @@ describe('Full System Integration: Frontend Contract -> Express -> Python FastAP
     // Step 9: Draft Section 91 CrPC Disclosure Request (POST /api/cases/:id/disclosure-request)
     const disclosureRes = await fetch(`${baseUrl}/api/cases/${caseId}/disclosure-request`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         target_vasp: result.nearest_vasp.name || 'Example Exchange',
         wallet_address: result.wallet,

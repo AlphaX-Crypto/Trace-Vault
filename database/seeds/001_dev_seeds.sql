@@ -9,15 +9,35 @@ VALUES
     ('ADMIN', 'System Administrator')
 ON CONFLICT (name) DO NOTHING;
 
--- 2. Dev User Placeholder
-INSERT INTO users (username, email, password_hash, role_id)
-VALUES (
-    'investigator_demo',
-    'officer@tracevault.internal',
-    '$2b$12$placeholderHashForPhase7AuthenticationOnly',
-    (SELECT id FROM roles WHERE name = 'INVESTIGATOR')
-)
-ON CONFLICT (username) DO NOTHING;
+-- 2. Dev Seed Users (DEVELOPMENT / TEST ONLY - Never used in production)
+INSERT INTO users (username, email, password_hash, role_id, is_active)
+VALUES 
+    (
+        'investigator',
+        'investigator@tracevault.local',
+        '$2b$10$Lto5SnvUE/F6sZV.5JIagei.WaB16fZiBfZUuVDXzHHZB0VkAJzUS',
+        (SELECT id FROM roles WHERE name = 'INVESTIGATOR'),
+        TRUE
+    ),
+    (
+        'supervisor',
+        'supervisor@tracevault.local',
+        '$2b$10$7XUoHMu2nBzt6pmBQD5saOAqWhpMNIm3LevkqwM8SNYKckwR37UZi',
+        (SELECT id FROM roles WHERE name = 'SUPERVISOR'),
+        TRUE
+    ),
+    (
+        'admin',
+        'admin@tracevault.local',
+        '$2b$10$qA5OqN2fOss7ph3IgB0aS.HKIMqkjuOmJH5xUts518vw1H/nSkYEq',
+        (SELECT id FROM roles WHERE name = 'ADMIN'),
+        TRUE
+    )
+ON CONFLICT (username) DO UPDATE 
+SET password_hash = EXCLUDED.password_hash,
+    email = EXCLUDED.email,
+    role_id = EXCLUDED.role_id,
+    is_active = EXCLUDED.is_active;
 
 -- 3. Controlled Test VASPs
 INSERT INTO vasps (name, source, reliability, risk_score, metadata)
@@ -53,3 +73,13 @@ VALUES (
     'OPEN'
 )
 ON CONFLICT (case_id) DO NOTHING;
+
+-- 7. Case Assignment (Assign demo investigator to demo case)
+INSERT INTO case_members (case_id, user_id, role)
+VALUES (
+    (SELECT id FROM cases WHERE case_id = 'CASE-2026-001'),
+    (SELECT id FROM users WHERE username = 'investigator'),
+    'INVESTIGATOR'
+)
+ON CONFLICT (case_id, user_id) DO NOTHING;
+
