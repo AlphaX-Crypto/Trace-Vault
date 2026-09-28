@@ -1,56 +1,7 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Briefcase, FileText, Settings, ShieldAlert, LogOut } from 'lucide-react';
-import './Sidebar.css';
-
-const Sidebar = () => {
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { id: 'cases', label: 'Case Registry', icon: Briefcase, path: '/cases' },
-    { id: 'reports', label: 'Intelligence Reports', icon: FileText, path: '/reports' }
-  ];
-
-  return (
-    <div className="sidebar">
-      <div className="sidebar-brand">
-        <ShieldAlert size={28} className="brand-icon" />
-        <div className="brand-text">
-          <h1>TRACEVAULT</h1>
-          <span className="brand-subtitle">CHAIN INTELLIGENCE</span>
-        </div>
-      </div>
-
-      <nav className="sidebar-nav">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink 
-              key={item.id} 
-              to={item.path}
-              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-            >
-              <Icon size={20} />
-              <span>{item.label}</span>
-            </NavLink>
-          );
-        })}
-      </nav>
-
-      <div className="sidebar-footer">
-        <div className="investigator-info">
-          <div className="avatar">IN</div>
-          <div className="details">
-            <span className="name">Investigator 01</span>
-            <span className="role">Cyber Cell</span>
-          </div>
-        </div>
-        <NavLink to="/login" className="nav-item logout">
-          <LogOut size={20} />
-          <span>Logout</span>
-        </NavLink>
-      </div>
-    </div>
-  );
-};
-
-export default Sidebar;
+import {NavLink,useNavigate} from 'react-router-dom'
+import {BarChart3,BriefcaseBusiness,FileText,LogOut,ShieldCheck} from 'lucide-react'
+import {signOut} from '../../utils/mockAuth'
+import './layout.css'
+import './sidebarAuth.css'
+const links=[{to:'/dashboard',label:'Dashboard',icon:BarChart3},{to:'/cases',label:'Cases',icon:BriefcaseBusiness},{to:'/reports',label:'Reports',icon:FileText}]
+export default function Sidebar(){const navigate=useNavigate();function handleSignOut(){signOut();navigate('/login',{replace:true})}return <aside className="sidebar"><div className="brand"><span className="brand-mark"><ShieldCheck/></span><span className="brand-copy"><strong>TRACEVAULT</strong><small>CHAIN INTELLIGENCE</small></span></div><nav className="sidebar-nav" aria-label="Primary navigation"><p className="nav-label">Workspace</p>{links.map(({to,label,icon:Icon})=><NavLink key={to} to={to} className={({isActive})=>`nav-link ${isActive?'active':''}`}><Icon/><span>{label}</span></NavLink>)}</nav><div className="sidebar-context"><span className="context-pulse"/><div><span>Intelligence index</span><small>Operational</small></div></div><div className="sidebar-user"><div className="avatar">TJ</div><div><strong>T. JD</strong><small>Investigator · LE ID #8327A</small></div><button className="sidebar-signout" type="button" aria-label="Sign out" title="Sign out" onClick={handleSignOut}><LogOut/></button></div></aside>}

@@ -1,0 +1,1 @@
+export default function Card({title,subtitle,action,children,className=''}){return <section className={`card ${className}`}>{(title||action)&&<header className="card-header"><div><h2 className="card-title">{title}</h2>{subtitle&&<p className="card-subtitle">{subtitle}</p>}</div>{action}</header>}<div className="card-body">{children}</div></section>}

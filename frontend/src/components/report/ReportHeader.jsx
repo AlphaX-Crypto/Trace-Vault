@@ -1,0 +1,3 @@
+import Badge from '../common/Badge'
+
+export default function ReportHeader({investigation,status}){return <header className="report-header"><div className="report-brand"><strong>TRACEVAULT</strong><span>Investigation Intelligence Report</span></div><Badge>Demo / Mock Intelligence</Badge><dl><div><dt>Case reference</dt><dd className="mono">{investigation.id}</dd></div><div><dt>Case title</dt><dd>{investigation.name}</dd></div><div><dt>Investigator</dt><dd>{investigation.investigator}</dd></div><div><dt>Blockchain</dt><dd>{investigation.blockchain}</dd></div><div><dt>Analysis status</dt><dd>{investigation.status}</dd></div><div><dt>Report status</dt><dd>{status}</dd></div><div><dt>Generated</dt><dd className="mono">12 Sep 2026 · 14:40 UTC</dd></div></dl></header>}

@@ -1,0 +1,27 @@
+.case-header{display:flex;justify-content:space-between;gap:24px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--color-border)}
+.case-id{color:var(--color-secondary-text);font-size:10px}
+.case-header h1{margin:6px 0 10px;font-size:26px;font-weight:650;letter-spacing:-.02em}
+.case-meta{display:flex;align-items:center;gap:9px;color:var(--color-secondary-text);font-size:11px}
+.case-tabs{display:flex;gap:22px;margin:0 0 24px;padding:0;overflow:auto;background:transparent;border:0;border-bottom:1px solid var(--color-border);border-radius:0}
+.case-tabs a{padding:0 0 11px;color:var(--color-secondary-text);border-radius:0;font-size:11px;font-weight:600;white-space:nowrap}
+.case-tabs a.active{color:var(--color-primary-text);background:transparent;box-shadow:inset 0 -2px var(--color-accent)}
+.case-table-wrap{overflow-x:auto}
+.case-table{width:100%;border-collapse:collapse;text-align:left}
+.case-table th{padding:9px 12px;color:var(--color-muted-text);border-bottom:1px solid var(--color-border-strong);font-size:8px;font-weight:650;letter-spacing:.045em;text-transform:uppercase}
+.case-table td{padding:12px;color:var(--color-secondary-text);border-bottom:1px solid rgba(26,42,54,.9);font-size:10px;white-space:nowrap}
+.case-table tr:last-child td{border-bottom:0}
+.case-table tbody tr{transition:background-color .12s}
+.case-table tbody tr:hover{background:rgba(255,255,255,.018)}
+.case-table td:first-child a{display:flex;flex-direction:column-reverse;gap:4px}
+.case-table td:first-child strong{color:var(--color-primary-text);font-size:11px;font-weight:600}
+.case-table td:first-child span{color:var(--color-secondary-text);font-size:9px}
+.case-table td:nth-child(2){color:#bdc8cf;font-size:10px}
+.case-table td:nth-child(3){color:var(--color-primary-text)}
+.case-table td:nth-child(5){font-size:10px}
+.case-table td:nth-child(6){color:var(--color-muted-text);font-family:var(--font-mono);font-size:9px}
+.case-table td:last-child svg{width:13px;color:var(--color-accent)}
+.card:has(.case-table){background:transparent;border-radius:0;border-width:1px 0}
+.card:has(.case-table)>.card-header{padding:15px 12px 12px}
+.card:has(.case-table)>.card-body{padding:0}
+.case-card{padding:18px}.case-card>div{display:flex;justify-content:space-between}.case-card h3{margin:18px 0 8px}.case-card p{margin:0;color:var(--color-secondary-text)}
+@media(max-width:760px){.case-header{align-items:flex-start;flex-direction:column}.case-tabs{gap:16px}.case-table th,.case-table td{padding-inline:9px}}

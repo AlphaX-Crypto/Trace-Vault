@@ -1,109 +1,303 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Activity, ShieldAlert, Zap, AlertTriangle, FileText, ArrowRight } from 'lucide-react';
-import { api } from '../services/api';
-import './Dashboard.css';
+import { useEffect, useState } from 'react';
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Database,
+  FileSearch,
+  Network,
+  Plus,
+  ShieldAlert,
+  RefreshCw,
+  Server
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Button from '../components/common/Button';
+import Card from '../components/common/Card';
+import CaseTable from '../components/case/CaseTable';
+import api from '../services/api';
+import { normalizeCase } from '../services/normalizer';
+import './dashboard.css';
 
-const Dashboard = () => {
-  const navigate = useNavigate();
-  const [recentCases, setRecentCases] = useState([]);
+export default function Dashboard() {
+  const [cases, setCases] = useState([]);
+  const [health, setHealth] = useState({ backend: 'checking', intelligence: 'checking' });
+  const [loading, setLoading] = useState(true);
+
+  const loadDashboardData = async () => {
+    setLoading(true);
+    try {
+      // 1. Fetch real cases from backend
+      const caseList = await api.getCases();
+      const normalized = Array.isArray(caseList) ? caseList.map(normalizeCase) : [];
+      setCases(normalized);
+
+      // 2. Check health of services
+      try {
+        const bHealth = await api.checkHealth();
+        setHealth((prev) => ({ ...prev, backend: bHealth.status === 'ok' ? 'Online' : 'Degraded' }));
+      } catch (_) {
+        setHealth((prev) => ({ ...prev, backend: 'Offline' }));
+      }
+
+      try {
+        const iHealth = await api.checkIntelligenceHealth();
+        setHealth((prev) => ({
+          ...prev,
+          intelligence: iHealth.status === 'ok' ? 'Online' : 'Degraded'
+        }));
+      } catch (_) {
+        setHealth((prev) => ({ ...prev, intelligence: 'Offline' }));
+      }
+    } catch (err) {
+      console.error('Failed to load dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    api.getCases().then(setRecentCases);
+    loadDashboardData();
   }, []);
 
-  const metrics = [
-    { label: 'Active Cases', value: '14', icon: Activity, color: 'var(--accent-primary)' },
-    { label: 'High Risk', value: '3', icon: AlertTriangle, color: 'var(--risk-high)' },
-    { label: 'Traces Completed', value: '128', icon: Zap, color: 'var(--risk-low)' },
-    { label: 'VASP Attributions', value: '45', icon: ShieldAlert, color: 'var(--accent-secondary)' }
+  // Compute live metrics from real database cases
+  const totalCases = cases.length;
+  const criticalOrHighCases = cases.filter(
+    (c) => c.priority === 'CRITICAL' || c.priority === 'HIGH' || c.riskLevel === 'HIGH' || c.riskLevel === 'CRITICAL'
+  ).length;
+  const analyzedCases = cases.filter((c) => c.status === 'ANALYSIS_COMPLETE').length;
+  const pendingCases = cases.filter((c) => c.status === 'OPEN' || c.status === 'ANALYZING').length;
+
+  const dynamicMetrics = [
+    {
+      label: 'Active Investigations',
+      value: String(totalCases),
+      delta: `${analyzedCases} analyzed`,
+      tone: 'neutral',
+      Icon: BriefcaseBusiness
+    },
+    {
+      label: 'High / Critical Risk',
+      value: String(criticalOrHighCases),
+      delta: 'Requires LEA review',
+      tone: criticalOrHighCases > 0 ? 'critical' : 'low',
+      Icon: ShieldAlert
+    },
+    {
+      label: 'Completed Traces',
+      value: String(analyzedCases),
+      delta: 'PostgreSQL verified',
+      tone: 'medium',
+      Icon: Database
+    },
+    {
+      label: 'Intake Queue',
+      value: String(pendingCases),
+      delta: `${pendingCases} pending analysis`,
+      tone: 'low',
+      Icon: Network
+    }
   ];
 
   return (
-    <div className="dashboard">
-      <div className="dashboard-header">
-        <h2>Intelligence Dashboard</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/cases/new')}>
-          <span>New Investigation</span>
-          <ArrowRight size={16} />
-        </button>
+    <>
+      <div className="dashboard-heading">
+        <div>
+          <p className="eyebrow">
+            Backend System Status ·{' '}
+            <span
+              style={{
+                color: health.backend === 'Online' ? 'var(--color-success, #22c55e)' : 'var(--color-warning, #eab308)',
+                fontWeight: 600
+              }}
+            >
+              API {health.backend}
+            </span>{' '}
+            ·{' '}
+            <span
+              style={{
+                color:
+                  health.intelligence === 'Online'
+                    ? 'var(--color-success, #22c55e)'
+                    : 'var(--color-warning, #eab308)',
+                fontWeight: 600
+              }}
+            >
+              Intelligence Engine {health.intelligence}
+            </span>
+          </p>
+          <h1>Financial Fraud Intelligence Dashboard</h1>
+          <p>
+            Monitor live casework, inspect NetworkX graph traversals, and coordinate VASP attribution.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <Button variant="secondary" onClick={loadDashboardData} disabled={loading} aria-label="Refresh metrics">
+            <RefreshCw className={loading ? 'spin' : ''} />
+          </Button>
+          <Link to="/cases/new">
+            <Button>
+              <Plus /> New case
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      <div className="metrics-grid">
-        {metrics.map((m, i) => {
-          const Icon = m.icon;
+      <section className="metric-grid" aria-label="Investigation metrics">
+        {dynamicMetrics.map((metric) => {
+          const { Icon } = metric;
           return (
-            <div key={i} className="metric-card card">
-              <div className="metric-icon" style={{ color: m.color, backgroundColor: `${m.color}20` }}>
-                <Icon size={24} />
+            <article className={`metric-card metric-${metric.tone}`} key={metric.label}>
+              <div className="metric-icon">
+                <Icon />
               </div>
-              <div className="metric-info">
-                <span className="metric-value mono">{m.value}</span>
-                <span className="metric-label">{m.label}</span>
+              <div>
+                <span>{metric.label}</span>
+                <strong>{metric.value}</strong>
+                <small>{metric.delta}</small>
               </div>
-            </div>
+            </article>
           );
         })}
-      </div>
+      </section>
 
-      <div className="dashboard-content">
-        <div className="card recent-cases">
-          <h3>Recent Investigations</h3>
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Case ID</th>
-                  <th>Subject Wallet</th>
-                  <th>Risk</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentCases.map(c => (
-                  <tr key={c.caseId}>
-                    <td className="mono">{c.caseId}</td>
-                    <td className="mono">{c.subjectWallet.slice(0, 10)}...{c.subjectWallet.slice(-4)}</td>
-                    <td>
-                      <span className={`badge ${c.riskLevel.toLowerCase()}`}>{c.riskLevel}</span>
-                    </td>
-                    <td>{c.status}</td>
-                    <td>
-                      <button className="btn btn-outline" onClick={() => navigate(`/cases/${c.caseId}`)}>
-                        Review
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="dashboard-grid">
+        <Card
+          className="activity-card"
+          title="Investigation Activity"
+          subtitle="System execution audit across active casework"
+          action={<span className="live-label"><i />Live PostgreSQL</span>}
+        >
+          <div style={{ padding: '1.25rem 0', color: 'var(--text-muted)' }}>
+            <p style={{ margin: '0 0 1rem' }}>
+              The TRACEVAULT investigation engine correlates on-chain transactions across unhosted wallets,
+              identifies intermediary fund-layering hops, and attributes candidate VASP deposit wallets.
+            </p>
           </div>
-        </div>
-
-        <div className="card activity-feed">
-          <h3>System Activity</h3>
-          <div className="activity-list">
-            <div className="activity-item">
-              <div className="activity-dot new"></div>
-              <p>New disclosure request prepared for <strong>CASE-002</strong></p>
-              <span className="time mono">10m ago</span>
+          <div className="activity-footer">
+            <div>
+              <FileSearch />
+              <span>
+                <strong>{totalCases}</strong> registered cases
+              </span>
             </div>
-            <div className="activity-item">
-              <div className="activity-dot"></div>
-              <p>Analysis completed for wallet <strong>0x7a2...88d</strong></p>
-              <span className="time mono">1h ago</span>
+            <div>
+              <Network />
+              <span>
+                <strong>{analyzedCases}</strong> VASP paths traversed
+              </span>
             </div>
-            <div className="activity-item">
-              <div className="activity-dot alert"></div>
-              <p>High risk indicator detected in <strong>CASE-001</strong></p>
-              <span className="time mono">2h ago</span>
+            <div>
+              <Server />
+              <span>
+                <strong>PostgreSQL</strong> authoritative store
+              </span>
             </div>
           </div>
-        </div>
+        </Card>
+
+        <Card
+          className="risk-card"
+          title="Risk Prioritization"
+          subtitle="Casework categorized by analytical risk"
+        >
+          <div className="risk-total">
+            <div>
+              <span>{totalCases}</span>
+              <small>REGISTERED CASES</small>
+            </div>
+            <p>Risk signals guide review priority and do not establish legal wrongdoing.</p>
+          </div>
+          <div className="risk-bars">
+            <div className="risk-row">
+              <div>
+                <span>Critical / High</span>
+                <b>{criticalOrHighCases} cases</b>
+              </div>
+              <div className="risk-track">
+                <span
+                  className="risk-fill high"
+                  style={{
+                    width: `${totalCases > 0 ? Math.round((criticalOrHighCases / totalCases) * 100) : 0}%`
+                  }}
+                />
+              </div>
+            </div>
+            <div className="risk-row">
+              <div>
+                <span>Medium / Low</span>
+                <b>{totalCases - criticalOrHighCases} cases</b>
+              </div>
+              <div className="risk-track">
+                <span
+                  className="risk-fill low"
+                  style={{
+                    width: `${totalCases > 0 ? Math.round(((totalCases - criticalOrHighCases) / totalCases) * 100) : 0}%`
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card
+          className="recent-card"
+          title="Recent Investigations"
+          subtitle="Real casework stored in PostgreSQL"
+          action={
+            <Link className="text-link" to="/cases">
+              View all cases <ArrowRight />
+            </Link>
+          }
+        >
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+              Loading cases...
+            </div>
+          ) : cases.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+              No cases created yet.
+            </div>
+          ) : (
+            <CaseTable items={cases.slice(0, 4)} />
+          )}
+        </Card>
+
+        <Card className="queue-card" title="Operational Queue" subtitle="Current workflow status">
+          <div className="stage-list">
+            <div>
+              <span>
+                <i>01</i> Intake / Registered
+              </span>
+              <strong>{cases.filter((c) => c.status === 'OPEN').length}</strong>
+            </div>
+            <div>
+              <span>
+                <i>02</i> In Analysis
+              </span>
+              <strong>{cases.filter((c) => c.status === 'ANALYZING').length}</strong>
+            </div>
+            <div>
+              <span>
+                <i>03</i> Analysis Complete
+              </span>
+              <strong>{cases.filter((c) => c.status === 'ANALYSIS_COMPLETE').length}</strong>
+            </div>
+            <div>
+              <span>
+                <i>04</i> Review / Closed
+              </span>
+              <strong>{cases.filter((c) => c.status === 'REVIEW' || c.status === 'CLOSED').length}</strong>
+            </div>
+          </div>
+          <div className="index-status">
+            <span className="context-pulse" />
+            <div>
+              <b>System Operational</b>
+              <small>Node.js API + PostgreSQL + FastAPI NetworkX</small>
+            </div>
+          </div>
+        </Card>
       </div>
-    </div>
+    </>
   );
-};
-
-export default Dashboard;
+}

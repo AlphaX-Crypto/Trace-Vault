@@ -1,0 +1,1 @@
+import Card from '../common/Card';export default function ReportPreview(){return <Card title="Report preview"><p className="muted">A structured investigation report will be assembled here.</p></Card>}

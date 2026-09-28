@@ -1,0 +1,1 @@
+export default function ReportSection({title,number,action,children}){return <section className="report-section"><header><div><span>{number}</span><h2>{title}</h2></div>{action}</header><div className="report-section-body">{children}</div></section>}

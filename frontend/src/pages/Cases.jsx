@@ -1,83 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Plus } from 'lucide-react';
-import { api } from '../services/api';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Plus, RefreshCw, AlertCircle } from 'lucide-react';
+import Button from '../components/common/Button';
+import Card from '../components/common/Card';
+import CaseTable from '../components/case/CaseTable';
+import api from '../services/api';
+import { normalizeCase } from '../services/normalizer';
 
-const Cases = () => {
-  const navigate = useNavigate();
+export default function Cases() {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchCases = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.getCases();
+      const normalized = Array.isArray(data) ? data.map(normalizeCase) : [];
+      setCases(normalized);
+    } catch (err) {
+      console.error('Failed to fetch cases:', err);
+      setError(err.message || 'Unable to load cases from backend service.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    api.getCases().then(data => {
-      setCases(data);
-      setLoading(false);
-    });
+    fetchCases();
   }, []);
 
   return (
-    <div className="cases-container">
-      <div className="dashboard-header mb-6" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Case Registry</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/cases/new')}>
-          <Plus size={16} /> New Investigation
-        </button>
+    <>
+      <div className="page-heading">
+        <div>
+          <p className="eyebrow">Case registry</p>
+          <h1>Investigations</h1>
+          <p>Active cryptocurrency tracing and forensic intelligence casework.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <Button variant="secondary" onClick={fetchCases} disabled={loading} aria-label="Refresh case list">
+            <RefreshCw className={loading ? 'spin' : ''} />
+          </Button>
+          <Link to="/cases/new">
+            <Button>
+              <Plus /> New case
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      <div className="card">
-        <div className="card-header" style={{ justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)' }}>
-          <div className="actions" style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
-            <div className="search-bar" style={{ width: '300px' }}>
-              <Search size={14} className="search-icon" />
-              <input type="text" placeholder="Search cases by ID or wallet..." />
-            </div>
-            <button className="btn btn-outline" style={{ padding: 'var(--spacing-2)' }}>
-              <Filter size={16} />
-            </button>
+      <Card
+        title="All Registered Cases"
+        subtitle={
+          loading
+            ? 'Connecting to backend database...'
+            : error
+            ? 'Connection error'
+            : `${cases.length} investigation record${cases.length === 1 ? '' : 's'}`
+        }
+      >
+        {loading && (
+          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <p>Loading investigation casework from PostgreSQL database...</p>
           </div>
-        </div>
+        )}
 
-        <div className="table-container">
-          {loading ? (
-            <div className="loading mono text-center py-6" style={{ padding: '2rem' }}>LOADING CASES...</div>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Case ID</th>
-                  <th>Title</th>
-                  <th>Subject Wallet</th>
-                  <th>Risk</th>
-                  <th>Status</th>
-                  <th>Attribution</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cases.map((c) => (
-                  <tr key={c.caseId}>
-                    <td className="mono">{c.caseId}</td>
-                    <td>{c.title}</td>
-                    <td className="mono text-muted">{c.subjectWallet.slice(0, 10)}...{c.subjectWallet.slice(-4)}</td>
-                    <td>
-                      <span className={`badge ${c.riskLevel.toLowerCase()}`}>{c.riskLevel}</span>
-                    </td>
-                    <td>{c.status}</td>
-                    <td>{c.attribution.entity}</td>
-                    <td>
-                      <button className="btn btn-outline" onClick={() => navigate(`/cases/${c.caseId}`)}>
-                        Open
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div>
-    </div>
+        {!loading && error && (
+          <div style={{ padding: '2.5rem', textAlign: 'center' }}>
+            <AlertCircle style={{ color: 'var(--color-danger, #ef4444)', margin: '0 auto 1rem', width: 32, height: 32 }} />
+            <p style={{ color: 'var(--color-danger, #ef4444)', marginBottom: '1rem' }}>{error}</p>
+            <Button variant="secondary" onClick={fetchCases}>Retry Connection</Button>
+          </div>
+        )}
+
+        {!loading && !error && cases.length === 0 && (
+          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <p style={{ marginBottom: '1.25rem' }}>No investigations currently registered in the database.</p>
+            <Link to="/cases/new">
+              <Button><Plus /> Create First Case</Button>
+            </Link>
+          </div>
+        )}
+
+        {!loading && !error && cases.length > 0 && (
+          <CaseTable items={cases} />
+        )}
+      </Card>
+    </>
   );
-};
-
-export default Cases;
+}
