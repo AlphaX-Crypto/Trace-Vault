@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Any, Dict, List, Optional, Set
 import networkx as nx
 
@@ -13,7 +14,9 @@ from app.models.analysis import (
 )
 from app.models.transaction import CommonTransaction
 from app.normalization.transaction_normalizer import TransactionNormalizer
+from app.blockchain.base import BaseBlockchainAdapter
 from app.blockchain.mock import MockBlockchainAdapter
+from app.blockchain.ethereum import EthereumAdapter
 from app.graph.builder import TransactionGraphBuilder
 from app.graph.traversal import BFSTraverser
 from app.graph.path_finder import PathFinder
@@ -24,26 +27,67 @@ from app.risk.scorer import RiskScorer
 
 logger = logging.getLogger(__name__)
 
+ETH_ADDRESS_PATTERN = re.compile(r"^0x[a-fA-F0-9]{40}$")
+
 
 class AnalysisService:
     """
     Authoritative Intelligence Analysis Service for TRACEVAULT V2.
     Integrates the real NetworkX graph engine, deterministic BFS discovery,
     heuristic path finding, explainable VASP attribution, and multi-factor risk scoring.
+    Supports both offline/mock ledgers and live Ethereum indexers.
     """
 
     def __init__(
         self,
-        adapter: Optional[MockBlockchainAdapter] = None,
+        adapter: Optional[BaseBlockchainAdapter] = None,
         registry: Optional[VaspRegistry] = None,
+        ethereum_adapter: Optional[EthereumAdapter] = None,
     ):
         self.registry = registry if registry is not None else (
             adapter.registry if adapter is not None and hasattr(adapter, "registry") else VaspRegistry()
         )
         self.adapter = adapter if adapter is not None else MockBlockchainAdapter(registry=self.registry)
+        self.ethereum_adapter = ethereum_adapter or (
+            self.adapter if isinstance(self.adapter, EthereumAdapter) else EthereumAdapter(registry=self.registry)
+        )
         self.normalizer = TransactionNormalizer()
         self.vasp_identifier = VaspIdentifier(registry=self.registry)
-        self.risk_scorer = RiskScorer(self.adapter.get_entity_info)
+        self.risk_scorer = RiskScorer(self._get_entity_info)
+
+    def _get_entity_info(self, address: str) -> Optional[Dict[str, Any]]:
+        """Look up entity intelligence across registered adapters and registry."""
+        info = self.adapter.get_entity_info(address)
+        if not info and self.ethereum_adapter:
+            info = self.ethereum_adapter.get_entity_info(address)
+        return info
+
+    def _fetch_transactions(self, address: str) -> List[Dict[str, Any]]:
+        """
+        Fetch transactions for a given address.
+        If the primary adapter is live, query it directly.
+        Otherwise, query the primary adapter first (e.g. test mock ledger).
+        If primary returns empty and the address is a valid Ethereum 42-char hex,
+        query the live Ethereum adapter.
+        """
+        if getattr(self.adapter, "is_live", False):
+            return self.adapter.get_transactions(address)
+
+        # 1. Check primary adapter (mock ledger or custom injected adapter)
+        txs = self.adapter.get_transactions(address)
+        if txs:
+            return txs
+
+        # 2. Check live Ethereum adapter if address is standard Ethereum hex
+        if ETH_ADDRESS_PATTERN.match(address) and self.ethereum_adapter and self.ethereum_adapter != self.adapter:
+            try:
+                live_txs = self.ethereum_adapter.get_transactions(address)
+                if live_txs:
+                    return live_txs
+            except Exception as exc:
+                logger.debug(f"Live Ethereum adapter lookup failed for {address}: {exc}")
+
+        return []
 
     def analyze_wallet(self, request: AnalyzeWalletRequest) -> AnalysisResult:
         """
@@ -57,7 +101,7 @@ class AnalysisService:
 
         # 2. Normalize raw transactions into canonical CommonTransaction models
         normalized_txs: List[CommonTransaction] = [
-            self.normalizer.normalize_mock(tx) for tx in raw_txs
+            self.normalizer.normalize(tx) for tx in raw_txs
         ]
 
         # 3. Construct real NetworkX directed graph
@@ -72,7 +116,7 @@ class AnalysisService:
             all_graph_nodes.append(start_address)
 
         for addr in all_graph_nodes:
-            entity_info = self.adapter.get_entity_info(addr)
+            entity_info = self._get_entity_info(addr)
             if entity_info:
                 builder.tag_node(
                     addr,
@@ -185,7 +229,7 @@ class AnalysisService:
         for _ in range(max_hops):
             next_addresses: List[str] = []
             for addr in addresses_to_explore:
-                txs = self.adapter.get_transactions(addr)
+                txs = self._fetch_transactions(addr)
                 for tx in txs:
                     h = tx.get("hash") or tx.get("transaction_hash")
                     if h and h not in raw_tx_hashes:

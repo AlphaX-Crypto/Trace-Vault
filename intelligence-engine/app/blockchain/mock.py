@@ -60,13 +60,18 @@ MOCK_ENTITIES: Dict[str, Dict[str, Any]] = {
 
 
 from app.attribution.registry import VaspRegistry
+from app.blockchain.base import BaseBlockchainAdapter
 
 
-class MockBlockchainAdapter:
+class MockBlockchainAdapter(BaseBlockchainAdapter):
     """
     Controlled Mock Blockchain Adapter providing test cryptocurrency transactions
     and tagged entity registries for the NetworkX Intelligence Engine.
     """
+    @property
+    def is_live(self) -> bool:
+        return False
+
     def __init__(
         self,
         transactions: Optional[List[Dict[str, Any]]] = None,
