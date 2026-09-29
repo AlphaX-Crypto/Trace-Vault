@@ -37,7 +37,7 @@ const fs = require('fs');
 
   // Trigger Application Transition
   console.log('Clicking primary CTA button to transition...');
-  await page.click('button.primary-cta-button');
+  await page.click('button.primary-launch-button');
 
   // Wait for transition animation to complete (800ms)
   await page.waitForTimeout(1000);

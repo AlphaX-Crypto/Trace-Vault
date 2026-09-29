@@ -8,7 +8,7 @@ interface CinematicHeroProps {
 }
 
 export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication }) => {
-  // Step stages: 0 = Init, 1 = Scramble & Header, 2 = Eyebrow & Headline, 3 = Focal Unblur, 4 = Ready
+  // Step stages: 0 = Init, 1 = Scramble & Header, 2 = Eyebrow & Line 1, 3 = Focal Unblur, 4 = Ready
   const [stage, setStage] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -16,7 +16,6 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
   const handleEnter = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    // Smooth deceleration zoom into the application shell
     setTimeout(() => {
       onEnterApplication();
     }, 750);
@@ -37,9 +36,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
   // Paced choreography matching Reference Video 1
   useEffect(() => {
     const timer1 = setTimeout(() => setStage(1), 100);  // Header & Environment
-    const timer2 = setTimeout(() => setStage(2), 600);  // Eyebrow & Line 1
-    const timer3 = setTimeout(() => setStage(3), 1100); // Focal Blur Line 2
-    const timer4 = setTimeout(() => setStage(4), 1600); // Fully Ready & CTA
+    const timer2 = setTimeout(() => setStage(2), 500);  // Eyebrow & Line 1
+    const timer3 = setTimeout(() => setStage(3), 1000); // Focal Blur Line 2 & 3
+    const timer4 = setTimeout(() => setStage(4), 1500); // Fully Ready & CTA
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -51,7 +50,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
   return (
     <div
       className={`hero-viewport ${isTransitioning ? 'hero-transitioning' : ''}`}
-      aria-label="TRACEVAULT Investigation Console Entry"
+      aria-label="TRACEVAULT Institutional Forensic Platform"
     >
       {/* Background Coordinate Atmosphere */}
       <div className="atmospheric-grid" aria-hidden="true" />
@@ -67,91 +66,74 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
         <TopologicalCore isTransitioning={isTransitioning} className="w-full h-full" />
       </div>
 
-      {/* Hero Spatial Canvas Container */}
-      <main className="hero-content-container">
-        <div className="hero-typography-block">
-          {/* Eyebrow: Technical Status Bar */}
-          <div className={`eyebrow-wrapper ${stage >= 2 ? 'opacity-100' : 'opacity-0'}`}>
-            <span className="eyebrow-bars" aria-hidden="true">▮▮▮</span>
-            <span className="eyebrow-text font-mono">
-              <ScrambleText
-                text="AUTONOMOUS FORENSIC INTELLIGENCE"
-                delay={500}
-                duration={500}
-              />
-            </span>
+      {/* Hero Lower Third Section: Headline on Left, Action on Right (Reference Video 1 Layout) */}
+      <main className="hero-bottom-stage">
+        <div className="hero-stage-inner">
+          {/* Left Column: Eyebrow + 3-Tier Headline */}
+          <div className="headline-cluster">
+            {/* Eyebrow: Formal Institutional Tag */}
+            <div className={`eyebrow-container ${stage >= 2 ? 'opacity-100' : 'opacity-0'}`}>
+              <span className="eyebrow-mark" aria-hidden="true">▮▮▮</span>
+              <span className="eyebrow-label">
+                <ScrambleText
+                  text="INSTITUTIONAL FORENSIC INTELLIGENCE"
+                  delay={400}
+                  duration={400}
+                />
+              </span>
+            </div>
+
+            {/* 3-Tier Headline matching Reference Video 1 */}
+            <h1 className="hero-headline">
+              {/* Line 1: High Contrast Pure White */}
+              <span className={`headline-line line-1 ${stage >= 2 ? 'line-revealed' : ''}`}>
+                Institutional
+              </span>
+
+              {/* Line 2: Optical Focal Unblur Transition */}
+              <span className={`headline-line line-2 ${stage >= 3 ? 'focal-resolved' : 'focal-blurred'}`}>
+                financial forensics
+              </span>
+
+              {/* Line 3: Muted Supporting Slate Line */}
+              <span className={`headline-line line-3 ${stage >= 3 ? 'line-revealed' : ''}`}>
+                and asset recovery
+              </span>
+            </h1>
           </div>
 
-          {/* 3-Level Typographic Hierarchy */}
-          <h1 className="hero-headline">
-            {/* Line 1: High Contrast Crisp White */}
-            <span className={`headline-line line-primary ${stage >= 2 ? 'line-revealed' : ''}`}>
-              Decentralized asset
-            </span>
-
-            {/* Line 2: Optical Focal Blur Transition */}
-            <span className={`headline-line line-focal ${stage >= 3 ? 'focal-resolved' : 'focal-blurred'}`}>
-              investigation & trace
-            </span>
-
-            {/* Line 3: Muted Supporting Line */}
-            <span className={`headline-line line-muted ${stage >= 3 ? 'line-revealed' : ''}`}>
-              by institutional design
-            </span>
-          </h1>
-
-          {/* Explanatory Technical Micro-brief */}
-          <p className={`hero-subtext ${stage >= 4 ? 'opacity-100' : 'opacity-0'}`}>
-            Next-generation blockchain forensic workstation orchestrating cross-chain entity attribution, 
-            automated transaction graph traversal, and court-admissible Section 65B evidence ledgers.
-          </p>
-        </div>
-
-        {/* Bottom Horizontal Bar: Telemetry & Primary CTA */}
-        <footer className="hero-footer-bar">
-          {/* Left: System Verification Telemetry */}
-          <div className="telemetry-group font-mono text-xs text-[#64748b]">
-            <div className="telemetry-item">
-              <span className="telemetry-label">SECURITY:</span>
-              <span className="telemetry-value text-white">ED25519 VERIFIED</span>
-            </div>
-            <div className="telemetry-divider">/</div>
-            <div className="telemetry-item">
-              <span className="telemetry-label">TOPOLOGY:</span>
-              <span className="telemetry-value text-[#24c7c9]">NETWORKX 3.7</span>
-            </div>
-            <div className="telemetry-divider">/</div>
-            <div className="telemetry-item">
-              <span className="telemetry-label">EVIDENCE:</span>
-              <span className="telemetry-value text-[#f59e0b]">SEC 65B READY</span>
-            </div>
-          </div>
-
-          {/* Right: Corner-Cut Primary Action CTA */}
-          <div className="cta-wrapper">
+          {/* Right Column: Horizontally Balanced Primary CTA (matching Reference Video 1) */}
+          <div className="cta-cluster">
             <button
               type="button"
               onClick={handleEnter}
-              className={`primary-cta-button ${stage >= 4 ? 'cta-ready' : 'cta-waiting'}`}
-              aria-label="Launch Investigation Workspace"
+              className={`primary-launch-button ${stage >= 4 ? 'cta-ready' : 'cta-waiting'}`}
+              aria-label="Enter Investigation Workstation"
             >
-              <div className="cta-content">
-                <span className="cta-text font-mono text-xs uppercase tracking-wider">
-                  <ScrambleText text="LAUNCH INVESTIGATION" delay={1400} duration={400} />
-                </span>
-                <span className="cta-key-hint font-mono text-[10px] text-[#24c7c9]" aria-hidden="true">[↵]</span>
-              </div>
-              <div className="corner-chamfer" aria-hidden="true">+</div>
+              <span className="btn-text">
+                <ScrambleText text="Enter Workstation" delay={1200} duration={350} />
+              </span>
+              <span className="btn-arrow" aria-hidden="true">→</span>
             </button>
           </div>
-        </footer>
+        </div>
+
+        {/* Minimal Institutional Authority Footer */}
+        <div className="authority-footer">
+          <span className="authority-text">
+            GOVERNMENT OF INDIA // LAW ENFORCEMENT & REGULATORY INVESTIGATION PLATFORM
+          </span>
+          <span className="authority-protocol font-mono">
+            SEC 65B CERTIFIED // BNS 94 COMPLIANT
+          </span>
+        </div>
       </main>
 
-      {/* Peripheral Corner Chamfer Accents */}
-      <div className="corner-accent corner-tl font-mono" aria-hidden="true">┌ 28.6139° N</div>
-      <div className="corner-accent corner-tr font-mono" aria-hidden="true">77.2090° E ┐</div>
-      <div className="corner-accent corner-bl font-mono" aria-hidden="true">└ TV-CORE.01</div>
-      <div className="corner-accent corner-br font-mono" aria-hidden="true">INST-SEC ┘</div>
+      {/* Subtle Peripheral Corner Accents */}
+      <div className="corner-accent corner-tl" aria-hidden="true">┌ 28.6139° N</div>
+      <div className="corner-accent corner-tr" aria-hidden="true">77.2090° E ┐</div>
+      <div className="corner-accent corner-bl" aria-hidden="true">└ TV-LEA.01</div>
+      <div className="corner-accent corner-br" aria-hidden="true">SEC-AUTH ┘</div>
 
       <style>{`
         .hero-viewport {
@@ -163,26 +145,26 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          padding: 80px 48px 36px 48px;
+          justify-content: flex-end;
+          padding: 0 48px 24px 48px;
           transition: opacity 0.75s var(--tv-ease-camera), transform 0.75s var(--tv-ease-camera);
         }
 
         .hero-transitioning {
           opacity: 0;
-          transform: scale(1.05);
+          transform: scale(1.04);
           filter: blur(4px);
         }
 
-        /* Fine Coordinate Grid Atmosphere */
+        /* Subtle Coordinate Grid Atmosphere */
         .atmospheric-grid {
           position: absolute;
           inset: 0;
           background-image: 
-            linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-          background-size: 60px 60px;
-          mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
+            linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+          background-size: 80px 80px;
+          mask-image: radial-gradient(circle at 50% 50%, black 45%, transparent 85%);
           pointer-events: none;
           z-index: 1;
         }
@@ -198,56 +180,58 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           pointer-events: none;
         }
 
-        /* Main Spatial Container */
-        .hero-content-container {
+        /* Lower Third Stage (Matching Reference Video 1) */
+        .hero-bottom-stage {
           position: relative;
           z-index: 10;
           width: 100%;
           max-width: 1560px;
           margin: 0 auto;
-          height: 100%;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          gap: 36px;
         }
 
-        .hero-typography-block {
-          max-width: 820px;
-          margin-top: 6vh;
+        .hero-stage-inner {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          width: 100%;
         }
 
         /* Eyebrow Treatment */
-        .eyebrow-wrapper {
+        .eyebrow-container {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
           transition: opacity 0.6s var(--tv-ease-smooth);
         }
 
-        .eyebrow-bars {
+        .eyebrow-mark {
           color: var(--tv-cyan);
           letter-spacing: 2px;
-          font-size: 11px;
+          font-size: 10px;
         }
 
-        .eyebrow-text {
+        .eyebrow-label {
+          font-family: var(--tv-font-sans);
           font-size: 11px;
+          font-weight: 600;
           letter-spacing: 0.15em;
           color: var(--tv-text-secondary);
-          font-weight: 500;
         }
 
         /* 3-Tier Headline */
         .hero-headline {
           font-family: var(--tv-font-sans);
-          font-size: clamp(40px, 4.6vw, 68px);
+          font-size: clamp(40px, 4.4vw, 68px);
           font-weight: 600;
           line-height: 1.08;
-          letter-spacing: -0.035em;
+          letter-spacing: -0.03em;
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 4px;
         }
 
         .headline-line {
@@ -255,94 +239,51 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           transition: opacity 0.7s var(--tv-ease-smooth), filter 0.8s var(--tv-ease-smooth), transform 0.7s var(--tv-ease-smooth);
         }
 
-        .line-primary {
+        .line-1 {
           color: #ffffff;
           opacity: 0;
           transform: translateY(12px);
         }
 
-        .line-primary.line-revealed {
+        .line-1.line-revealed {
           opacity: 1;
           transform: translateY(0);
         }
 
         /* Optical Focal Blur */
-        .line-focal {
+        .line-2 {
           color: #ffffff;
         }
 
-        .line-focal.focal-blurred {
-          opacity: 0.4;
+        .line-2.focal-blurred {
+          opacity: 0.35;
           filter: blur(10px);
           transform: translateY(8px);
         }
 
-        .line-focal.focal-resolved {
+        .line-2.focal-resolved {
           opacity: 1;
           filter: blur(0px);
           transform: translateY(0);
         }
 
-        .line-muted {
+        .line-3 {
           color: var(--tv-text-muted);
           opacity: 0;
           transform: translateY(6px);
         }
 
-        .line-muted.line-revealed {
+        .line-3.line-revealed {
           opacity: 1;
           transform: translateY(0);
         }
 
-        .hero-subtext {
-          margin-top: 28px;
-          font-size: 14px;
-          line-height: 1.6;
-          color: var(--tv-text-secondary);
-          max-width: 580px;
-          font-weight: 400;
-          transition: opacity 0.8s var(--tv-ease-smooth);
+        /* Balanced CTA Cluster on the Right */
+        .cta-cluster {
+          padding-bottom: 8px;
         }
 
-        /* Bottom Telemetry & CTA Footer */
-        .hero-footer-bar {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          padding-top: 24px;
-          border-top: 1px solid var(--tv-border);
-          position: relative;
-          z-index: 20;
-        }
-
-        .telemetry-group {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .telemetry-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .telemetry-label {
-          color: var(--tv-text-muted);
-          font-size: 11px;
-        }
-
-        .telemetry-value {
-          font-weight: 500;
-          font-size: 11px;
-        }
-
-        .telemetry-divider {
-          color: var(--tv-border);
-        }
-
-        /* Corner-Cut Primary CTA Button */
-        .primary-cta-button {
+        .primary-launch-button {
           background: #ffffff;
           color: #050a0e;
           border: none;
@@ -351,39 +292,33 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           cursor: pointer;
           display: flex;
           align-items: center;
-          gap: 14px;
-          position: relative;
+          gap: 12px;
+          font-family: var(--tv-font-sans);
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.02em;
           transition: background 0.2s var(--tv-ease-smooth), transform 0.2s var(--tv-ease-smooth), box-shadow 0.2s;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
         }
 
-        .primary-cta-button:hover {
+        .primary-launch-button:hover {
           background: #f1f5f9;
           transform: translateY(-2px);
           box-shadow: 0 8px 30px rgba(36, 199, 201, 0.25);
         }
 
-        .primary-cta-button:active {
+        .primary-launch-button:active {
           transform: translateY(0);
         }
 
-        .cta-content {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .cta-text {
-          font-weight: 600;
-          color: #050a0e;
-        }
-
-        .corner-chamfer {
-          font-family: var(--tv-font-mono);
-          font-weight: 700;
-          color: #050a0e;
-          font-size: 14px;
+        .btn-arrow {
+          font-size: 16px;
           line-height: 1;
+          transition: transform 0.2s var(--tv-ease-smooth);
+        }
+
+        .primary-launch-button:hover .btn-arrow {
+          transform: translateX(3px);
         }
 
         .cta-waiting {
@@ -397,11 +332,29 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           transition: opacity 0.6s var(--tv-ease-smooth);
         }
 
+        /* Formal Authority Footer */
+        .authority-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-top: 18px;
+          border-top: 1px solid var(--tv-border);
+          font-size: 11px;
+          color: #64748b;
+          letter-spacing: 0.06em;
+        }
+
+        .authority-protocol {
+          font-size: 10px;
+          color: #475569;
+        }
+
         /* Peripheral Corner Accents */
         .corner-accent {
           position: absolute;
+          font-family: var(--tv-font-mono);
           font-size: 10px;
-          color: #334155;
+          color: #1e293b;
           letter-spacing: 0.1em;
           pointer-events: none;
           z-index: 5;
@@ -409,17 +362,22 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
 
         .corner-tl { top: 12px; left: 48px; }
         .corner-tr { top: 12px; right: 48px; }
-        .corner-bl { bottom: 12px; left: 48px; }
-        .corner-br { bottom: 12px; right: 48px; }
+        .corner-bl { bottom: 8px; left: 48px; }
+        .corner-br { bottom: 8px; right: 48px; }
 
         @media (max-width: 1024px) {
           .hero-viewport {
-            padding: 70px 24px 24px 24px;
+            padding: 0 24px 20px 24px;
           }
-          .hero-footer-bar {
+          .hero-stage-inner {
             flex-direction: column;
             align-items: flex-start;
-            gap: 20px;
+            gap: 28px;
+          }
+          .authority-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
           }
         }
       `}</style>

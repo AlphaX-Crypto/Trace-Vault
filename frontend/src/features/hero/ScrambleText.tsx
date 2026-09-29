@@ -6,27 +6,23 @@ interface ScrambleTextProps {
   duration?: number;
   className?: string;
   onComplete?: () => void;
-  charSet?: string;
 }
 
-const DEFAULT_CHARSET = '0123456789ABCDEF_#-+';
+const CIPHER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
 export const ScrambleText: React.FC<ScrambleTextProps> = ({
   text,
   delay = 0,
-  duration = 600,
+  duration = 500,
   className = '',
-  onComplete,
-  charSet = DEFAULT_CHARSET
+  onComplete
 }) => {
   const [displayText, setDisplayText] = useState('');
   const completedRef = useRef(false);
 
   useEffect(() => {
     let animationFrameId: number;
-    let timeoutId: number;
-
-    timeoutId = window.setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       const startTime = performance.now();
       const length = text.length;
 
@@ -37,17 +33,17 @@ export const ScrambleText: React.FC<ScrambleTextProps> = ({
 
         let result = '';
         for (let i = 0; i < length; i++) {
-          if (text[i] === ' ') {
-            result += ' ';
+          if (text[i] === ' ' || text[i] === '/' || text[i] === '-') {
+            result += text[i];
           } else if (i < resolvedChars) {
             result += text[i];
-          } else if (i === resolvedChars) {
-            // Front edge character scrambles
-            const charIdx = Math.floor(Math.random() * charSet.length);
-            result += charSet[charIdx];
+          } else if (i <= resolvedChars + 1 && progress < 1) {
+            // Front edge character scrambles softly
+            const charIdx = Math.floor(Math.random() * CIPHER_CHARS.length);
+            result += CIPHER_CHARS[charIdx];
           } else {
-            // Unresolved characters displayed as subtle placeholder dash or blank
-            result += '_';
+            // Unresolved characters rendered from original text at low opacity via CSS or subtle cipher
+            result += text[i];
           }
         }
 
@@ -71,11 +67,11 @@ export const ScrambleText: React.FC<ScrambleTextProps> = ({
       clearTimeout(timeoutId);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [text, delay, duration, charSet, onComplete]);
+  }, [text, delay, duration, onComplete]);
 
   return (
     <span className={className} aria-label={text}>
-      {displayText || text.replace(/[^ ]/g, '_')}
+      {displayText || text}
     </span>
   );
 };
