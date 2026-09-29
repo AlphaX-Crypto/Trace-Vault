@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ApplicationShellPlaceholderProps {
   onReturnToHero: () => void;
@@ -8,39 +8,44 @@ export const ApplicationShellPlaceholder: React.FC<ApplicationShellPlaceholderPr
   onReturnToHero
 }) => {
   const [activeTab, setActiveTab] = useState('CASES');
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEntered(true), 60);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="app-shell-root" role="main" aria-label="TRACEVAULT Investigation Workstation">
+    <div
+      className={`app-shell-root ${entered ? 'shell-entered' : 'shell-pre-enter'}`}
+      role="main"
+      aria-label="TRACEVAULT Investigation Workstation"
+    >
       {/* Top Institutional Header */}
       <header className="shell-header">
         <div className="shell-header-left">
           <div className="shell-emblem" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#24c7c9" strokeWidth="1.5" />
-              <path d="M12 7l-5 3v4l5 3 5-3v-4l-5-3z" stroke="rgba(255,255,255,0.8)" strokeWidth="1" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#24c7c9" strokeWidth="1.75" />
+              <path d="M12 7l-5 3v4l5 3 5-3v-4l-5-3z" stroke="rgba(255,255,255,0.9)" strokeWidth="1.2" />
             </svg>
           </div>
-          <span className="shell-title font-mono font-semibold text-white tracking-wider">
-            TRACEVAULT
-          </span>
-          <span className="shell-divider">/</span>
-          <span className="shell-subtitle font-mono text-xs text-[#94a3b8]">
-            FORENSIC WORKSTATION
-          </span>
+          <div className="shell-brand-group">
+            <span className="shell-title">TRACEVAULT</span>
+            <span className="shell-subtitle">DIRECTORATE OF FINANCIAL FORENSIC INTELLIGENCE</span>
+          </div>
         </div>
 
         {/* Global Workstation Navigation */}
         <nav className="shell-nav" aria-label="Investigation Shell Tabs">
-          {['CASES', 'INVESTIGATION', 'GRAPH', 'EVIDENCE', 'AUDIT'].map((tab) => {
+          {['CASES', 'INVESTIGATION', 'TRANSACTIONS', 'GRAPH INTELLIGENCE', 'EVIDENCE VAULT', 'COMPLIANCE'].map((tab) => {
             const isActive = activeTab === tab;
             return (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`shell-nav-item font-mono text-xs tracking-wider uppercase ${
-                  isActive ? 'active' : ''
-                }`}
+                className={`shell-nav-item ${isActive ? 'active' : ''}`}
               >
                 {tab}
                 {isActive && <div className="nav-active-bar" />}
@@ -50,11 +55,11 @@ export const ApplicationShellPlaceholder: React.FC<ApplicationShellPlaceholderPr
         </nav>
 
         {/* Right Officer Status & Hero Round-Trip */}
-        <div className="shell-header-right font-mono text-xs">
+        <div className="shell-header-right">
           <div className="officer-badge">
             <span className="status-dot-green" aria-hidden="true" />
-            <span className="text-[#94a3b8]">OFFICER:</span>
-            <span className="text-white font-medium">SAMARTH [LEA-DELHI]</span>
+            <span className="officer-label">AUTHORIZED OFFICER:</span>
+            <span className="officer-name">INSP. SAMARTH [LEA-DELHI]</span>
           </div>
           <button
             type="button"
@@ -62,80 +67,84 @@ export const ApplicationShellPlaceholder: React.FC<ApplicationShellPlaceholderPr
             className="shell-exit-btn"
             aria-label="Return to Cinematic Hero"
           >
-            HERO OVERVIEW ↺
+            HERO VIEW ↺
           </button>
         </div>
       </header>
 
-      {/* Sub-header Breadcrumb & Operational State */}
-      <div className="shell-subheader font-mono text-xs">
+      {/* Sub-header Context & Statutory Standards Bar */}
+      <div className="shell-subheader">
         <div className="subheader-left">
-          <span className="text-[#64748b]">CONTEXT:</span>
-          <span className="text-white">SYSTEM_ENTRY // SESSION_ESTABLISHED</span>
-          <span className="badge-tag">SEC 65B ENABLED</span>
+          <span className="statute-tag">NCFL REPOSITORY</span>
+          <span className="subheader-text">CENTRAL FINANCIAL INTELLIGENCE PLATFORM</span>
+          <span className="statute-badge">SECTION 91 CRPC / BNS 94</span>
+          <span className="statute-badge">SEC 65B EVIDENCE PRESERVED</span>
         </div>
-        <div className="subheader-right text-[#64748b]">
-          <span>NETWORK: BHARAT-FORENSIC-NET</span>
-          <span>LATENCY: 12ms</span>
+        <div className="subheader-right">
+          <span className="system-status-indicator">
+            <span className="pulse-dot" /> SYSTEM OPERATIONAL
+          </span>
+          <span className="node-id">PORTAL NODE: DL-CENTRAL-01</span>
         </div>
       </div>
 
       {/* Main Workstation Canvas */}
       <main className="shell-main-canvas">
-        <div className="workspace-hero-transition-card">
+        <div className="workspace-card">
           <div className="card-header-bar">
-            <span className="card-label font-mono text-xs text-[#24c7c9]">
-              ● SYSTEM INITIALIZATION COMPLETE
-            </span>
-            <span className="card-id font-mono text-xs text-[#64748b]">
-              KERNEL NX-3.7.1
-            </span>
+            <div className="header-badge-group">
+              <span className="status-indicator-dot" />
+              <span className="card-label">INSTITUTIONAL INVESTIGATION WORKSTATION</span>
+            </div>
+            <span className="protocol-reference">SEC-65B-HASH-VERIFIED</span>
           </div>
 
           <div className="card-body">
             <h2 className="workspace-heading">
-              Investigation Console Ready
+              Investigation Environment Ready
             </h2>
             <p className="workspace-description">
-              Application transition successfully established from the cinematic entry. 
-              The technical shell, color tokens, typography, and motion foundation are active.
+              Secure operational workstation initialized for multi-chain financial tracing, suspect entity attribution, 
+              transaction flow analysis, and court-admissible forensic reporting.
             </p>
 
-            <div className="telemetry-grid font-mono text-xs">
+            {/* High Visibility Formal Operational Metrics */}
+            <div className="telemetry-grid">
               <div className="telemetry-tile">
-                <span className="tile-title">DATA PIPELINE</span>
-                <span className="tile-value text-white">CONNECTED</span>
-                <span className="tile-sub text-[#64748b]">POSTGRESQL // PORT 5432</span>
+                <span className="tile-title">ACTIVE MATTERS</span>
+                <span className="tile-value text-white">14 Cases</span>
+                <span className="tile-sub">Assigned for Investigation</span>
               </div>
               <div className="telemetry-tile">
-                <span className="tile-title">GRAPH ENGINE</span>
-                <span className="tile-value text-[#24c7c9]">ACTIVE</span>
-                <span className="tile-sub text-[#64748b]">FASTAPI NETWORKX // PORT 8000</span>
+                <span className="tile-title">TRACE TARGET VOLUME</span>
+                <span className="tile-value text-cyan">₹48.24 Cr</span>
+                <span className="tile-sub">Flagged Suspicious Outflow</span>
               </div>
               <div className="telemetry-tile">
-                <span className="tile-title">BACKEND API</span>
-                <span className="tile-value text-[#10b981]">OPERATIONAL</span>
-                <span className="tile-sub text-[#64748b]">NODE.JS EXPRESS // PORT 5000</span>
+                <span className="tile-title">IDENTIFIED ENTITIES</span>
+                <span className="tile-value text-green">1,280 Nodes</span>
+                <span className="tile-sub">Exchanges, Mixers, Wallets</span>
               </div>
               <div className="telemetry-tile">
-                <span className="tile-title">NEXT PHASE</span>
-                <span className="tile-value text-[#f59e0b]">PHASE C READY</span>
-                <span className="tile-sub text-[#64748b]">CASE REGISTRY & AUTH</span>
+                <span className="tile-title">STATUTORY NOTICES</span>
+                <span className="tile-value text-amber">28 Issued</span>
+                <span className="tile-sub">Section 91 Intermediary Directives</span>
               </div>
             </div>
           </div>
 
+          {/* Action Footer */}
           <div className="card-footer-bar">
-            <div className="footer-left font-mono text-xs text-[#64748b]">
-              <span>ID: TV-SYS-INIT-2026</span>
+            <div className="footer-left">
+              <span className="footer-meta">AUTHORITY: CENTRAL LAW ENFORCEMENT & REGULATORY AGENCIES</span>
             </div>
             <div className="footer-right">
               <button
                 type="button"
                 onClick={onReturnToHero}
-                className="return-btn font-mono text-xs"
+                className="secondary-btn"
               >
-                RE-RUN HERO SEQUENCE ↻
+                Re-play Hero Overview ↺
               </button>
             </div>
           </div>
@@ -147,72 +156,92 @@ export const ApplicationShellPlaceholder: React.FC<ApplicationShellPlaceholderPr
           width: 100vw;
           height: 100vh;
           background: var(--tv-canvas);
-          color: var(--tv-text-primary);
+          color: #f1f5f9;
+          font-family: var(--tv-font-sans);
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          animation: shellFadeIn 0.65s var(--tv-ease-smooth) forwards;
+          transition: transform 0.85s var(--tv-ease-smooth), opacity 0.85s var(--tv-ease-smooth), filter 0.85s var(--tv-ease-smooth);
         }
 
-        @keyframes shellFadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+        .shell-pre-enter {
+          transform: translateY(32px);
+          opacity: 0;
+          filter: blur(16px);
         }
 
+        .shell-entered {
+          transform: translateY(0);
+          opacity: 1;
+          filter: blur(0px);
+        }
+
+        /* Top Header */
         .shell-header {
-          height: 56px;
-          background: var(--tv-panel);
+          height: 60px;
+          background: #080f15;
           border-bottom: 1px solid var(--tv-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 24px;
+          padding: 0 32px;
           z-index: 30;
         }
 
         .shell-header-left {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 14px;
         }
 
-        .shell-emblem {
+        .shell-brand-group {
           display: flex;
-          align-items: center;
+          flex-direction: column;
+          gap: 2px;
         }
 
-        .shell-divider {
-          color: var(--tv-border);
+        .shell-title {
+          font-size: 15px;
+          font-weight: 700;
+          color: #ffffff;
+          letter-spacing: 0.1em;
+          line-height: 1.1;
+        }
+
+        .shell-subtitle {
+          font-size: 10px;
+          font-weight: 500;
+          color: #94a3b8;
+          letter-spacing: 0.08em;
         }
 
         .shell-nav {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
         }
 
         .shell-nav-item {
           background: transparent;
           border: none;
-          color: var(--tv-text-muted);
-          padding: 18px 14px;
+          color: #94a3b8;
+          font-family: var(--tv-font-sans);
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          padding: 20px 14px;
           cursor: pointer;
           position: relative;
           transition: color 0.2s;
         }
 
         .shell-nav-item:hover {
-          color: var(--tv-text-primary);
+          color: #ffffff;
         }
 
         .shell-nav-item.active {
-          color: var(--tv-text-primary);
+          color: #ffffff;
+          font-weight: 600;
         }
 
         .nav-active-bar {
@@ -222,38 +251,54 @@ export const ApplicationShellPlaceholder: React.FC<ApplicationShellPlaceholderPr
           right: 14px;
           height: 2px;
           background: var(--tv-cyan);
-          box-shadow: 0 0 8px var(--tv-cyan);
+          box-shadow: 0 0 10px var(--tv-cyan);
         }
 
         .shell-header-right {
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 16px;
         }
 
         .officer-badge {
           display: flex;
           align-items: center;
           gap: 8px;
-          background: var(--tv-card);
-          padding: 6px 12px;
+          background: #0d1722;
+          padding: 6px 14px;
           border: 1px solid var(--tv-border);
           border-radius: 4px;
+          font-size: 12px;
         }
 
         .status-dot-green {
-          width: 6px;
-          height: 6px;
+          width: 7px;
+          height: 7px;
           border-radius: 50%;
-          background: var(--tv-risk-low);
-          box-shadow: 0 0 6px var(--tv-risk-low);
+          background: #10b981;
+          box-shadow: 0 0 8px #10b981;
+        }
+
+        .officer-label {
+          color: #94a3b8;
+          font-size: 11px;
+          font-weight: 500;
+        }
+
+        .officer-name {
+          color: #ffffff;
+          font-weight: 600;
+          letter-spacing: 0.02em;
         }
 
         .shell-exit-btn {
-          background: transparent;
+          background: #0e1822;
           border: 1px solid var(--tv-border);
-          color: var(--tv-text-secondary);
-          padding: 6px 12px;
+          color: #cbd5e1;
+          font-family: var(--tv-font-sans);
+          font-size: 11px;
+          font-weight: 600;
+          padding: 7px 14px;
           border-radius: 4px;
           cursor: pointer;
           transition: border-color 0.2s, color 0.2s;
@@ -264,134 +309,219 @@ export const ApplicationShellPlaceholder: React.FC<ApplicationShellPlaceholderPr
           color: var(--tv-cyan);
         }
 
+        /* Subheader */
         .shell-subheader {
-          height: 38px;
-          background: #080f15;
+          height: 42px;
+          background: #060b10;
           border-bottom: 1px solid var(--tv-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 24px;
+          padding: 0 32px;
+          font-size: 11px;
         }
 
         .subheader-left, .subheader-right {
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 14px;
         }
 
-        .badge-tag {
-          background: rgba(36, 199, 201, 0.1);
-          color: var(--tv-cyan);
-          padding: 2px 6px;
-          border: 1px solid rgba(36, 199, 201, 0.3);
+        .statute-tag {
+          color: #24c7c9;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+        }
+
+        .subheader-text {
+          color: #94a3b8;
+        }
+
+        .statute-badge {
+          background: rgba(36, 199, 201, 0.08);
+          color: #cbd5e1;
+          padding: 3px 8px;
+          border: 1px solid rgba(36, 199, 201, 0.25);
           border-radius: 3px;
           font-size: 10px;
+          font-weight: 500;
         }
 
+        .system-status-indicator {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #10b981;
+          font-weight: 600;
+        }
+
+        .pulse-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #10b981;
+          box-shadow: 0 0 6px #10b981;
+        }
+
+        .node-id {
+          color: #64748b;
+        }
+
+        /* Main Workspace Canvas */
         .shell-main-canvas {
           flex: 1;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 32px;
+          padding: 40px;
           position: relative;
           background-image: 
-            radial-gradient(circle at 50% 50%, rgba(36, 199, 201, 0.03) 0%, transparent 60%);
+            radial-gradient(circle at 50% 50%, rgba(36, 199, 201, 0.04) 0%, transparent 65%);
         }
 
-        .workspace-hero-transition-card {
+        .workspace-card {
           width: 100%;
-          max-width: 860px;
-          background: var(--tv-card);
+          max-width: 960px;
+          background: #0a131b;
           border: 1px solid var(--tv-border);
           border-radius: 8px;
           overflow: hidden;
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
         }
 
         .card-header-bar {
-          padding: 14px 20px;
-          background: #0a1219;
+          padding: 16px 24px;
+          background: #080f15;
           border-bottom: 1px solid var(--tv-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
         }
 
+        .header-badge-group {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .status-indicator-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: var(--tv-cyan);
+          box-shadow: 0 0 8px var(--tv-cyan);
+        }
+
+        .card-label {
+          font-size: 11px;
+          font-weight: 600;
+          color: #ffffff;
+          letter-spacing: 0.1em;
+        }
+
+        .protocol-reference {
+          font-size: 11px;
+          color: #64748b;
+          letter-spacing: 0.05em;
+        }
+
         .card-body {
-          padding: 32px;
+          padding: 36px;
         }
 
         .workspace-heading {
           font-size: 26px;
           font-weight: 600;
           color: #ffffff;
-          margin-bottom: 12px;
+          margin-bottom: 10px;
           letter-spacing: -0.02em;
         }
 
         .workspace-description {
           font-size: 14px;
-          color: var(--tv-text-secondary);
+          color: #cbd5e1;
           line-height: 1.6;
-          max-width: 640px;
+          max-width: 720px;
           margin-bottom: 32px;
         }
 
         .telemetry-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          grid-template-columns: repeat(4, 1fr);
           gap: 16px;
         }
 
         .telemetry-tile {
-          background: #091017;
+          background: #060c12;
           border: 1px solid var(--tv-border);
           border-radius: 6px;
-          padding: 16px;
+          padding: 18px;
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 8px;
         }
 
         .tile-title {
-          color: var(--tv-text-muted);
-          font-size: 10px;
-          letter-spacing: 0.1em;
+          color: #94a3b8;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
         }
 
         .tile-value {
-          font-size: 14px;
-          font-weight: 600;
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: -0.01em;
         }
 
+        .text-white { color: #ffffff; }
+        .text-cyan { color: #24c7c9; }
+        .text-green { color: #10b981; }
+        .text-amber { color: #f59e0b; }
+
         .tile-sub {
-          font-size: 10px;
+          font-size: 11px;
+          color: #64748b;
+          line-height: 1.3;
         }
 
         .card-footer-bar {
-          padding: 16px 24px;
-          background: #0a1219;
+          padding: 18px 28px;
+          background: #080f15;
           border-top: 1px solid var(--tv-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
         }
 
-        .return-btn {
-          background: #142230;
+        .footer-meta {
+          font-size: 11px;
+          color: #64748b;
+          letter-spacing: 0.05em;
+        }
+
+        .secondary-btn {
+          background: #111e2a;
           border: 1px solid var(--tv-border);
           color: #ffffff;
-          padding: 8px 16px;
+          font-family: var(--tv-font-sans);
+          font-size: 12px;
+          font-weight: 600;
+          padding: 9px 18px;
           border-radius: 4px;
           cursor: pointer;
           transition: background 0.2s, border-color 0.2s;
         }
 
-        .return-btn:hover {
-          background: #1a2c3e;
+        .secondary-btn:hover {
+          background: #182a3c;
           border-color: var(--tv-cyan);
+        }
+
+        @media (max-width: 1024px) {
+          .telemetry-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
         }
       `}</style>
     </div>

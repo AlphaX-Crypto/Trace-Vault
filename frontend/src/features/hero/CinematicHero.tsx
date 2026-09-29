@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { TopologicalCore } from './TopologicalCore';
 import { TechFrame } from './TechFrame';
 import { ScrambleText } from './ScrambleText';
 
@@ -8,8 +7,7 @@ interface CinematicHeroProps {
 }
 
 export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication }) => {
-  // Step stages: 0 = Init, 1 = Scramble & Header, 2 = Eyebrow & Line 1, 3 = Focal Unblur, 4 = Ready
-  const [stage, setStage] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Transition handler
@@ -18,7 +16,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
     setIsTransitioning(true);
     setTimeout(() => {
       onEnterApplication();
-    }, 750);
+    }, 800);
   }, [isTransitioning, onEnterApplication]);
 
   // Keyboard shortcut: Enter or Space triggers immediate entry
@@ -33,18 +31,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleEnter]);
 
-  // Paced choreography matching Reference Video 1
+  // Mount trigger to initiate the smooth blur-to-clear entrance
   useEffect(() => {
-    const timer1 = setTimeout(() => setStage(1), 100);  // Header & Environment
-    const timer2 = setTimeout(() => setStage(2), 500);  // Eyebrow & Line 1
-    const timer3 = setTimeout(() => setStage(3), 1000); // Focal Blur Line 2 & 3
-    const timer4 = setTimeout(() => setStage(4), 1500); // Fully Ready & CTA
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
-    };
+    const timer = setTimeout(() => setMounted(true), 150);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -52,27 +42,32 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
       className={`hero-viewport ${isTransitioning ? 'hero-transitioning' : ''}`}
       aria-label="TRACEVAULT Institutional Forensic Platform"
     >
-      {/* Background Coordinate Atmosphere */}
-      <div className="atmospheric-grid" aria-hidden="true" />
+      {/* Real Background Video Provided by User in SIH/reference/hero_animation.mp4 */}
+      <div className="video-background-layer" aria-hidden="true">
+        <video
+          className="hero-video"
+          src="/hero_animation.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        {/* Soft atmospheric gradient vignettes around edges */}
+        <div className="video-vignette-overlay" />
+      </div>
 
-      {/* Top Frame Shell */}
-      <TechFrame
-        onEnter={handleEnter}
-        isReady={stage >= 4}
-      />
-
-      {/* Central 3D Topological Core Lattice */}
-      <div className="topology-container" aria-hidden="true">
-        <TopologicalCore isTransitioning={isTransitioning} className="w-full h-full" />
+      {/* Top Header Shell */}
+      <div className={`top-header-stage ${mounted ? 'header-entered' : 'header-pre-enter'}`}>
+        <TechFrame onEnter={handleEnter} isReady={mounted} />
       </div>
 
       {/* Hero Lower Third Section: Headline on Left, Action on Right (Reference Video 1 Layout) */}
       <main className="hero-bottom-stage">
         <div className="hero-stage-inner">
-          {/* Left Column: Eyebrow + 3-Tier Headline */}
+          {/* Left Column: Eyebrow + 3-Tier Headline with Blur-to-Clear Rise */}
           <div className="headline-cluster">
             {/* Eyebrow: Formal Institutional Tag */}
-            <div className={`eyebrow-container ${stage >= 2 ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`eyebrow-container ${mounted ? 'eyebrow-entered' : 'eyebrow-pre-enter'}`}>
               <span className="eyebrow-mark" aria-hidden="true">▮▮▮</span>
               <span className="eyebrow-label">
                 <ScrambleText
@@ -83,35 +78,35 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
               </span>
             </div>
 
-            {/* 3-Tier Headline matching Reference Video 1 */}
+            {/* 3-Tier Headline with Staggered Rise & Blur-to-Clear Transitions */}
             <h1 className="hero-headline">
               {/* Line 1: High Contrast Pure White */}
-              <span className={`headline-line line-1 ${stage >= 2 ? 'line-revealed' : ''}`}>
+              <span className={`headline-line line-1 ${mounted ? 'line-entered' : 'line-pre-enter'}`}>
                 Institutional
               </span>
 
               {/* Line 2: Optical Focal Unblur Transition */}
-              <span className={`headline-line line-2 ${stage >= 3 ? 'focal-resolved' : 'focal-blurred'}`}>
+              <span className={`headline-line line-2 ${mounted ? 'line-entered' : 'line-pre-enter'}`}>
                 financial forensics
               </span>
 
-              {/* Line 3: Muted Supporting Slate Line */}
-              <span className={`headline-line line-3 ${stage >= 3 ? 'line-revealed' : ''}`}>
+              {/* Line 3: Supporting Slate Line */}
+              <span className={`headline-line line-3 ${mounted ? 'line-entered' : 'line-pre-enter'}`}>
                 and asset recovery
               </span>
             </h1>
           </div>
 
           {/* Right Column: Horizontally Balanced Primary CTA (matching Reference Video 1) */}
-          <div className="cta-cluster">
+          <div className={`cta-cluster ${mounted ? 'cta-entered' : 'cta-pre-enter'}`}>
             <button
               type="button"
               onClick={handleEnter}
-              className={`primary-launch-button ${stage >= 4 ? 'cta-ready' : 'cta-waiting'}`}
+              className="primary-launch-button"
               aria-label="Enter Investigation Workstation"
             >
               <span className="btn-text">
-                <ScrambleText text="Enter Workstation" delay={1200} duration={350} />
+                <ScrambleText text="Enter Workstation" delay={900} duration={350} />
               </span>
               <span className="btn-arrow" aria-hidden="true">→</span>
             </button>
@@ -119,11 +114,11 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
         </div>
 
         {/* Minimal Institutional Authority Footer */}
-        <div className="authority-footer">
+        <div className={`authority-footer ${mounted ? 'footer-entered' : 'footer-pre-enter'}`}>
           <span className="authority-text">
             GOVERNMENT OF INDIA // LAW ENFORCEMENT & REGULATORY INVESTIGATION PLATFORM
           </span>
-          <span className="authority-protocol font-mono">
+          <span className="authority-protocol">
             SEC 65B CERTIFIED // BNS 94 COMPLIANT
           </span>
         </div>
@@ -147,37 +142,66 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           flex-direction: column;
           justify-content: flex-end;
           padding: 0 48px 24px 48px;
-          transition: opacity 0.75s var(--tv-ease-camera), transform 0.75s var(--tv-ease-camera);
+          transition: opacity 0.8s var(--tv-ease-camera), transform 0.8s var(--tv-ease-camera), filter 0.8s var(--tv-ease-camera);
         }
 
         .hero-transitioning {
           opacity: 0;
-          transform: scale(1.04);
-          filter: blur(4px);
+          transform: scale(0.97) translateY(24px);
+          filter: blur(14px);
         }
 
-        /* Subtle Coordinate Grid Atmosphere */
-        .atmospheric-grid {
+        /* Video Background Layer */
+        .video-background-layer {
           position: absolute;
           inset: 0;
-          background-image: 
-            linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-          background-size: 80px 80px;
-          mask-image: radial-gradient(circle at 50% 50%, black 45%, transparent 85%);
-          pointer-events: none;
           z-index: 1;
-        }
-
-        /* Central Topology Positioning */
-        .topology-container {
-          position: absolute;
-          inset: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 2;
+          overflow: hidden;
+          background: #000000;
+        }
+
+        .hero-video {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
           pointer-events: none;
+        }
+
+        .video-vignette-overlay {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(
+            circle at 50% 50%,
+            transparent 30%,
+            rgba(5, 10, 14, 0.4) 65%,
+            #050a0e 95%
+          );
+          pointer-events: none;
+        }
+
+        /* Top Header Stage */
+        .top-header-stage {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 30;
+          transition: transform 0.8s var(--tv-ease-smooth), opacity 0.8s var(--tv-ease-smooth), filter 0.8s var(--tv-ease-smooth);
+        }
+
+        .header-pre-enter {
+          transform: translateY(-24px);
+          opacity: 0;
+          filter: blur(8px);
+        }
+
+        .header-entered {
+          transform: translateY(0);
+          opacity: 1;
+          filter: blur(0px);
         }
 
         /* Lower Third Stage (Matching Reference Video 1) */
@@ -205,7 +229,19 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           align-items: center;
           gap: 10px;
           margin-bottom: 20px;
-          transition: opacity 0.6s var(--tv-ease-smooth);
+          transition: transform 0.8s var(--tv-ease-smooth), opacity 0.8s var(--tv-ease-smooth), filter 0.8s var(--tv-ease-smooth);
+        }
+
+        .eyebrow-pre-enter {
+          transform: translateY(20px);
+          opacity: 0;
+          filter: blur(10px);
+        }
+
+        .eyebrow-entered {
+          transform: translateY(0);
+          opacity: 1;
+          filter: blur(0px);
         }
 
         .eyebrow-mark {
@@ -219,10 +255,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           font-size: 11px;
           font-weight: 600;
           letter-spacing: 0.15em;
-          color: var(--tv-text-secondary);
+          color: #94a3b8;
         }
 
-        /* 3-Tier Headline */
+        /* 3-Tier Headline with Staggered Blur-to-Clear Rise */
         .hero-headline {
           font-family: var(--tv-font-sans);
           font-size: clamp(40px, 4.4vw, 68px);
@@ -236,75 +272,76 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
 
         .headline-line {
           display: block;
-          transition: opacity 0.7s var(--tv-ease-smooth), filter 0.8s var(--tv-ease-smooth), transform 0.7s var(--tv-ease-smooth);
+          transition: transform 0.9s var(--tv-ease-smooth), opacity 0.9s var(--tv-ease-smooth), filter 0.9s var(--tv-ease-smooth);
         }
 
         .line-1 {
           color: #ffffff;
-          opacity: 0;
-          transform: translateY(12px);
+          transition-delay: 0.25s;
         }
 
-        .line-1.line-revealed {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* Optical Focal Blur */
         .line-2 {
           color: #ffffff;
-        }
-
-        .line-2.focal-blurred {
-          opacity: 0.35;
-          filter: blur(10px);
-          transform: translateY(8px);
-        }
-
-        .line-2.focal-resolved {
-          opacity: 1;
-          filter: blur(0px);
-          transform: translateY(0);
+          transition-delay: 0.5s;
         }
 
         .line-3 {
-          color: var(--tv-text-muted);
-          opacity: 0;
-          transform: translateY(6px);
+          color: #94a3b8;
+          transition-delay: 0.75s;
         }
 
-        .line-3.line-revealed {
-          opacity: 1;
+        .line-pre-enter {
+          transform: translateY(32px);
+          opacity: 0;
+          filter: blur(14px);
+        }
+
+        .line-entered {
           transform: translateY(0);
+          opacity: 1;
+          filter: blur(0px);
         }
 
         /* Balanced CTA Cluster on the Right */
         .cta-cluster {
           padding-bottom: 8px;
+          transition: transform 0.9s var(--tv-ease-smooth) 0.85s, opacity 0.9s var(--tv-ease-smooth) 0.85s, filter 0.9s var(--tv-ease-smooth) 0.85s;
+        }
+
+        .cta-pre-enter {
+          transform: translateY(28px);
+          opacity: 0;
+          filter: blur(12px);
+        }
+
+        .cta-entered {
+          transform: translateY(0);
+          opacity: 1;
+          filter: blur(0px);
         }
 
         .primary-launch-button {
           background: #ffffff;
           color: #050a0e;
           border: none;
-          padding: 14px 28px;
+          padding: 15px 30px;
           border-radius: 4px;
           cursor: pointer;
           display: flex;
           align-items: center;
           gap: 12px;
           font-family: var(--tv-font-sans);
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 600;
-          letter-spacing: 0.02em;
+          letter-spacing: 0.01em;
           transition: background 0.2s var(--tv-ease-smooth), transform 0.2s var(--tv-ease-smooth), box-shadow 0.2s;
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 4px 28px rgba(0, 0, 0, 0.7);
         }
 
         .primary-launch-button:hover {
-          background: #f1f5f9;
+          background: #f8fafc;
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(36, 199, 201, 0.25);
+          box-shadow: 0 8px 32px rgba(36, 199, 201, 0.35);
         }
 
         .primary-launch-button:active {
@@ -321,17 +358,6 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           transform: translateX(3px);
         }
 
-        .cta-waiting {
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        .cta-ready {
-          opacity: 1;
-          pointer-events: auto;
-          transition: opacity 0.6s var(--tv-ease-smooth);
-        }
-
         /* Formal Authority Footer */
         .authority-footer {
           display: flex;
@@ -339,20 +365,31 @@ export const CinematicHero: React.FC<CinematicHeroProps> = ({ onEnterApplication
           justify-content: space-between;
           padding-top: 18px;
           border-top: 1px solid var(--tv-border);
+          font-family: var(--tv-font-sans);
           font-size: 11px;
           color: #64748b;
-          letter-spacing: 0.06em;
+          letter-spacing: 0.08em;
+          transition: opacity 0.8s var(--tv-ease-smooth) 1.0s;
+        }
+
+        .footer-pre-enter {
+          opacity: 0;
+        }
+
+        .footer-entered {
+          opacity: 1;
         }
 
         .authority-protocol {
-          font-size: 10px;
-          color: #475569;
+          font-family: var(--tv-font-sans);
+          font-size: 11px;
+          color: #64748b;
         }
 
         /* Peripheral Corner Accents */
         .corner-accent {
           position: absolute;
-          font-family: var(--tv-font-mono);
+          font-family: var(--tv-font-sans);
           font-size: 10px;
           color: #1e293b;
           letter-spacing: 0.1em;
