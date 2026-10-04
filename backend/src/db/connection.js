@@ -1,5 +1,4 @@
 const { Pool } = require('pg');
-const { newDb } = require('pg-mem');
 const config = require('../config/env');
 const logger = require('../utils/logger');
 
@@ -9,8 +8,10 @@ let isMem = false;
 
 /**
  * Initializes the database connection pool.
- * If DATABASE_URL is provided and not in memory test mode, creates a real pg.Pool.
- * Otherwise creates a high-fidelity in-memory PostgreSQL engine via pg-mem.
+ * If DATABASE_URL is provided, creates a real pg.Pool.
+ * In development/test environments where DATABASE_URL is unset or USE_PG_MEM=true,
+ * dynamically loads pg-mem for local testing.
+ * In production, DATABASE_URL is mandatory and pg-mem fallback is prohibited.
  */
 function getPool() {
   if (pool) return pool;
@@ -35,7 +36,22 @@ function getPool() {
     });
     isMem = false;
   } else {
+    if (config.nodeEnv === 'production') {
+      const errMsg = 'DATABASE_URL is required in production. In-memory database fallback is strictly prohibited.';
+      logger.error(errMsg);
+      throw new Error(errMsg);
+    }
+
     logger.info('Initializing in-memory PostgreSQL engine (pg-mem)...');
+    let newDb;
+    try {
+      ({ newDb } = require('pg-mem'));
+    } catch (err) {
+      const missingErr = new Error("The 'pg-mem' package is required for in-memory testing but was not found. Install development dependencies or provide DATABASE_URL.");
+      logger.error(missingErr.message);
+      throw missingErr;
+    }
+
     memDb = newDb();
     const pgAdapter = memDb.adapters.createPg();
     pool = new pgAdapter.Pool();
