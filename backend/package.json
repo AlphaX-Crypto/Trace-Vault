@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node --test tests/**/*.test.js"
+    "test": "node --test tests/**/*.test.js",
+    "db:migrate": "node -e \"require('./src/db/migrator').runMigrations().then(r => console.log('Migrations applied:', r)).catch(e => { console.error(e); process.exit(1); })\"",
+    "db:validate": "node ../database/scripts/validate_db.js"
   },
   "dependencies": {
     "axios": "^1.7.9",
