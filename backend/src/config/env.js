@@ -7,6 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const DEV_FALLBACK_JWT_SECRET = 'tracevault_dev_jwt_secret_key_change_in_production_2026';
 
 const config = {
+  host: process.env.HOST || '0.0.0.0',
   port: parseInt(process.env.PORT || process.env.BACKEND_PORT || '5000', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
   pythonIntelligenceUrl: (

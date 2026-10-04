@@ -19,8 +19,13 @@ function getPool() {
 
   if (!forceMem && config.databaseUrl) {
     logger.info('Initializing real PostgreSQL connection pool...');
+    const sslConfig = process.env.DB_SSL === 'true' || (config.nodeEnv === 'production' && !config.databaseUrl.includes('localhost') && !config.databaseUrl.includes('127.0.0.1'))
+      ? { rejectUnauthorized: false }
+      : false;
+
     pool = new Pool({
       connectionString: config.databaseUrl,
+      ssl: sslConfig,
       max: parseInt(process.env.DB_POOL_MAX || '20', 10),
       idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT_MS || '30000', 10),
       connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT_MS || '5000', 10)

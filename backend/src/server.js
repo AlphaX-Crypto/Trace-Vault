@@ -10,8 +10,8 @@ try {
   process.exit(1);
 }
 
-const server = app.listen(config.port, () => {
-  logger.info(`TRACEVAULT Backend Server running on port ${config.port} [${config.nodeEnv}]`);
+const server = app.listen(config.port, config.host, () => {
+  logger.info(`TRACEVAULT Backend Server running on http://${config.host}:${config.port} [${config.nodeEnv}]`);
   logger.info(`Configured Python Intelligence Engine URL: ${config.pythonIntelligenceUrl}`);
 });
 
