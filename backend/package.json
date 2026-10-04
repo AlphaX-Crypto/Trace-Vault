@@ -1,0 +1,34 @@
+{
+  "name": "tracevault-backend",
+  "version": "0.2.0",
+  "description": "TRACEVAULT Node.js Application Backend & Orchestration Gateway",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/**/*.test.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.0"
+  },
+  "keywords": [
+    "tracevault",
+    "blockchain",
+    "intelligence",
+    "express",
+    "orchestration"
+  ],
+  "author": "TRACEVAULT Team Alpha",
+  "license": "ISC",
+  "devDependencies": {
+    "pg-mem": "^3.0.14"
+  }
+}

@@ -1,38 +1,9 @@
 version: '3.8'
 
 services:
-  frontend:
-    image: node:20-alpine
-    working_dir: /app
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-    command: npm run dev
-
-  backend:
-    image: node:20-alpine
-    working_dir: /app
-    ports:
-      - "${BACKEND_PORT:-5000}:5000"
-    volumes:
-      - ./backend:/app
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=${DATABASE_URL}
-    command: npm run dev
-
-  intelligence-engine:
-    image: python:3.11-slim
-    working_dir: /app
-    ports:
-      - "${INTELLIGENCE_PORT:-8000}:8000"
-    volumes:
-      - ./intelligence-engine:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
   postgres:
     image: postgres:15-alpine
+    container_name: tracevault-postgres
     ports:
       - "5432:5432"
     environment:
@@ -41,6 +12,64 @@ services:
       - POSTGRES_DB=tracevault
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tracevault"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  intelligence-engine:
+    image: python:3.11-slim
+    container_name: tracevault-intelligence
+    working_dir: /app
+    ports:
+      - "${INTELLIGENCE_PORT:-8000}:8000"
+    volumes:
+      - ./intelligence-engine:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  backend:
+    image: node:20-alpine
+    container_name: tracevault-backend
+    working_dir: /app
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/tracevault
+      - PYTHON_INTELLIGENCE_URL=http://intelligence-engine:8000
+      - INTELLIGENCE_ENGINE_URL=http://intelligence-engine:8000
+      - JWT_SECRET=${JWT_SECRET:-tracevault_dev_jwt_secret_key_change_in_production_2026}
+      - CORS_ORIGIN=http://localhost:5173
+    depends_on:
+      postgres:
+        condition: service_healthy
+      intelligence-engine:
+        condition: service_started
+    command: npm run dev
+
+  frontend:
+    image: node:20-alpine
+    container_name: tracevault-frontend
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5000
+    depends_on:
+      - backend
+    command: npm run dev
 
 volumes:
   postgres_data:
+

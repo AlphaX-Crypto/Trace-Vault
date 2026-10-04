@@ -1,8 +1,40 @@
+# Environment Variables & Secrets
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+
+# Database Backups & Dumps
+*.dump
+*.sql.gz
+*.bak
+*.backup
+backups/
+
+# Dependencies
 node_modules/
 __pycache__/
 .venv/
 *.pyc
+
+# Build & Test Artifacts
 dist/
 build/
 coverage/
+.turbo/
+.npm/
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# Test captures and screenshots
+test_screenshots/
+frontend/test_screenshots/
+frontend/*.cjs
+
