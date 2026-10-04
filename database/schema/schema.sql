@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS risk_signals (
 CREATE TABLE IF NOT EXISTS evidence (
     id SERIAL PRIMARY KEY,
     evidence_id VARCHAR(64) NOT NULL,
-    analysis_id VARCHAR(64) NOT NULL REFERENCES analysis_results(analysis_id) ON DELETE CASCADE,
+    analysis_id VARCHAR(64) REFERENCES analysis_results(analysis_id) ON DELETE CASCADE,
     case_id VARCHAR(64) NOT NULL REFERENCES cases(case_id) ON DELETE CASCADE,
     type VARCHAR(50) NOT NULL,
     description TEXT NOT NULL,

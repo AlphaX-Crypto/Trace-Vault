@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
-import { CinematicHero } from './features/hero/CinematicHero';
-import { ApplicationShellPlaceholder } from './components/layout/ApplicationShellPlaceholder';
+import { SimpleLanding } from './features/home/SimpleLanding';
+import { SignInPage } from './features/auth/SignInPage';
+import { SimpleWorkspace } from './features/app/SimpleWorkspace';
 
 export const App: React.FC = () => {
-  const [view, setView] = useState<'hero' | 'application'>('hero');
+  const [view, setView] = useState<'landing' | 'signin' | 'app'>('landing');
 
   return (
-    <div className="w-full h-full">
-      {view === 'hero' ? (
-        <CinematicHero onEnterApplication={() => setView('application')} />
-      ) : (
-        <ApplicationShellPlaceholder onReturnToHero={() => setView('hero')} />
+    <div className="w-full min-h-screen bg-[#f8fafc] text-[#111827]">
+      {view === 'landing' && (
+        <SimpleLanding
+          onSignInClick={() => setView('signin')}
+          onExploreClick={() => setView('signin')}
+        />
+      )}
+
+      {view === 'signin' && (
+        <SignInPage
+          onSignInSuccess={() => setView('app')}
+          onReturnHome={() => setView('landing')}
+        />
+      )}
+
+      {view === 'app' && (
+        <SimpleWorkspace onSignOut={() => setView('landing')} />
       )}
     </div>
   );

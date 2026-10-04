@@ -228,6 +228,141 @@ class IntelligenceService {
       this._handleAxiosError(error, `fetching graph for ${id}`);
     }
   }
+
+  /**
+   * Dispatches case transactions to Python NetworkX graph engine
+   * @param {Object} params
+   * @param {string} params.caseId
+   * @param {string} [params.subject]
+   * @param {number} [params.maxHops=4]
+   * @param {string} [params.direction='both']
+   * @param {string} [params.railFilter]
+   * @param {Array<Object>} params.transactions Normalized transactions from PostgreSQL
+   * @returns {Promise<Object>} NetworkX graph analysis result
+   */
+  async analyzeCaseGraph({ caseId, subject = null, maxHops = 4, direction = 'both', railFilter = null, transactions = [] }) {
+    const payload = {
+      case_id: caseId,
+      subject,
+      max_hops: Math.min(10, Math.max(1, maxHops)),
+      direction,
+      rail_filter: railFilter,
+      transactions
+    };
+
+    logger.info(`Dispatching graph analysis to Python NetworkX: Case ${caseId}, txCount=${transactions.length}, hops=${maxHops}`);
+
+    try {
+      const response = await this.client.post('/api/v1/cases/graph-analyze', payload);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `running graph analysis for Case ${caseId}`);
+    }
+  }
+
+  /**
+   * Dispatches case transactions to Python for multi-factor and behavioral risk intelligence
+   * @param {Object} params
+   * @param {string} params.caseId
+   * @param {string} [params.subject]
+   * @param {Array<Object>} params.transactions Normalized transactions from PostgreSQL
+   * @returns {Promise<Object>} Risk analysis result
+   */
+  async analyzeCaseRisk({ caseId, subject = null, transactions = [] }) {
+    const payload = {
+      case_id: caseId,
+      subject,
+      transactions: transactions.slice(0, 100)
+    };
+
+    logger.info(`Dispatching risk analysis to Python: Case ${caseId}, txCount=${payload.transactions.length}`);
+
+    try {
+      const response = await this.client.post('/api/v1/cases/risk-analyze', payload);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `running risk analysis for Case ${caseId}`);
+    }
+  }
+
+  /**
+   * Dispatches case UPI transactions to Python for behavioral UPI fraud intelligence
+   * @param {Object} params
+   * @param {string} params.caseId
+   * @param {string} [params.subjectVpa]
+   * @param {Array<Object>} params.transactions Normalized UPI transactions from PostgreSQL
+   * @returns {Promise<Object>} UPI fraud analysis result
+   */
+  async analyzeCaseUPI({ caseId, subjectVpa = null, transactions = [] }) {
+    const payload = {
+      case_id: caseId,
+      subject_vpa: subjectVpa,
+      transactions: transactions.slice(0, 100)
+    };
+
+    logger.info(`Dispatching UPI fraud analysis to Python: Case ${caseId}, txCount=${payload.transactions.length}`);
+
+    try {
+      const response = await this.client.post('/api/v1/cases/upi-analyze', payload);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `running UPI analysis for Case ${caseId}`);
+    }
+  }
+
+  /**
+   * Dispatches case blockchain transactions to Python for VASP candidate attribution analysis
+   * @param {Object} params
+   * @param {string} params.caseId
+   * @param {string} [params.subject]
+   * @param {number} [params.maxHops=5]
+   * @param {Array<Object>} params.transactions Normalized blockchain transactions from PostgreSQL
+   * @returns {Promise<Object>} VASP attribution analysis result
+   */
+  async analyzeCaseVASP({ caseId, subject = null, maxHops = 5, transactions = [] }) {
+    const payload = {
+      case_id: caseId,
+      subject,
+      max_hops: Math.min(10, Math.max(1, maxHops)),
+      transactions: transactions.slice(0, 100)
+    };
+
+    logger.info(`Dispatching VASP attribution to Python: Case ${caseId}, txCount=${payload.transactions.length}`);
+
+    try {
+      const response = await this.client.post('/api/v1/cases/vasp-analyze', payload);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `running VASP attribution for Case ${caseId}`);
+    }
+  }
+
+  /**
+   * Dispatches case location signals to Python for geospatial consistency and anomaly analysis
+   * @param {Object} params
+   * @param {string} params.caseId
+   * @param {string} [params.subject]
+   * @param {Array<Object>} params.locationSignals Location signals associated with case
+   * @param {Array<Object>} [params.baselineLocations] Optional baseline location signals
+   * @returns {Promise<Object>} Geospatial analysis result
+   */
+  async analyzeCaseGeospatial({ caseId, subject = null, locationSignals = [], baselineLocations = null }) {
+    const payload = {
+      case_id: caseId,
+      subject,
+      location_signals: (locationSignals || []).slice(0, 100),
+      baseline_locations: baselineLocations ? baselineLocations.slice(0, 100) : null
+    };
+
+    logger.info(`Dispatching geospatial analysis to Python: Case ${caseId}, signalCount=${payload.location_signals.length}`);
+
+    try {
+      const response = await this.client.post('/api/v1/cases/geospatial-analyze', payload);
+      return response.data;
+    } catch (error) {
+      this._handleAxiosError(error, `running geospatial analysis for Case ${caseId}`);
+    }
+  }
 }
 
 // Export singleton instance

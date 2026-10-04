@@ -8,7 +8,7 @@
 
 html, body {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background-color: var(--tv-canvas);
   color: var(--tv-text-primary);
   font-family: var(--tv-font-sans);
@@ -16,19 +16,21 @@ html, body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #root {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: var(--tv-canvas);
 }
 
 ::selection {
-  background: rgba(36, 199, 201, 0.25);
-  color: #ffffff;
+  background: var(--tv-brand-blue-light);
+  color: var(--tv-brand-blue);
 }
 
 /* Scrollbar styling */
@@ -38,21 +40,85 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--tv-canvas);
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--tv-border);
-  border-radius: 3px;
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--tv-border-hover);
+  background: #94a3b8;
 }
 
-/* Monospace telemetry utility */
+/* Monospace telemetry utility for addresses / hashes */
 .font-mono {
   font-family: var(--tv-font-mono);
+  font-feature-settings: 'tnum' on, 'zero' on;
+}
+
+.font-sans {
+  font-family: var(--tv-font-sans);
+}
+
+/* Global utility classes matching reference UI */
+.tv-card {
+  background: var(--tv-card);
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius-lg);
+  box-shadow: var(--tv-shadow-xs);
+}
+
+.tv-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--tv-radius-full);
+}
+
+.tv-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--tv-brand-blue);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 13.5px;
+  padding: 8px 16px;
+  border-radius: var(--tv-radius-sm);
+  border: 1px solid var(--tv-brand-blue);
+  cursor: pointer;
+  transition: background var(--tv-transition-fast);
+}
+
+.tv-btn-primary:hover {
+  background: var(--tv-brand-blue-hover);
+  border-color: var(--tv-brand-blue-hover);
+}
+
+.tv-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #ffffff;
+  color: var(--tv-text-primary);
+  font-weight: 500;
+  font-size: 13.5px;
+  padding: 8px 16px;
+  border-radius: var(--tv-radius-sm);
+  border: 1px solid var(--tv-border);
+  cursor: pointer;
+  transition: background var(--tv-transition-fast), border-color var(--tv-transition-fast);
+}
+
+.tv-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 /* Reduced motion preference */

@@ -1,183 +1,237 @@
 import React from 'react';
-import { ScrambleText } from './ScrambleText';
 
 interface TechFrameProps {
   onEnter: () => void;
   activeNav?: string;
   onNavClick?: (nav: string) => void;
-  isReady?: boolean;
 }
 
 export const TechFrame: React.FC<TechFrameProps> = ({
   onEnter,
-  activeNav = 'INVESTIGATION',
-  onNavClick,
-  isReady = false
+  activeNav = 'Platform',
+  onNavClick
 }) => {
-  const navItems = ['CASES', 'INVESTIGATION', 'EVIDENCE', 'INTELLIGENCE'];
+  const navItems = [
+    { label: 'Platform', href: '#platform' },
+    { label: 'Crypto Tracing', href: '#graph-tracing' },
+    { label: 'UPI Fraud', href: '#capabilities' },
+    { label: 'Investigations', href: '#workspace' },
+    { label: 'Evidence', href: '#capabilities' }
+  ];
 
   return (
-    <header className="tech-frame-header" role="banner">
-      <div className="tech-frame-inner">
-        {/* Left Platform Identity */}
-        <div className="platform-id">
-          <div className="platform-emblem" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#24c7c9" strokeWidth="1.75" />
-              <path d="M12 7l-5 3v4l5 3 5-3v-4l-5-3z" stroke="rgba(255,255,255,0.85)" strokeWidth="1.2" />
+    <header className="product-navbar" role="banner">
+      <div className="navbar-container">
+        {/* Brand Identity */}
+        <div className="navbar-brand">
+          <div className="brand-logo" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#24c7c9" strokeWidth="2" />
+              <path d="M12 7l-5 3v4l5 3 5-3v-4l-5-3z" stroke="#ffffff" strokeWidth="1.5" />
             </svg>
           </div>
-          <span className="platform-wordmark tracking-wider text-white font-bold text-sm">
-            TRACEVAULT
-          </span>
+          <div className="brand-text-group">
+            <span className="brand-title">TRACEVAULT</span>
+            <span className="brand-tagline">Crypto Wallet Tracing & UPI Fraud Detection</span>
+          </div>
         </div>
 
-        {/* Center Technical Navigation Bar */}
-        <nav className="center-nav-bar" aria-label="Investigation Suite Navigation">
-          <div className="nav-items-wrapper">
-            {navItems.map((item, index) => {
-              const isActive = activeNav === item;
-              return (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => onNavClick?.(item)}
-                  className={`nav-btn text-xs tracking-widest uppercase transition-colors ${
-                    isActive ? 'text-white font-medium' : 'text-[#64748b] hover:text-[#94a3b8]'
-                  }`}
-                >
-                  <ScrambleText text={item} delay={150 + index * 80} duration={350} />
-                  {isActive && <div className="active-nav-notch" />}
-                </button>
-              );
-            })}
-          </div>
+        {/* Center Navigation */}
+        <nav className="navbar-links" aria-label="Main Navigation">
+          {navItems.map((item) => {
+            const isActive = activeNav === item.label;
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => {
+                  if (item.href.startsWith('#')) {
+                    const el = document.querySelector(item.href);
+                    if (el) {
+                      e.preventDefault();
+                      el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                  onNavClick?.(item.label);
+                }}
+                className={`nav-link ${isActive ? 'nav-link-active' : ''}`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
-        {/* Right Corner Technical Action */}
-        <div className="right-action">
+        {/* Right CTA Actions */}
+        <div className="navbar-actions">
           <button
             type="button"
             onClick={onEnter}
-            aria-label="Access Investigation Console"
-            className={`tech-cta-button group ${isReady ? 'border-[#24c7c9]/40' : ''}`}
+            className="signin-btn"
+            aria-label="Sign in to TraceVault"
           >
-            <span className="text-xs uppercase tracking-wider text-white group-hover:text-[#24c7c9] transition-colors font-medium">
-              <ScrambleText text="ACCESS CONSOLE" delay={500} duration={350} />
-            </span>
-            <span className="corner-plus text-[#24c7c9] font-mono" aria-hidden="true">+</span>
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={onEnter}
+            className="start-investigation-btn"
+            aria-label="Start Investigation"
+          >
+            Start Investigation →
           </button>
         </div>
       </div>
 
       <style>{`
-        .tech-frame-header {
-          position: absolute;
+        .product-navbar {
+          position: fixed;
           top: 0;
           left: 0;
           right: 0;
-          height: 64px;
-          z-index: 40;
+          height: 68px;
+          z-index: 100;
           display: flex;
           align-items: center;
-          padding: 0 48px;
-          pointer-events: auto;
+          padding: 0 40px;
+          background: rgba(5, 10, 14, 0.75);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .tech-frame-inner {
+        .navbar-container {
           width: 100%;
-          max-width: 1560px;
+          max-width: 1600px;
           margin: 0 auto;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid var(--tv-border);
-          padding-bottom: 14px;
         }
 
-        .platform-id {
+        .navbar-brand {
           display: flex;
           align-items: center;
-          gap: 10px;
-        }
-
-        .platform-emblem {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .platform-wordmark {
-          font-family: var(--tv-font-sans);
-          letter-spacing: 0.12em;
-          font-size: 15px;
-          font-weight: 700;
-        }
-
-        .center-nav-bar {
-          display: flex;
-          align-items: center;
-          background: #080e14;
-          border: 1px solid var(--tv-border);
-          border-radius: 4px;
-          padding: 0 20px;
-          height: 38px;
-        }
-
-        .nav-items-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 32px;
-        }
-
-        .nav-btn {
-          font-family: var(--tv-font-sans);
-          background: transparent;
-          border: none;
+          gap: 12px;
           cursor: pointer;
-          position: relative;
-          padding: 8px 4px;
+        }
+
+        .brand-logo {
+          display: flex;
+          align-items: center;
+        }
+
+        .brand-text-group {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          font-size: 11px;
+          gap: 1px;
         }
 
-        .active-nav-notch {
-          position: absolute;
-          bottom: -1px;
-          width: 18px;
-          height: 2px;
-          background-color: var(--tv-cyan);
-          box-shadow: 0 0 10px var(--tv-cyan);
-        }
-
-        .right-action {
-          display: flex;
-          align-items: center;
-        }
-
-        .tech-cta-button {
+        .brand-title {
           font-family: var(--tv-font-sans);
-          background: #0a1219;
-          border: 1px solid var(--tv-border);
-          border-radius: 4px;
-          padding: 8px 18px;
-          cursor: pointer;
+          font-size: 16px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          color: #ffffff;
+          line-height: 1.1;
+        }
+
+        .brand-tagline {
+          font-family: var(--tv-font-sans);
+          font-size: 10px;
+          font-weight: 500;
+          color: #94a3b8;
+          letter-spacing: 0.02em;
+        }
+
+        .navbar-links {
           display: flex;
           align-items: center;
-          gap: 8px;
-          transition: border-color 0.2s var(--tv-ease-smooth), background 0.2s;
+          gap: 28px;
         }
 
-        .tech-cta-button:hover {
-          border-color: var(--tv-cyan);
-          background: #0e1822;
-        }
-
-        .corner-plus {
+        .nav-link {
+          font-family: var(--tv-font-sans);
           font-size: 13px;
-          line-height: 1;
+          font-weight: 500;
+          color: #cbd5e1;
+          text-decoration: none;
+          padding: 8px 0;
+          position: relative;
+          transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+          color: #ffffff;
+        }
+
+        .nav-link-active {
+          color: #ffffff;
+          font-weight: 600;
+        }
+
+        .nav-link-active::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: var(--tv-cyan);
+          box-shadow: 0 0 8px var(--tv-cyan);
+        }
+
+        .navbar-actions {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+
+        .signin-btn {
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          color: #ffffff;
+          font-family: var(--tv-font-sans);
+          font-size: 13px;
+          font-weight: 600;
+          padding: 8px 18px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.2s, border-color 0.2s;
+        }
+
+        .signin-btn:hover {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .start-investigation-btn {
+          background: var(--tv-cyan);
+          border: 1px solid var(--tv-cyan);
+          color: #050a0e;
+          font-family: var(--tv-font-sans);
+          font-size: 13px;
+          font-weight: 600;
+          padding: 8px 18px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+          box-shadow: 0 2px 14px rgba(36, 199, 201, 0.3);
+        }
+
+        .start-investigation-btn:hover {
+          background: #38d9db;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 20px rgba(36, 199, 201, 0.45);
+        }
+
+        @media (max-width: 992px) {
+          .navbar-links {
+            display: none;
+          }
+          .brand-tagline {
+            display: none;
+          }
         }
       `}</style>
     </header>

@@ -49,6 +49,57 @@ class DisclosureRepository {
     const result = await db.query(sql, [caseId]);
     return result.rows;
   }
+
+  /**
+   * Retrieves a single disclosure request by request_id or id
+   * @param {string|number} requestId
+   * @returns {Promise<Object|null>}
+   */
+  async getDisclosureRequestById(requestId) {
+    const isNumeric = Number.isInteger(Number(requestId)) && !String(requestId).startsWith('DR-') && !String(requestId).startsWith('REQ-');
+    let sql;
+    let values;
+    if (isNumeric) {
+      sql = `SELECT * FROM disclosure_requests WHERE id = $1;`;
+      values = [Number(requestId)];
+    } else {
+      sql = `SELECT * FROM disclosure_requests WHERE request_id = $1;`;
+      values = [String(requestId)];
+    }
+    const result = await db.query(sql, values);
+    return result.rows[0] || null;
+  }
+
+  /**
+   * Updates disclosure request status and optionally response/audit metadata in payload
+   * @param {string|number} requestId
+   * @param {string} status
+   * @param {Object} [payloadPatch]
+   * @returns {Promise<Object>}
+   */
+  async updateDisclosureStatus(requestId, status, payloadPatch = null) {
+    const existing = await this.getDisclosureRequestById(requestId);
+    if (!existing) return null;
+
+    let payload = typeof existing.request_payload === 'object' && existing.request_payload !== null
+      ? existing.request_payload
+      : {};
+
+    if (payloadPatch) {
+      payload = { ...payload, ...payloadPatch };
+    }
+
+    const sql = `
+      UPDATE disclosure_requests
+      SET status = $2,
+          request_payload = $3,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+      RETURNING *;
+    `;
+    const result = await db.query(sql, [existing.id, status, JSON.stringify(payload)]);
+    return result.rows[0] || null;
+  }
 }
 
 module.exports = new DisclosureRepository();

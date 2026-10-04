@@ -20,11 +20,11 @@ describe('Database Persistence Layer (PostgreSQL)', () => {
     await db.close();
   });
 
-  it('Schema Migrator: records all 17 migrations in schema_migrations', async () => {
+  it('Schema Migrator: records all 18 migrations in schema_migrations', async () => {
     const res = await db.query('SELECT name FROM schema_migrations ORDER BY name ASC;');
-    assert.strictEqual(res.rows.length, 17);
+    assert.strictEqual(res.rows.length, 18);
     assert.strictEqual(res.rows[0].name, '001_create_roles.sql');
-    assert.strictEqual(res.rows[16].name, '017_add_last_login_to_users.sql');
+    assert.strictEqual(res.rows[17].name, '018_make_evidence_analysis_id_nullable.sql');
   });
 
   it('Database Seeds: populates demo roles, users, controlled VASPs, entities, and demo case', async () => {
