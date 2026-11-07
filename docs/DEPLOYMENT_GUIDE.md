@@ -6,7 +6,15 @@ This guide describes the production deployment architecture, configuration param
 
 ## 1. Architecture Overview
 
+```mermaid
+flowchart TD
+    User([LEA Investigator / HTTPS]) --> Frontend["Vercel Frontend (React 18 / Vite 5)"]
+    Frontend -->|REST / JSON API| Backend["Render Backend Gateway (Node.js / Express)"]
+    Backend -->|PostgreSQL Pool / SSL| Database[("Render PostgreSQL (18 Migrations)")]
+    Backend -->|REST / NetworkX| Intelligence["Render Intelligence Engine (Python 3.11 / FastAPI)"]
 ```
+
+```text
                         HTTPS / User Traffic
                                  │
                                  ▼
@@ -39,7 +47,18 @@ TRACEVAULT operates with clear service boundaries:
 
 ---
 
-## 2. Frontend Deployment (Vercel)
+## 2. Active Deployed Services Reference
+
+| Layer | Platform | Service Type | Hostname / URL | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Frontend** | Vercel | Static SPA (React/Vite) | Configured with `VITE_API_BASE_URL` | Deployed |
+| **Backend Gateway** | Render | Node.js Web Service | `https://tracevault-backend-fxqm.onrender.com` | Deployed |
+| **Intelligence Engine** | Render | Python Web Service | `https://tracevault-intelligence.onrender.com` | Deployed |
+| **Database** | Render | Managed PostgreSQL 15 | `dpg-db1aiohsrm7s73aqu0kg-a` (Singapore) | Active (18 Migrations) |
+
+---
+
+## 3. Frontend Deployment (Vercel)
 
 ### Project Configuration
 - **Root Directory:** `frontend`
@@ -51,14 +70,14 @@ TRACEVAULT operates with clear service boundaries:
 ### Environment Variables
 | Variable | Description | Example / Target Value |
 | :--- | :--- | :--- |
-| `VITE_API_BASE_URL` | Fully qualified URL of deployed Node.js backend | `https://tracevault-backend.onrender.com` |
+| `VITE_API_BASE_URL` | Fully qualified URL of deployed Node.js backend | `https://tracevault-backend-fxqm.onrender.com` |
 
 > [!NOTE]
 > Do NOT set trailing slashes on `VITE_API_BASE_URL`. The client normalizes endpoints deterministically.
 
 ---
 
-## 3. Node.js Backend Gateway (Render Web Service)
+## 4. Node.js Backend Gateway (Render Web Service)
 
 ### Service Configuration
 - **Root Directory:** `backend`
@@ -89,7 +108,7 @@ TRACEVAULT operates with clear service boundaries:
 
 ---
 
-## 4. Python Intelligence Engine (Render Web Service)
+## 5. Python Intelligence Engine (Render Web Service)
 
 ### Service Configuration
 - **Root Directory:** `intelligence-engine`
@@ -107,7 +126,7 @@ TRACEVAULT operates with clear service boundaries:
 
 ---
 
-## 5. PostgreSQL Database (Render PostgreSQL)
+## 6. PostgreSQL Database (Render PostgreSQL)
 
 ### Database Configuration
 - **Database Engine:** PostgreSQL 15+
@@ -131,7 +150,7 @@ node database/scripts/validate_db.js
 
 ---
 
-## 6. Security & Credential Isolation
+## 7. Security & Credential Isolation
 
 1. **Zero Hardcoded Secrets:** No JWT keys, passwords, database credentials, or external API keys exist in git history or committed configuration.
 2. **Prohibited Credentials:** TRACEVAULT's `securityScanMiddleware` actively rejects payloads containing private keys, mnemonic seed phrases, or raw wallet credentials.
@@ -139,14 +158,14 @@ node database/scripts/validate_db.js
 
 ---
 
-## 7. Demo Data & Simulated Services
+## 8. Demo Data & Simulated Services
 
 - **Dev Seeds (`database/seeds/001_dev_seeds.sql`):** Provides baseline test investigators (`lead_analyst`, `senior_investigator`) and synthetic cases for demonstration purposes.
 - **SAHYOG Sandbox:** The SAHYOG Law Enforcement Authority interface operates in a deterministic simulated sandbox mode (`SANDBOX-...` acknowledgment IDs). No live government endpoint credentials are required or permitted during evaluation.
 
 ---
 
-## 8. Deployment Order Checklist
+## 9. Deployment Order Checklist
 
 1. **Step 1: Deploy Render PostgreSQL**
    - Create Render PostgreSQL database instance.

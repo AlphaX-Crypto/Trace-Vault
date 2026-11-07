@@ -92,14 +92,13 @@ Using Docker Compose:
 ```bash
 docker-compose up -d postgres
 ```
-*Note: In development and test modes without Docker, the backend automatically initializes a high-fidelity in-memory PostgreSQL engine (`pg-mem`) with all 17 migrations and seed casework.*
+*Note: In development and test modes without Docker, the backend automatically initializes a high-fidelity in-memory PostgreSQL engine (`pg-mem`) with all 18 migrations and seed casework.*
 
 To apply migrations manually to a live PostgreSQL instance:
 ```bash
-# From database/ directory:
-npm install
-npm run migrate
-npm run seed
+# From backend/ directory:
+npm run db:migrate
+npm run db:validate
 ```
 
 ### 4. Start Python Intelligence Engine
@@ -168,11 +167,11 @@ Web Application: `http://localhost:5173`
 ## Verification & Test Suites
 
 ```bash
-# Python Intelligence Engine tests (45 tests):
+# Python Intelligence Engine tests (217 tests):
 cd intelligence-engine
 .\.venv\Scripts\pytest -q
 
-# Node.js Application Backend tests (70 tests across 17 suites):
+# Node.js Application Backend tests (149 tests across 32 suites):
 cd backend
 npm test
 
@@ -189,3 +188,5 @@ npm run build
 - [End-to-End Data Flow](docs/architecture/DATA_FLOW.md)
 - [Canonical API Contract](docs/api/API_CONTRACT.md)
 - [Data Models Contract](docs/api/DATA_MODELS.md)
+- [Production Deployment Guide](docs/DEPLOYMENT_GUIDE.md)
+- [Deployment Readiness Audit](docs/FINAL_ARCHITECTURE_AUDIT.md)
